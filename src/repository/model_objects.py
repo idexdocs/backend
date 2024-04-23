@@ -78,3 +78,17 @@ class Posicao(SQLModel, table=True):
     atletas: list["Atleta"] = Relationship(
         back_populates="posicoes", link_model=AtletaPosicao
     )
+
+class Relacionamento(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    receptividade_contrato: int
+    satisfacao_empresa: int
+    satisfacao_clube: int
+    relacao_familiares: int
+    influencias_externas: int
+    pendencia_empresa: bool
+    pendencia_clube: bool
+    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id") 
