@@ -1,0 +1,22 @@
+[
+    {
+        "name": "MSSQL_USER",
+        "value": "sa"
+    },
+    {
+        "name": "MSSQL_HOSTNAME",
+        "value": "localhost,8065"
+    },
+    {
+        "name": "MSSQL_PORT",
+        "value": "8065"
+    },
+    {
+        "name": "MSSQL_SA_PASSWORD",
+        "value": "mssql?Idex2024"
+    },
+    {
+        "name": "APPLICATION_DB",
+        "value": "idex_docs_local_db"
+    }
+]

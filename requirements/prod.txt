@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+gunicorn
+sqlmodel
+pydantic
+alembic
+pyodbc
+
+

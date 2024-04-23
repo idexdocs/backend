@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # api:
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ../../src:/opt/code
+  #   build:
+  #     context: ./web
+  #     dockerfile: Dockerfile.local
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    user: root
+    container_name: sqlserver_idex
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_USER: ${MSSQL_USER}
+    ports:
+      - "${MSSQL_PORT}:1433"
+    volumes:
+      - sqlserver_idex_data:/var/opt/mssql/data/:rw
+
+volumes:
+  sqlserver_idex_data:
