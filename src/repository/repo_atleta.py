@@ -22,7 +22,7 @@ class AtletaRepo:
         ]
         return AtletaList(atletas=atleta_list).model_dump()["atletas"]
 
-    def list_atleta(self, filters: None):
+    def list_atleta(self, filters: dict):
         with self.session_factory() as session:
             query = (
                 select(
@@ -38,21 +38,20 @@ class AtletaRepo:
                 .join(Clube)
             )
 
-            if filters is not None:
-                if page := int(filters.get("page", 1)):
-                    query = (
-                        query.order_by(Atleta.nome)
-                        .limit(15)
-                        .offset((page - 1) * 15)
-                    )
+            if page := int(filters.get("page", 1)):
+                query = (
+                    query.order_by(Atleta.nome)
+                    .limit(15)
+                    .offset((page - 1) * 15)
+                )
 
-                if atleta := filters.get("atleta"):
-                    query = query.filter(Atleta.nome == atleta)
+            if atleta := filters.get("atleta"):
+                query = query.filter(Atleta.nome == atleta)
 
-                if posicao := filters.get("posicao"):
-                    query = query.filter(Posicao.nome == posicao)
+            if posicao := filters.get("posicao"):
+                query = query.filter(Posicao.nome == posicao)
 
-                if clube := filters.get("clube"):
-                    query = query.filter(Clube.nome == clube)
+            if clube := filters.get("clube"):
+                query = query.filter(Clube.nome == clube)
 
             return self._create_objects(session.exec(query).all())
