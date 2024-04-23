@@ -1,1 +1,1 @@
-from .atleta import AtletaList
+from .atleta import AtletaDetail, AtletaList, ContratoSchema

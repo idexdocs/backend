@@ -10,3 +10,13 @@ class Atleta(BaseModel):
 
 class AtletaList(BaseModel):
     atletas: list[Atleta]
+
+
+class ContratoSchema(BaseModel):
+    tipo: str
+    inicio: str
+    termino: str
+
+
+class AtletaDetail(Atleta):
+    contrato: ContratoSchema

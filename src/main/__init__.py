@@ -1,12 +1,19 @@
 from fastapi import APIRouter
 
 from src.main.rest.atleta_list import atleta
+from src.main.rest.atleta_detail import atleta_detail
 
 router = APIRouter()
 
 router.add_api_route(
     "/atleta",
     endpoint=atleta,
+    methods=["GET"],
+    include_in_schema=True,
+)
+router.add_api_route(
+    "/atleta/{id}",
+    endpoint=atleta_detail,
     methods=["GET"],
     include_in_schema=True,
 )

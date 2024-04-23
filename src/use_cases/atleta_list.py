@@ -1,3 +1,4 @@
+from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_atleta import AtletaRepo
 
 
@@ -5,7 +6,7 @@ class AtletaListUseCase:
     def __init__(self, atleta_repository: AtletaRepo):
         self.atleta_repository = atleta_repository
 
-    def execute(self, http_request):
+    def execute(self, http_request: HttpRequest):
         filters: dict = dict(http_request.query_params.items())
 
         result = self._list_atletas(filters)
