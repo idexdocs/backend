@@ -5,5 +5,3 @@ sqlmodel
 pydantic
 alembic
 pyodbc
-
-

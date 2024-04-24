@@ -1,10 +1,8 @@
 -r test.txt
 pre-commit
-flask-shell-ipython
 taskipy
 blue
 ruff
 httpx
 isort
 mypy
-commitizen

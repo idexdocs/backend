@@ -18,8 +18,8 @@ RUN mkdir /opt/code && mkdir /opt/requirements
 # Set working directory
 WORKDIR /opt/code
 
-# COPY requirements /opt/requirements
-# RUN pip install --upgrade pip && pip install -r /opt/requirements/dev.txt
+COPY requirements /opt/requirements
+RUN pip install --upgrade pip && pip install -r /opt/requirements/dev.txt
 
 # Copy the rest of the application code
-# COPY . .
+COPY . .
