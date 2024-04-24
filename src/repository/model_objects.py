@@ -9,29 +9,45 @@ def datetime_now_sec():
 
 # Many to many relationships
 class AtletaClube(SQLModel, table=True):
-    atleta_id: int = Field(default=None, foreign_key="atleta.id", primary_key=True)
-    clube_id: int = Field(default=None, foreign_key="clube.id", primary_key=True)
+    atleta_id: int = Field(
+        default=None, foreign_key="atleta.id", primary_key=True
+    )
+    clube_id: int = Field(
+        default=None, foreign_key="clube.id", primary_key=True
+    )
 
 
 class AtletaContrato(SQLModel, table=True):
-    atleta_id: int = Field(default=None, foreign_key="atleta.id", primary_key=True)
-    contrato_id: int = Field(default=None, foreign_key="contrato.id", primary_key=True)
+    atleta_id: int = Field(
+        default=None, foreign_key="atleta.id", primary_key=True
+    )
+    contrato_id: int = Field(
+        default=None, foreign_key="contrato.id", primary_key=True
+    )
     data_inicio: date
     data_fim: date
-    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
     data_atualizado: datetime | None = None
 
 
 class AtletaPosicao(SQLModel, table=True):
-    atleta_id: int = Field(default=None, foreign_key="atleta.id", primary_key=True)
-    posicao_id: int = Field(default=None, foreign_key="posicao.id", primary_key=True)
+    atleta_id: int = Field(
+        default=None, foreign_key="atleta.id", primary_key=True
+    )
+    posicao_id: int = Field(
+        default=None, foreign_key="posicao.id", primary_key=True
+    )
 
 
 class Atleta(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
     data_nascimento: date
-    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
     data_atualizado: datetime | None = None
     ativo: bool = True
 
@@ -51,7 +67,9 @@ class Atleta(SQLModel, table=True):
 class Clube(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
-    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
     data_atualizado: datetime | None = None
     ativo: bool = True
 
@@ -72,12 +90,15 @@ class Contrato(SQLModel, table=True):
 class Posicao(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
-    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
     data_atualizado: datetime | None = None
 
     atletas: list["Atleta"] = Relationship(
         back_populates="posicoes", link_model=AtletaPosicao
     )
+
 
 class Relacionamento(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -88,7 +109,48 @@ class Relacionamento(SQLModel, table=True):
     influencias_externas: int
     pendencia_empresa: bool
     pendencia_clube: bool
-    data_criacao: datetime = Field(default_factory=datetime_now_sec, nullable=False)
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key="atleta.id") 
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+
+
+class HistoricoCompeticao(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    data_competicao: date
+    jogos_completos: int
+    jogos_parciais: int
+    minutagem: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+
+
+class HistoricoLesao(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    data_lesao: date
+    descricao: str
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+
+
+class HistoricoMaterial(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    quantidade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
