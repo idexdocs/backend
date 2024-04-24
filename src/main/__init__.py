@@ -19,7 +19,7 @@ router.add_api_route(
     include_in_schema=True,
 )
 router.add_api_route(
-    "/relacionamento/atleta/{id}",
+    "/questionario/relacionamento/atleta/{id}",
     endpoint=relacionamento,
     methods=["GET"],
     include_in_schema=True,

@@ -3,9 +3,9 @@ from pydantic import BaseModel
 
 class Atleta(BaseModel):
     nome: str
-    posicao: str
+    posicao: str | None
     data_nascimento: str
-    clube_atual: str
+    clube_atual: str | None
 
 
 class AtletaList(BaseModel):

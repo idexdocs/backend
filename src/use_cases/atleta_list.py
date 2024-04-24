@@ -9,15 +9,16 @@ class AtletaListUseCase:
     def execute(self, http_request: HttpRequest):
         filters: dict = dict(http_request.query_params.items())
 
-        result = self._list_atletas(filters)
-        return self._format_response(result)
+        total_count, result = self._list_atletas(filters)
+        return self._format_response(total_count, result)
 
     def _list_atletas(self, filters):
         return self.repository.list_atleta(filters)
 
-    def _format_response(self, result: list[dict]) -> dict:
+    def _format_response(self, total_count: int, result: list[dict]) -> dict:
         return {
             "count": len(result),
+            "total": total_count,
             "type": "Atleta",
             "data": result,
         }
