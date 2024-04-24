@@ -7,7 +7,7 @@ from src.use_cases.atleta_detail import AtletaDetailUseCase
 
 def atleta_detail_composer():
     repository = AtletaRepo()
-    atleta_list_use_case = AtletaDetailUseCase(atleta_repository=repository)
-    controller = AtletaDetailController(use_case=atleta_list_use_case)
+    use_case = AtletaDetailUseCase(repository=repository)
+    controller = AtletaDetailController(use_case=use_case)
 
     return controller.handle

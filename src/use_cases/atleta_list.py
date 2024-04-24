@@ -3,8 +3,8 @@ from src.repository.repo_atleta import AtletaRepo
 
 
 class AtletaListUseCase:
-    def __init__(self, atleta_repository: AtletaRepo):
-        self.atleta_repository = atleta_repository
+    def __init__(self, repository: AtletaRepo):
+        self.repository = repository
 
     def execute(self, http_request: HttpRequest):
         filters: dict = dict(http_request.query_params.items())
@@ -13,7 +13,7 @@ class AtletaListUseCase:
         return self._format_response(result)
 
     def _list_atletas(self, filters):
-        return self.atleta_repository.list_atleta(filters)
+        return self.repository.list_atleta(filters)
 
     def _format_response(self, result: list[dict]) -> dict:
         return {
