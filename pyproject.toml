@@ -20,7 +20,7 @@ markers = [
 extend-exclude = '(migrations/)'
 
 [tool.taskipy.tasks]
-lint = 'ruff . && blue --check . --diff'
+lint = 'ruff check . && blue --check . --diff'
 format = 'blue .  && isort .'
 type = 'mypy . --explicit-package-bases'
 run = 'uvicorn asgi:app --reload'

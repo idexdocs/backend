@@ -8,7 +8,7 @@ class LesaoListUseCase:
         self.repository = repository
 
     def execute(self, http_request: HttpRequest):
-        atleta_id: int = int(http_request.path_params.get("id"))
+        atleta_id: int = int(http_request.path_params.get('id'))
 
         result = self._list_lesao(atleta_id)
         return self._format_response(result)
@@ -17,13 +17,13 @@ class LesaoListUseCase:
         lesoes = self.repository.list_lesao(atleta_id)
 
         if len(lesoes) == 0:
-            raise NotFoundError("O Atleta não possui lesões cadastradas")
+            raise NotFoundError('O Atleta não possui lesões cadastradas')
 
         return lesoes
 
     def _format_response(self, result: list[dict]) -> dict:
         return {
-            "count": len(result),
-            "type": "Lesão",
-            "data": result,
+            'count': len(result),
+            'type': 'Lesão',
+            'data': result,
         }

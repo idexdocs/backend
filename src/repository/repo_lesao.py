@@ -12,8 +12,8 @@ class LesaoRepo:
     def _create_lesao_objects(self, result: list) -> list[dict]:
         lesao_list = [
             {
-                "data_lesao": data_lesao.strftime("%Y-%m-%d"),
-                "descricao": descricao,
+                'data_lesao': data_lesao.strftime('%Y-%m-%d'),
+                'descricao': descricao,
             }
             for data_lesao, descricao in result
         ]

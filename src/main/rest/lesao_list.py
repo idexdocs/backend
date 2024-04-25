@@ -3,9 +3,7 @@ from fastapi.responses import JSONResponse
 
 from src.error.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
-from src.main.composers.lesao_list_composer import (
-    lesao_list_composer,
-)
+from src.main.composers.lesao_list_composer import lesao_list_composer
 from src.validators.atleta_list import regra_validate_schema
 
 

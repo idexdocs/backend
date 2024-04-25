@@ -10,7 +10,9 @@ from src.validators.atleta_list import regra_validate_schema
 async def atleta_detail(request: Request):
     try:
         await regra_validate_schema(request)
-        http_response = await request_adapter(request, atleta_detail_composer())
+        http_response = await request_adapter(
+            request, atleta_detail_composer()
+        )
     except Exception as exc:
         http_response = handle_errors(exc)
     return JSONResponse(http_response.body, http_response.status_code)

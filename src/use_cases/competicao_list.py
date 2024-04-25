@@ -8,7 +8,7 @@ class CompeticaoListUseCase:
         self.repository = repository
 
     def execute(self, http_request: HttpRequest):
-        atleta_id: int = int(http_request.path_params.get("id"))
+        atleta_id: int = int(http_request.path_params.get('id'))
 
         result = self._list_competicao(atleta_id)
         return self._format_response(result)
@@ -17,13 +17,13 @@ class CompeticaoListUseCase:
         competicoes = self.repository.list_competicao(atleta_id)
 
         if len(competicoes) == 0:
-            raise NotFoundError("O Atleta não possui competições cadastradas")
+            raise NotFoundError('O Atleta não possui competições cadastradas')
 
         return competicoes
 
     def _format_response(self, result: list[dict]) -> dict:
         return {
-            "count": len(result),
-            "type": "Competicao",
-            "data": result,
+            'count': len(result),
+            'type': 'Competicao',
+            'data': result,
         }

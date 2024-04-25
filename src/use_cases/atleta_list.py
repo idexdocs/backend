@@ -17,8 +17,8 @@ class AtletaListUseCase:
 
     def _format_response(self, total_count: int, result: list[dict]) -> dict:
         return {
-            "count": len(result),
-            "total": total_count,
-            "type": "Atleta",
-            "data": result,
+            'count': len(result),
+            'total': total_count,
+            'type': 'Atleta',
+            'data': result,
         }

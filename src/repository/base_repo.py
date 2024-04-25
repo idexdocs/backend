@@ -7,11 +7,11 @@ class BaseSQL:
     """Postgres repository"""
 
     def __init__(self):
-        self._connection_string = "mssql+pyodbc://{}:{}@{}/{}?TrustServerCertificate=yes&driver=ODBC+Driver+18+for+SQL+Server".format(
-            os.environ["MSSQL_USER"],
-            os.environ["MSSQL_SA_PASSWORD"],
-            os.environ["MSSQL_HOSTNAME"],
-            os.environ["APPLICATION_DB"],
+        self._connection_string = 'mssql+pyodbc://{}:{}@{}/{}?TrustServerCertificate=yes&driver=ODBC+Driver+18+for+SQL+Server'.format(
+            os.environ['MSSQL_USER'],
+            os.environ['MSSQL_SA_PASSWORD'],
+            os.environ['MSSQL_HOSTNAME'],
+            os.environ['APPLICATION_DB'],
         )
 
         self.engine = create_engine(self._connection_string)

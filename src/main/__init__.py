@@ -9,33 +9,33 @@ from src.main.rest.relacionamento_list import relacionamento
 router = APIRouter()
 
 router.add_api_route(
-    "/atleta",
+    '/atleta',
     endpoint=atleta,
-    methods=["GET"],
+    methods=['GET'],
     include_in_schema=True,
 )
 router.add_api_route(
-    "/atleta/{id}",
+    '/atleta/{id}',
     endpoint=atleta_detail,
-    methods=["GET"],
+    methods=['GET'],
     include_in_schema=True,
 )
 router.add_api_route(
-    "/questionario/relacionamento/atleta/{id}",
+    '/questionario/relacionamento/atleta/{id}',
     endpoint=relacionamento,
-    methods=["GET"],
+    methods=['GET'],
     include_in_schema=True,
 )
 router.add_api_route(
-    "/competicao/atleta/{id}",
+    '/competicao/atleta/{id}',
     endpoint=competicao,
-    methods=["GET"],
+    methods=['GET'],
     include_in_schema=True,
 )
 router.add_api_route(
-    "/lesao/atleta/{id}",
+    '/lesao/atleta/{id}',
     endpoint=lesao,
-    methods=["GET"],
+    methods=['GET'],
     include_in_schema=True,
 )
 # router.add_api_route(

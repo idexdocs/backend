@@ -6,10 +6,8 @@ from src.presentation.http_types.http_response import HttpResponse
 
 from .types import (
     BadRequestError,
-    CacheEmptyError,
     ExpiredTokenError,
     NotFoundError,
-    RegrasAssociacaoError,
     TokenInvalidError,
 )
 

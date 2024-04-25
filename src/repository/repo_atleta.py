@@ -22,14 +22,14 @@ class AtletaRepo:
     def _create_atleta_list_objects(self, result: list) -> AtletaList:
         atleta_list = [
             {
-                "nome": nome,
-                "data_nascimento": data_nascimento.strftime("%Y-%m-%d"),
-                "posicao": posicao,
-                "clube_atual": clube,
+                'nome': nome,
+                'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
+                'posicao': posicao,
+                'clube_atual': clube,
             }
             for nome, data_nascimento, posicao, clube in result
         ]
-        return AtletaList(atletas=atleta_list).model_dump()["atletas"]
+        return AtletaList(atletas=atleta_list).model_dump()['atletas']
 
     def _create_atleta_detail_object(self, result) -> AtletaDetail:
         (
@@ -44,15 +44,15 @@ class AtletaRepo:
 
         contrato = ContratoSchema(
             tipo=tipo,
-            inicio=data_inicio.strftime("%Y-%m-%d"),
-            termino=data_termino.strftime("%Y-%m-%d"),
+            inicio=data_inicio.strftime('%Y-%m-%d'),
+            termino=data_termino.strftime('%Y-%m-%d'),
         )
         atleta_detail = {
-            "nome": nome,
-            "posicao": posicao,
-            "data_nascimento": data_nascimento.strftime("%Y-%m-%d"),
-            "clube_atual": clube,
-            "contrato": contrato,
+            'nome': nome,
+            'posicao': posicao,
+            'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
+            'clube_atual': clube,
+            'contrato': contrato,
         }
 
         return AtletaDetail(**atleta_detail).model_dump()
@@ -63,10 +63,10 @@ class AtletaRepo:
         with self.session_factory() as session:
             query = (
                 select(
-                    Atleta.nome.label("nome"),
-                    Atleta.data_nascimento.label("data_nascimento"),
-                    Posicao.nome.label("posicao"),
-                    Clube.nome.label("clube"),
+                    Atleta.nome.label('nome'),
+                    Atleta.data_nascimento.label('data_nascimento'),
+                    Posicao.nome.label('posicao'),
+                    Clube.nome.label('clube'),
                 )
                 .select_from(Atleta)
                 .join(AtletaPosicao, isouter=True)
@@ -75,13 +75,13 @@ class AtletaRepo:
                 .join(Clube, isouter=True)
             )
 
-            if atleta := filters.get("atleta"):
+            if atleta := filters.get('atleta'):
                 query = query.filter(Atleta.nome == atleta)
 
-            if posicao := filters.get("posicao"):
+            if posicao := filters.get('posicao'):
                 query = query.filter(Posicao.nome == posicao)
 
-            if clube := filters.get("clube"):
+            if clube := filters.get('clube'):
                 query = query.filter(Clube.nome == clube)
 
             # conta o número total de items sem paginação
@@ -90,7 +90,7 @@ class AtletaRepo:
             ).one()
 
             # aplica paginação
-            if page := int(filters.get("page", 1)):
+            if page := int(filters.get('page', 1)):
                 query = (
                     query.order_by(Atleta.nome)
                     .limit(15)
@@ -120,10 +120,10 @@ class AtletaRepo:
         with self.session_factory() as session:
             query = (
                 select(
-                    Atleta.nome.label("nome"),
-                    Atleta.data_nascimento.label("data_nascimento"),
-                    Posicao.nome.label("posicao"),
-                    Clube.nome.label("clube"),
+                    Atleta.nome.label('nome'),
+                    Atleta.data_nascimento.label('data_nascimento'),
+                    Posicao.nome.label('posicao'),
+                    Clube.nome.label('clube'),
                     Contrato.tipo,
                     AtletaContrato.data_inicio,
                     AtletaContrato.data_fim,

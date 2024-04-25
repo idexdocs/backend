@@ -12,11 +12,11 @@ class CompeticaoRepo:
     def _create_competicao_object(self, result: list) -> list[dict]:
         competicao_list = [
             {
-                "nome": nome,
-                "data_competicao": data_competicao.strftime("%Y-%m-%d"),
-                "jogos_completos": jogos_completos,
-                "jogos_parciais": jogos_parciais,
-                "minutagem": minutagem,
+                'nome': nome,
+                'data_competicao': data_competicao.strftime('%Y-%m-%d'),
+                'jogos_completos': jogos_completos,
+                'jogos_parciais': jogos_parciais,
+                'minutagem': minutagem,
             }
             for nome, data_competicao, jogos_completos, jogos_parciais, minutagem in result
         ]

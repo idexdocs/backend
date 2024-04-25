@@ -10,19 +10,19 @@ def datetime_now_sec():
 # Many to many relationships
 class AtletaClube(SQLModel, table=True):
     atleta_id: int = Field(
-        default=None, foreign_key="atleta.id", primary_key=True
+        default=None, foreign_key='atleta.id', primary_key=True
     )
     clube_id: int = Field(
-        default=None, foreign_key="clube.id", primary_key=True
+        default=None, foreign_key='clube.id', primary_key=True
     )
 
 
 class AtletaContrato(SQLModel, table=True):
     atleta_id: int = Field(
-        default=None, foreign_key="atleta.id", primary_key=True
+        default=None, foreign_key='atleta.id', primary_key=True
     )
     contrato_id: int = Field(
-        default=None, foreign_key="contrato.id", primary_key=True
+        default=None, foreign_key='contrato.id', primary_key=True
     )
     data_inicio: date
     data_fim: date
@@ -34,10 +34,10 @@ class AtletaContrato(SQLModel, table=True):
 
 class AtletaPosicao(SQLModel, table=True):
     atleta_id: int = Field(
-        default=None, foreign_key="atleta.id", primary_key=True
+        default=None, foreign_key='atleta.id', primary_key=True
     )
     posicao_id: int = Field(
-        default=None, foreign_key="posicao.id", primary_key=True
+        default=None, foreign_key='posicao.id', primary_key=True
     )
 
 
@@ -51,16 +51,16 @@ class Atleta(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    clubes: list["Clube"] = Relationship(
-        back_populates="atletas", link_model=AtletaClube
+    clubes: list['Clube'] = Relationship(
+        back_populates='atletas', link_model=AtletaClube
     )
 
-    contratos: list["Contrato"] = Relationship(
-        back_populates="atletas", link_model=AtletaContrato
+    contratos: list['Contrato'] = Relationship(
+        back_populates='atletas', link_model=AtletaContrato
     )
 
-    posicoes: list["Posicao"] = Relationship(
-        back_populates="atletas", link_model=AtletaPosicao
+    posicoes: list['Posicao'] = Relationship(
+        back_populates='atletas', link_model=AtletaPosicao
     )
 
 
@@ -73,8 +73,8 @@ class Clube(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    atletas: list["Atleta"] = Relationship(
-        back_populates="clubes", link_model=AtletaClube
+    atletas: list['Atleta'] = Relationship(
+        back_populates='clubes', link_model=AtletaClube
     )
 
 
@@ -82,8 +82,8 @@ class Contrato(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str
 
-    atletas: list["Atleta"] = Relationship(
-        back_populates="contratos", link_model=AtletaContrato
+    atletas: list['Atleta'] = Relationship(
+        back_populates='contratos', link_model=AtletaContrato
     )
 
 
@@ -95,8 +95,8 @@ class Posicao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atletas: list["Atleta"] = Relationship(
-        back_populates="posicoes", link_model=AtletaPosicao
+    atletas: list['Atleta'] = Relationship(
+        back_populates='posicoes', link_model=AtletaPosicao
     )
 
 
@@ -114,7 +114,7 @@ class Relacionamento(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 
 class HistoricoCompeticao(SQLModel, table=True):
@@ -129,7 +129,7 @@ class HistoricoCompeticao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 
 class HistoricoLesao(SQLModel, table=True):
@@ -141,7 +141,7 @@ class HistoricoLesao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 
 class HistoricoMaterial(SQLModel, table=True):
@@ -153,4 +153,4 @@ class HistoricoMaterial(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
