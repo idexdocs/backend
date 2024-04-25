@@ -34,7 +34,7 @@ class RelacionamentoListUseCase:
 
         if len(relacionamentos) == 0:
             raise NotFoundError(
-                "O Atleta nao possui questionarios cadastrados"
+                "O Atleta não possui questionários cadastrados"
             )
 
         return relacionamentos

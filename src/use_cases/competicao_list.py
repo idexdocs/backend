@@ -1,3 +1,4 @@
+from src.error.types.http_not_found import NotFoundError
 from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_competicao import CompeticaoRepo
 
@@ -13,7 +14,14 @@ class CompeticaoListUseCase:
         return self._format_response(result)
 
     def _list_competicao(self, atleta_id: int):
-        return self.repository.list_competicao(atleta_id)
+        competicoes = self.repository.list_competicao(atleta_id)
+
+        if len(competicoes) == 0:
+            raise NotFoundError(
+                "O Atleta não possui competições cadastradas"
+            )
+        
+        return competicoes
 
     def _format_response(self, result: list[dict]) -> dict:
         return {
