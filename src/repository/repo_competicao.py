@@ -1,12 +1,13 @@
-from src.repository.model_objects import HistoricoCompeticao
 from sqlmodel import select
+
+from src.repository.model_objects import HistoricoCompeticao
 
 from .base_repo import create_session
 
 
 class CompeticaoRepo:
     def __init__(self) -> None:
-        self.sessio_factory = create_session
+        self.session_factory = create_session
 
     def _create_competicao_object(self, result: list) -> list[dict]:
         competicao_list = [
@@ -23,7 +24,7 @@ class CompeticaoRepo:
         return competicao_list
 
     def list_competicao(self, atleta_id: int):
-        with self.sessio_factory() as session:
+        with self.session_factory() as session:
             query = select(
                 HistoricoCompeticao.nome,
                 HistoricoCompeticao.data_competicao,

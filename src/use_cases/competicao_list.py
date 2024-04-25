@@ -17,10 +17,8 @@ class CompeticaoListUseCase:
         competicoes = self.repository.list_competicao(atleta_id)
 
         if len(competicoes) == 0:
-            raise NotFoundError(
-                "O Atleta não possui competições cadastradas"
-            )
-        
+            raise NotFoundError("O Atleta não possui competições cadastradas")
+
         return competicoes
 
     def _format_response(self, result: list[dict]) -> dict:

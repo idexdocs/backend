@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 
-from src.main.rest.competicao_list import competicao
-from src.main.rest.relacionamento_list import relacionamento
-from src.main.rest.atleta_list import atleta
 from src.main.rest.atleta_detail import atleta_detail
+from src.main.rest.atleta_list import atleta
+from src.main.rest.competicao_list import competicao
+from src.main.rest.lesao_list import lesao
+from src.main.rest.relacionamento_list import relacionamento
 
 router = APIRouter()
 
@@ -28,6 +29,12 @@ router.add_api_route(
 router.add_api_route(
     "/competicao/atleta/{id}",
     endpoint=competicao,
+    methods=["GET"],
+    include_in_schema=True,
+)
+router.add_api_route(
+    "/lesao/atleta/{id}",
+    endpoint=lesao,
     methods=["GET"],
     include_in_schema=True,
 )
