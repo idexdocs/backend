@@ -1,8 +1,6 @@
 from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select
 
-from src.schemas import AtletaDetail, AtletaList, ContratoSchema
-
 from .base_repo import create_session
 from .model_objects import (
     Atleta,
@@ -19,8 +17,8 @@ class AtletaRepo:
     def __init__(self) -> None:
         self.session_factory = create_session
 
-    def _create_atleta_list_objects(self, result: list) -> AtletaList:
-        atleta_list = [
+    def _create_atleta_list_objects(self, result: list) -> dict:
+        return [
             {
                 'nome': nome,
                 'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
@@ -29,9 +27,8 @@ class AtletaRepo:
             }
             for nome, data_nascimento, posicao, clube in result
         ]
-        return AtletaList(atletas=atleta_list).model_dump()['atletas']
 
-    def _create_atleta_detail_object(self, result) -> AtletaDetail:
+    def _create_atleta_detail_object(self, result) -> dict:
         (
             nome,
             data_nascimento,
@@ -42,22 +39,17 @@ class AtletaRepo:
             data_termino,
         ) = result
 
-        contrato = ContratoSchema(
-            tipo=tipo,
-            inicio=data_inicio.strftime('%Y-%m-%d'),
-            termino=data_termino.strftime('%Y-%m-%d'),
-        )
-        atleta_detail = {
-            'nome': nome,
+        return {
+            'nome': result,
             'posicao': posicao,
             'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
             'clube_atual': clube,
-            'contrato': contrato,
+            'contrato': {
+                'tipo': tipo,
+                'data_inicio': data_inicio,
+                'data_termino': data_termino,
+            },
         }
-
-        return AtletaDetail(**atleta_detail).model_dump()
-
-    # def _create_atleta_object(self, result) -> Atleta:
 
     def list_atleta(self, filters: dict):
         with self.session_factory() as session:
@@ -115,7 +107,7 @@ class AtletaRepo:
         except NoResultFound:
             return None
 
-    def get_atleta(self, atleta_id: int) -> AtletaDetail | None:
+    def get_atleta(self, atleta_id: int):
         #  BUG verificar não retorno do atleta ID = 5
         with self.session_factory() as session:
             query = (

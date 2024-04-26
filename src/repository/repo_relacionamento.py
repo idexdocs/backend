@@ -1,7 +1,5 @@
 from sqlmodel import select
 
-from src.schemas import RelacionamentoListSchema
-
 from .base_repo import create_session
 from .model_objects import Relacionamento
 
@@ -10,10 +8,8 @@ class RelacionamentoRepo:
     def __init__(self) -> None:
         self.session_factory = create_session
 
-    def _create_relacionamento_list_objects(
-        self, result: list
-    ) -> RelacionamentoListSchema:
-        relacionamento_list = [
+    def _create_relacionamento_list_objects(self, result: list) -> dict:
+        return [
             {
                 'atleta_id': atleta_id,
                 'receptividade_contrato': receptividade_contrato,
@@ -27,10 +23,6 @@ class RelacionamentoRepo:
             }
             for atleta_id, receptividade_contrato, satisfacao_empresa, satisfacao_clube, relacao_familiares, influencias_externas, pendencia_empresa, pendencia_clube, data_criacao in result
         ]
-
-        return RelacionamentoListSchema(
-            relacionamentos=relacionamento_list
-        ).model_dump()['relacionamentos']
 
     def list_relacionamento(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
