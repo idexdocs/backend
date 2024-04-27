@@ -6,12 +6,12 @@ from src.main.adapters.request_adapter import request_adapter
 from src.main.composers.relacionamento_list_composer import (
     relacionamento_list_composer,
 )
-from src.validators.atleta_list import regra_validate_schema
+from src.validators.validate_schema import validate_schema
 
 
 async def relacionamento(request: Request):
     try:
-        await regra_validate_schema(request)
+        await validate_schema(request)
         http_response = await request_adapter(
             request, relacionamento_list_composer()
         )

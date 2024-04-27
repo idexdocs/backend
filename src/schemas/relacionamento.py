@@ -11,7 +11,3 @@ class RelacionamentoSchema(BaseModel):
     pendencia_empresa: int
     pendencia_clube: int
     data_criacao: str
-
-
-class RelacionamentoListSchema(BaseModel):
-    relacionamentos: list[RelacionamentoSchema]

@@ -1,22 +1,14 @@
 from pydantic import BaseModel
 
 
-class Atleta(BaseModel):
+class AtletaCreateSchema(BaseModel):
+    class Contrato(BaseModel):
+        tipo_id: int
+        data_inicio: str
+        data_fim: str
+
     nome: str
-    posicao: str | None
     data_nascimento: str
-    clube_atual: str | None
-
-
-class AtletaList(BaseModel):
-    atletas: list[Atleta]
-
-
-class ContratoSchema(BaseModel):
-    tipo: str
-    inicio: str
-    termino: str
-
-
-class AtletaDetail(Atleta):
-    contrato: ContratoSchema
+    clube: str
+    contrato: Contrato
+    posicao_id: int
