@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
 from src.main.rest.competicao_list import competicao
@@ -36,6 +37,12 @@ router.add_api_route(
     '/lesao/atleta/{id}',
     endpoint=lesao,
     methods=['GET'],
+    include_in_schema=True,
+)
+router.add_api_route(
+    '/create/atleta',
+    endpoint=atleta_create,
+    methods=['POST'],
     include_in_schema=True,
 )
 # router.add_api_route(

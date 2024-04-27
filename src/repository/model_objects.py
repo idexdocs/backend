@@ -8,15 +8,6 @@ def datetime_now_sec():
 
 
 # Many to many relationships
-class AtletaClube(SQLModel, table=True):
-    atleta_id: int = Field(
-        default=None, foreign_key='atleta.id', primary_key=True
-    )
-    clube_id: int = Field(
-        default=None, foreign_key='clube.id', primary_key=True
-    )
-
-
 class AtletaContrato(SQLModel, table=True):
     atleta_id: int = Field(
         default=None, foreign_key='atleta.id', primary_key=True
@@ -51,10 +42,6 @@ class Atleta(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    clubes: list['Clube'] = Relationship(
-        back_populates='atletas', link_model=AtletaClube
-    )
-
     contratos: list['Contrato'] = Relationship(
         back_populates='atletas', link_model=AtletaContrato
     )
@@ -73,9 +60,7 @@ class Clube(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    atletas: list['Atleta'] = Relationship(
-        back_populates='clubes', link_model=AtletaClube
-    )
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 
 class Contrato(SQLModel, table=True):
