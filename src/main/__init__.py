@@ -5,6 +5,7 @@ from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
 from src.main.rest.competicao_list import competicao
 from src.main.rest.lesao_list import lesao
+from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 
 router = APIRouter()
@@ -42,6 +43,12 @@ router.add_api_route(
 router.add_api_route(
     '/create/atleta',
     endpoint=atleta_create,
+    methods=['POST'],
+    include_in_schema=True,
+)
+router.add_api_route(
+    '/questionario/relacionamento/create',
+    endpoint=relacionamento_create,
     methods=['POST'],
     include_in_schema=True,
 )

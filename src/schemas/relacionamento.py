@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class RelacionamentoSchema(BaseModel):
+class RelacionamentoCreateSchema(BaseModel):
     atleta_id: int
     receptividade_contrato: int
     satisfacao_empresa: int
@@ -10,4 +10,3 @@ class RelacionamentoSchema(BaseModel):
     influencias_externas: int
     pendencia_empresa: int
     pendencia_clube: int
-    data_criacao: str

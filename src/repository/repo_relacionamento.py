@@ -45,3 +45,12 @@ class RelacionamentoRepo:
             return self._create_relacionamento_list_objects(
                 session.exec(query).all()
             )
+
+    def create_relacionamento(self, relacionamento_data: dict) -> dict:
+        with self.session_factory() as session:
+            new_relacionamento = Relacionamento(**relacionamento_data)
+            session.add(new_relacionamento)
+            session.commit()
+            session.refresh(new_relacionamento)
+            relacionamento_data.update({'id': new_relacionamento.id})
+            return relacionamento_data

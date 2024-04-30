@@ -135,7 +135,7 @@ class AtletaRepo:
         except NoResultFound:
             return None
 
-    def create_atleta(self, atleta_data: dict) -> None:
+    def create_atleta(self, atleta_data: dict) -> dict:
         with self.session_factory() as session:
             # Criando uma instância de atleta
             new_atleta = Atleta(**atleta_data)

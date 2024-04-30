@@ -1,11 +1,11 @@
 [
     {
         "name": "MSSQL_USER",
-        "value": "Cross-Selling"
+        "value": "idexdocs"
     },
     {
         "name": "MSSQL_HOSTNAME",
-        "value": "sql-serv-cross-selling.database.windows.net"
+        "value": "idexdocs-dbserver.database.windows.net"
     },
     {
         "name": "MSSQL_PORT",
@@ -13,22 +13,10 @@
     },
     {
         "name": "MSSQL_SA_PASSWORD",
-        "value": "Kogui$2023"
+        "value": "mssql?Idex2024"
     },
     {
         "name": "APPLICATION_DB",
-        "value": "db-cross-selling-dev"
-    },
-    {
-        "name": "REDIS_HOST",
-        "value": "redis-cpq-dev2-brazilsouth-001.redis.cache.windows.net"
-    },
-    {
-        "name": "REDIS_PORT",
-        "value": "6379"
-    },
-    {
-        "name": "REDIS_PASSWORD",
-        "value": "dxulhnod6JkSk9BNrELHT9sjq6NoHsCNaAzCaFoZC0s="
+        "value": "idex_docs_local_db"
     }
 ]
