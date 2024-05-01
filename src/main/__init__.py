@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
+from src.main.rest.clube_list import clube
 from src.main.rest.competicao_list import competicao
 from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
@@ -101,6 +102,12 @@ router.add_api_route(
             'required': True,
         },
     },
+)
+router.add_api_route(
+    '/clube/atleta/{id}',
+    endpoint=clube,
+    methods=['GET'],
+    include_in_schema=True,
 )
 
 

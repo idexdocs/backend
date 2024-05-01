@@ -8,8 +8,8 @@ from .model_objects import (
     Atleta,
     AtletaContrato,
     AtletaPosicao,
-    Clube,
     Contrato,
+    HistoricoClube,
     Posicao,
 )
 
@@ -59,12 +59,12 @@ class AtletaRepo:
                     Atleta.nome.label('nome'),
                     Atleta.data_nascimento.label('data_nascimento'),
                     Posicao.nome.label('posicao'),
-                    Clube.nome.label('clube'),
+                    HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
                 .join(AtletaPosicao, isouter=True)
                 .join(Posicao, isouter=True)
-                .join(Clube, isouter=True)
+                .join(HistoricoClube, isouter=True)
             )
 
             if atleta := filters.get('atleta'):
@@ -74,7 +74,7 @@ class AtletaRepo:
                 query = query.filter(Posicao.nome == posicao)
 
             if clube := filters.get('clube'):
-                query = query.filter(Clube.nome == clube)
+                query = query.filter(HistoricoClube.nome == clube)
 
             # conta o número total de items sem paginação
             total_count = session.exec(
@@ -115,7 +115,7 @@ class AtletaRepo:
                     Atleta.nome.label('nome'),
                     Atleta.data_nascimento.label('data_nascimento'),
                     Posicao.nome.label('posicao'),
-                    Clube.nome.label('clube'),
+                    HistoricoClube.nome.label('clube'),
                     Contrato.tipo,
                     AtletaContrato.data_inicio,
                     AtletaContrato.data_fim,
@@ -125,7 +125,7 @@ class AtletaRepo:
                 .join(Contrato, AtletaContrato.contrato_id == Contrato.id)
                 .join(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
                 .join(Posicao, Atleta.id == Posicao.id)
-                .join(Clube, Clube.atleta_id == atleta_id)
+                .join(HistoricoClube, HistoricoClube.atleta_id == atleta_id)
                 .where(Atleta.id == atleta_id)
             )
 
@@ -148,7 +148,7 @@ class AtletaRepo:
                 session.refresh(new_atleta)
 
                 # Criando clube
-                new_clube = Clube(
+                new_clube = HistoricoClube(
                     nome=atleta_data.get('clube'), atleta_id=new_atleta.id
                 )
                 session.add(new_clube)

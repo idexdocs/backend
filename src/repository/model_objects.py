@@ -30,13 +30,7 @@ class AtletaPosicao(SQLModel, table=True):
         default_factory=datetime_now_sec, nullable=False
     )
     atleta_id: int = Field(default=None, foreign_key='atleta.id')
-    posicao_primaria_id: int = Field(
-        default=None, foreign_key='posicao.id', primary_key=True
-    )
-    posicao_secundaria_id: int = Field(
-        default=None, foreign_key='posicao.id', primary_key=True
-    )
-    posicao_terciaria_id: int = Field(
+    posicao_id: int = Field(
         default=None, foreign_key='posicao.id', primary_key=True
     )
 
@@ -89,19 +83,6 @@ class Caracteristica(SQLModel, table=True):
     perfil_id: int | None = Field(default=None, foreign_key='perfil.id')
 
 
-class Clube(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    nome: str
-    data_inicio: date
-    data_fim: date | None
-    data_criacao: datetime = Field(
-        default_factory=datetime_now_sec, nullable=False
-    )
-    data_atualizado: datetime | None = None
-
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
-
-
 class Contrato(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str
@@ -134,6 +115,19 @@ class Relacionamento(SQLModel, table=True):
     pendencia_empresa: bool
     pendencia_clube: bool
     data_avaliacao: date
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class HistoricoClube(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    data_inicio: date
+    data_fim: date | None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
