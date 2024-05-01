@@ -10,3 +10,4 @@ class RelacionamentoCreateSchema(BaseModel):
     influencias_externas: int
     pendencia_empresa: bool
     pendencia_clube: bool
+    data_avaliacao: str

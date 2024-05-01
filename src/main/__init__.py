@@ -77,7 +77,11 @@ router.add_api_route(
     include_in_schema=True,
     openapi_extra={
         'requestBody': {
-            'content': {'application/json': {'schema': AtletaCreateSchema.model_json_schema()}},
+            'content': {
+                'application/json': {
+                    'schema': AtletaCreateSchema.model_json_schema()
+                }
+            },
             'required': True,
         },
     },
@@ -90,7 +94,9 @@ router.add_api_route(
     openapi_extra={
         'requestBody': {
             'content': {
-                'application/json': {'schema': RelacionamentoCreateSchema.model_json_schema()}
+                'application/json': {
+                    'schema': RelacionamentoCreateSchema.model_json_schema()
+                }
             },
             'required': True,
         },
