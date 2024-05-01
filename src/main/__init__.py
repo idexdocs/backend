@@ -7,6 +7,8 @@ from src.main.rest.competicao_list import competicao
 from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
+from src.schemas.atleta import AtletaCreateSchema
+from src.schemas.relacionamento import RelacionamentoCreateSchema
 
 router = APIRouter()
 
@@ -15,6 +17,34 @@ router.add_api_route(
     endpoint=atleta,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'parameters': [
+            {
+                'in': 'query',
+                'name': 'atleta',
+                'required': False,
+                'schema': {'type': 'string'},
+            },
+            {
+                'in': 'query',
+                'name': 'posicao',
+                'required': False,
+                'schema': {'type': 'string'},
+            },
+            {
+                'in': 'query',
+                'name': 'clube',
+                'required': False,
+                'schema': {'type': 'string'},
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+        ]
+    },
 )
 router.add_api_route(
     '/atleta/{id}',
@@ -45,47 +75,27 @@ router.add_api_route(
     endpoint=atleta_create,
     methods=['POST'],
     include_in_schema=True,
+    openapi_extra={
+        'requestBody': {
+            'content': {'application/json': {'schema': AtletaCreateSchema.model_json_schema()}},
+            'required': True,
+        },
+    },
 )
 router.add_api_route(
     '/questionario/relacionamento/create',
     endpoint=relacionamento_create,
     methods=['POST'],
     include_in_schema=True,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {'schema': RelacionamentoCreateSchema.model_json_schema()}
+            },
+            'required': True,
+        },
+    },
 )
-# router.add_api_route(
-#     "/regras-ia-recomendacao",
-#     endpoint=recomendacao_list,
-#     methods=["POST"],
-#     responses={
-#         400: {"model": BadRequestError},
-#         401: {"model": UnauthorizedError},
-#         404: {"model": NotFoundError},
-#         422: {"model": UnprocessableEntityError},
-#         500: {"model": InternalServerError},
-#     },
-#     name="Recomendação de produtos baseado em regras de IA.",
-#     openapi_extra={
-#         "requestBody": {
-#             "content": {
-#                 "application/json": {
-#                     "schema": {
-#                         "required": ["algoritmo", "produtos_sku"],
-#                         "type": "object",
-#                         "properties": {
-#                             "algoritmo": {"type": "string"},
-#                             "produtos_sku": {
-#                                 "type": "array",
-#                                 "items": {"type": "string"},
-#                             },
-#                         },
-#                     }
-#                 }
-#             },
-#             "required": True,
-#         },
-#     },
-#     tags=["Recomendação de produtos"],
-# )
 
 
 def init_app(app):

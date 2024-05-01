@@ -8,5 +8,5 @@ class RelacionamentoCreateSchema(BaseModel):
     satisfacao_clube: int
     relacao_familiares: int
     influencias_externas: int
-    pendencia_empresa: int
-    pendencia_clube: int
+    pendencia_empresa: bool
+    pendencia_clube: bool
