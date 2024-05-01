@@ -164,11 +164,12 @@ class HistoricoLesao(SQLModel, table=True):
     atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 
-class HistoricoMaterial(SQLModel, table=True):
+class HistoricoControle(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
     quantidade: int
     preco: float
+    data_controle: date
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )

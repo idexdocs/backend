@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from sqlmodel import func, select
 
 from .base_repo import create_session
@@ -34,21 +34,25 @@ class AtletaRepo:
             nome,
             data_nascimento,
             posicao,
-            clube,
             tipo,
             data_inicio,
             data_termino,
+            clube,
         ) = result
 
         return {
             'nome': nome,
-            'posicao': posicao,
             'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
+            'posicao': posicao,
             'clube_atual': clube,
             'contrato': {
                 'tipo': tipo,
-                'data_inicio': data_inicio.strftime('%Y-%m-%d'),
-                'data_termino': data_termino.strftime('%Y-%m-%d'),
+                'data_inicio': data_inicio.strftime('%Y-%m-%d')
+                if data_inicio is not None
+                else None,
+                'data_termino': data_termino.strftime('%Y-%m-%d')
+                if data_inicio is not None
+                else None,
             },
         }
 
@@ -102,31 +106,35 @@ class AtletaRepo:
 
         try:
             result = session.exec(query).one()
-            # TODO implementar pydantic model do Atleta
             return result
         except NoResultFound:
             return None
 
     def get_atleta(self, atleta_id: int):
-        #  BUG verificar não retorno do atleta ID = 5
         with self.session_factory() as session:
             query = (
                 select(
-                    Atleta.nome.label('nome'),
-                    Atleta.data_nascimento.label('data_nascimento'),
+                    Atleta.nome,
+                    Atleta.data_nascimento,
                     Posicao.nome.label('posicao'),
-                    HistoricoClube.nome.label('clube'),
                     Contrato.tipo,
                     AtletaContrato.data_inicio,
                     AtletaContrato.data_fim,
+                    HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
-                .join(AtletaContrato, Atleta.id == AtletaContrato.atleta_id)
-                .join(Contrato, AtletaContrato.contrato_id == Contrato.id)
-                .join(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
-                .join(Posicao, Atleta.id == Posicao.id)
-                .join(HistoricoClube, HistoricoClube.atleta_id == atleta_id)
-                .where(Atleta.id == atleta_id)
+                .outerjoin(
+                    AtletaContrato, Atleta.id == AtletaContrato.atleta_id
+                )
+                .outerjoin(Contrato, AtletaContrato.contrato_id == Contrato.id)
+                .outerjoin(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
+                .outerjoin(Posicao, Atleta.id == Posicao.id)
+                .outerjoin(
+                    HistoricoClube, HistoricoClube.atleta_id == atleta_id
+                )
+                .where(
+                    Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
+                )
             )
 
         try:
@@ -134,6 +142,8 @@ class AtletaRepo:
             return self._create_atleta_detail_object(result)
         except NoResultFound:
             return None
+        except MultipleResultsFound:
+            raise
 
     def create_atleta(self, atleta_data: dict) -> dict:
         with self.session_factory() as session:

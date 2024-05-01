@@ -4,12 +4,12 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class RelacionamentoCreateSchema(BaseModel):
-    atleta_id: int = Field(..., ge=0, le=5)
-    receptividade_contrato: int = Field(..., ge=0, le=5)
-    satisfacao_empresa: int = Field(..., ge=0, le=5)
-    satisfacao_clube: int = Field(..., ge=0, le=5)
-    relacao_familiares: int = Field(..., ge=0, le=5)
-    influencias_externas: int = Field(..., ge=0, le=5)
+    atleta_id: int = Field(..., gt=0)
+    receptividade_contrato: int = Field(..., ge=1, le=5)
+    satisfacao_empresa: int = Field(..., ge=1, le=5)
+    satisfacao_clube: int = Field(..., ge=1, le=5)
+    relacao_familiares: int = Field(..., ge=1, le=5)
+    influencias_externas: int = Field(..., ge=1, le=5)
     pendencia_empresa: bool
     pendencia_clube: bool
     data_avaliacao: str

@@ -34,7 +34,7 @@ def handle_errors(error: Exception) -> HttpResponse:
 
         def format_pydantic_error(error):
             body = error.errors()[0]
-            body_loc = body['loc'][0] if len(body['loc']) > 1 else body['loc']
+            body_loc = body['loc'][0] if len(body['loc']) > 0 else body['loc']
             return f'{body_loc}: {body["msg"]}'
 
         logger.info('Handling ValidationError')

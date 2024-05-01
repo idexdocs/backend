@@ -23,7 +23,7 @@ class ClubeRepo:
 
         return clube_list
 
-    def list_clube(self, atleta_id: int):
+    def list_clube(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
             query = select(
                 HistoricoClube.nome,

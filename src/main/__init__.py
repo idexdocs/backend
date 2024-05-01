@@ -5,10 +5,17 @@ from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
 from src.main.rest.clube_list import clube
 from src.main.rest.competicao_list import competicao
+from src.main.rest.controle_create import controle_create
+from src.main.rest.controle_list import controle
 from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
-from src.schemas.atleta import AtletaCreateSchema
+from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
+from src.schemas.controle import (
+    ControleCreateResponse,
+    ControleCreateSchema,
+    ControleListResponse,
+)
 from src.schemas.relacionamento import (
     RelacionamentoCreateSchema,
     RelacionamentoResponse,
@@ -22,6 +29,48 @@ router.add_api_route(
     methods=['GET'],
     include_in_schema=True,
     openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Controle',
+                            'data': [
+                                {
+                                    'nome': 'Atleta 1',
+                                    'data_nascimento': '1985-03-11',
+                                    'posicao': 1,
+                                    'clube_atual': 'Clube 1',
+                                },
+                                {
+                                    'nome': 'Atleta 2',
+                                    'data_nascimento': '1985-03-11',
+                                    'posicao': 2,
+                                    'clube_atual': 'Clube 1a',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'Não existem atletas cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
         'parameters': [
             {
                 'in': 'query',
@@ -47,7 +96,7 @@ router.add_api_route(
                 'required': False,
                 'schema': {'type': 'integer'},
             },
-        ]
+        ],
     },
 )
 router.add_api_route(
@@ -55,35 +104,247 @@ router.add_api_route(
     endpoint=atleta_detail,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 1,
+                            'type': 'Atleta',
+                            'data': {
+                                'count': 1,
+                                'type': 'Atleta',
+                                'data': {
+                                    'nome': 'Atleta 1',
+                                    'data_nascimento': '1985-03-11',
+                                    'posicao': 'Goleiro',
+                                    'clube_atual': 'Clube 1a',
+                                    'contrato': {
+                                        'tipo': 'Nenhum',
+                                        'data_inicio': '2024-03-23',
+                                        'data_termino': '2025-04-23',
+                                    },
+                                },
+                            },
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'Atleta não encontrado',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
 )
 router.add_api_route(
     '/questionario/relacionamento/atleta/{id}',
     endpoint=relacionamento,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Relacionamento',
+                            'data': [
+                                {
+                                    'atleta_id': 1,
+                                    'receptividade_contrato': 5,
+                                    'satisfacao_empresa': 1,
+                                    'satisfacao_clube': 2,
+                                    'relacao_familiares': 3,
+                                    'influencias_externas': 4,
+                                    'pendencia_empresa': 'false',
+                                    'pendencia_clube': 'true',
+                                    'data_criacao': '2024-05-01',
+                                },
+                                {
+                                    'atleta_id': 1,
+                                    'receptividade_contrato': 5,
+                                    'satisfacao_empresa': 2,
+                                    'satisfacao_clube': 4,
+                                    'relacao_familiares': 5,
+                                    'influencias_externas': 5,
+                                    'pendencia_empresa': 'false',
+                                    'pendencia_clube': 'false',
+                                    'data_criacao': '2024-06-05',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui questionários cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
 )
+
 router.add_api_route(
     '/competicao/atleta/{id}',
     endpoint=competicao,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Relacionamento',
+                            'data': {
+                                'count': 2,
+                                'type': 'Relacionamento',
+                                'data': [
+                                    {
+                                        'nome': 'Competição 1',
+                                        'data_competicao': '2022-03-01',
+                                        'jogos_completos': 5,
+                                        'jogos_parciais': 2,
+                                        'minutagem': 320,
+                                        'gols': 8,
+                                    },
+                                    {
+                                        'nome': 'Competição 2',
+                                        'data_competicao': '2022-04-01',
+                                        'jogos_completos': 7,
+                                        'jogos_parciais': 4,
+                                        'minutagem': 375,
+                                        'gols': 8,
+                                    },
+                                ],
+                            },
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui competições cadastradas',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
 )
 router.add_api_route(
     '/lesao/atleta/{id}',
     endpoint=lesao,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Clubes',
+                            'data': [
+                                {
+                                    'nome': 'Clube A',
+                                    'data_inicio': '2023-01-01',
+                                    'data_fim': '2023-01-01',
+                                },
+                                {
+                                    'nome': 'Clube B',
+                                    'data_inicio': '2023-01-01',
+                                    'data_fim': 'null',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui controles cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
 )
 router.add_api_route(
     '/create/atleta',
     endpoint=atleta_create,
     methods=['POST'],
+    response_model=AtletaCreateResponse,
     include_in_schema=True,
     openapi_extra={
         'requestBody': {
             'content': {
                 'application/json': {
-                    'schema': AtletaCreateSchema.model_json_schema()
+                    'schema': AtletaCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de atleta',
+                            # 'description': 'Valores de preço deve ser no formato 300.00',
+                            'value': {
+                                'nome': 'Janjão',
+                                'data_nascimento': '1985-03-11',
+                                'clube': 'Siga Maré',
+                                'contrato': {
+                                    'tipo_id': 1,
+                                    'data_inicio': '2024-05-01',
+                                    'data_fim': '2024-05-01',
+                                },
+                                'posicao_id': 1,
+                            },
+                        }
+                    },
                 }
             },
             'required': True,
@@ -129,6 +390,148 @@ router.add_api_route(
     endpoint=clube,
     methods=['GET'],
     include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Clubes',
+                            'data': [
+                                {
+                                    'nome': 'Clube A',
+                                    'data_inicio': '2023-01-01',
+                                    'data_fim': '2023-01-01',
+                                },
+                                {
+                                    'nome': 'Clube B',
+                                    'data_inicio': '2023-01-01',
+                                    'data_fim': 'null',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui controles cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
+)
+router.add_api_route(
+    '/create/controle',
+    endpoint=controle_create,
+    methods=['POST'],
+    response_model=ControleCreateResponse,
+    include_in_schema=True,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ControleCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de controle',
+                            'description': 'Valores de preço deve ser no formato 300.00',
+                            'value': {
+                                'atleta_id': 10,
+                                'nome': 'Chuteira',
+                                'quantidade': 2,
+                                'preco': 499.00,
+                                'data_controle': '2024-01-01',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+        'responses': {
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'Atleta não encontrado',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+router.add_api_route(
+    '/controle/atleta/{id}',
+    endpoint=controle,
+    methods=['GET'],
+    response_model=ControleListResponse,
+    include_in_schema=True,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Controle',
+                            'data': [
+                                {
+                                    'atleta_id': 3,
+                                    'nome': 'Chuteira',
+                                    'quantidade': 2,
+                                    'preco': 49.0,
+                                    'data_controle': '2024-01-01',
+                                },
+                                {
+                                    'atleta_id': 4,
+                                    'nome': 'Luva',
+                                    'quantidade': 2,
+                                    'preco': 30.0,
+                                    'data_controle': '2024-01-01',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui controles cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        }
+    },
 )
 
 

@@ -1,16 +1,16 @@
 from src.error.types.http_not_found import NotFoundError
 from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_atleta import AtletaRepo
-from src.repository.repo_clube import ClubeRepo
+from src.repository.repo_controle import ControleRepo
 
 
-class ClubeListUseCase:
+class ControleListUseCase:
     def __init__(
         self,
-        clube_repository: ClubeRepo,
+        controle_repository: ControleRepo,
         atleta_repository: AtletaRepo,
     ):
-        self.clube_repository = clube_repository
+        self.controle_repository = controle_repository
         self.atleta_repository = atleta_repository
 
     def execute(self, http_request: HttpRequest):
@@ -19,7 +19,7 @@ class ClubeListUseCase:
 
         self._check_atleta_exists(atleta_id)
 
-        result = self._list_clube(atleta_id, filters)
+        result = self._list_controle(atleta_id, filters)
         return self._format_response(result)
 
     def _check_atleta_exists(self, atleta_id: int):
@@ -27,17 +27,17 @@ class ClubeListUseCase:
         if atleta is None:
             raise NotFoundError('Atleta não encontrado')
 
-    def _list_clube(self, atleta_id: int, filters: dict):
-        clubes = self.clube_repository.list_clube(atleta_id, filters)
+    def _list_controle(self, atleta_id: int, filters: dict):
+        controles = self.controle_repository.list_controle(atleta_id, filters)
 
-        if len(clubes) == 0:
-            raise NotFoundError('O Atleta não possui clubes cadastradas')
+        if len(controles) == 0:
+            raise NotFoundError('O Atleta não possui controles cadastrados')
 
-        return clubes
+        return controles
 
     def _format_response(self, result: list[dict]) -> dict:
         return {
             'count': len(result),
-            'type': 'Clubes',
+            'type': 'Controle',
             'data': result,
         }

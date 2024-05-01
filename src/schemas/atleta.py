@@ -12,3 +12,7 @@ class AtletaCreateSchema(BaseModel):
     clube: str
     contrato: Contrato
     posicao_id: int
+
+
+class AtletaCreateResponse(BaseModel):
+    id: int
