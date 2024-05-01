@@ -21,12 +21,13 @@ class AtletaRepo:
     def _create_atleta_list_objects(self, result: list) -> dict:
         return [
             {
+                'id': id_,
                 'nome': nome,
                 'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
                 'posicao': posicao,
                 'clube_atual': clube,
             }
-            for nome, data_nascimento, posicao, clube in result
+            for id_, nome, data_nascimento, posicao, clube in result
         ]
 
     def _create_atleta_detail_object(self, result) -> dict:
@@ -60,15 +61,20 @@ class AtletaRepo:
         with self.session_factory() as session:
             query = (
                 select(
+                    Atleta.id.label('id_'),
                     Atleta.nome.label('nome'),
                     Atleta.data_nascimento.label('data_nascimento'),
                     Posicao.nome.label('posicao'),
                     HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
-                .join(AtletaPosicao, isouter=True)
-                .join(Posicao, isouter=True)
-                .join(HistoricoClube, isouter=True)
+                .outerjoin(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
+                .outerjoin(Posicao, AtletaPosicao.posicao_id == Posicao.id)
+                .outerjoin(
+                    HistoricoClube, Atleta.id == HistoricoClube.atleta_id
+                )
+                .where(HistoricoClube.data_fim.is_(None))
+                .order_by(Atleta.id)
             )
 
             if atleta := filters.get('atleta'):
@@ -147,19 +153,21 @@ class AtletaRepo:
 
     def create_atleta(self, atleta_data: dict) -> dict:
         with self.session_factory() as session:
-            # Criando uma instância de atleta
-            new_atleta = Atleta(**atleta_data)
 
             try:
+                # Criando uma instância de atleta
+                new_atleta = Atleta(**atleta_data)
 
-                # Criando atleta
+                # Criando atleta para recuperar o ID e usar de FK posteriormente
                 session.add(new_atleta)
                 session.commit()
                 session.refresh(new_atleta)
 
                 # Criando clube
                 new_clube = HistoricoClube(
-                    nome=atleta_data.get('clube'), atleta_id=new_atleta.id
+                    nome=atleta_data.get('clube').get('nome'),
+                    atleta_id=new_atleta.id,
+                    data_inicio=atleta_data.get('clube').get('data_inicio'),
                 )
                 session.add(new_clube)
 
@@ -186,9 +194,7 @@ class AtletaRepo:
 
                 session.commit()
 
-                atleta_data.update({'id': new_atleta.id})
-
-                return atleta_data
+                return {'id': new_atleta.id}
             except Exception:
                 session.rollback()
                 raise

@@ -337,7 +337,10 @@ router.add_api_route(
                             'value': {
                                 'nome': 'Janjão',
                                 'data_nascimento': '1985-03-11',
-                                'clube': 'Siga Maré',
+                                'clube': {
+                                    'nome': 'Siga Maré',
+                                    'data_inicio': '2024-05-01',
+                                },
                                 'contrato': {
                                     'tipo_id': 1,
                                     'data_inicio': '2024-05-01',
