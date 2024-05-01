@@ -172,12 +172,28 @@ def migrate():
 
 
 @cli.command
-def startapp():
+@click.option('--server', '-s', default='uvicorn', help='Application server')
+def startapp(server):
     """Start FastAPI server"""
     configure_app(os.getenv('APPLICATION_CONFIG'))
 
     try:
-        command = ['uvicorn', 'asgi:app', '--reload']
+        if server == 'uvicorn':
+            command = ['uvicorn', 'asgi:app', '--reload']
+        elif server == 'gunicorn':
+            command = [
+                'gunicorn',
+                '-b',
+                ':8000',
+                '--reload',
+                '-k',
+                'uvicorn.workers.UvicornWorker',
+                '--timeout',
+                '500',
+                'asgi:app',
+            ]
+        else:
+            raise click.BadParameter('Server options are uvicorn or gunicorn.')
         subprocess.run(command)
     except Exception as e:
         print(e)
