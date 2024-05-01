@@ -52,5 +52,4 @@ class RelacionamentoRepo:
             session.add(new_relacionamento)
             session.commit()
             session.refresh(new_relacionamento)
-            relacionamento_data.update({'id': new_relacionamento.id})
-            return relacionamento_data
+            return {'id': new_relacionamento.id}

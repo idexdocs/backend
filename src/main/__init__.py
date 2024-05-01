@@ -9,7 +9,10 @@ from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.schemas.atleta import AtletaCreateSchema
-from src.schemas.relacionamento import RelacionamentoCreateSchema
+from src.schemas.relacionamento import (
+    RelacionamentoCreateSchema,
+    RelacionamentoResponse,
+)
 
 router = APIRouter()
 
@@ -91,12 +94,30 @@ router.add_api_route(
     '/questionario/relacionamento/create',
     endpoint=relacionamento_create,
     methods=['POST'],
+    response_model=RelacionamentoResponse,
     include_in_schema=True,
     openapi_extra={
         'requestBody': {
             'content': {
                 'application/json': {
-                    'schema': RelacionamentoCreateSchema.model_json_schema()
+                    'schema': RelacionamentoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de questinário de relacionamento',
+                            'description': 'Valores de inteiros devem ser entre 0 e 5',
+                            'value': {
+                                'atleta_id': 10,
+                                'receptividade_contrato': 5,
+                                'satisfacao_empresa': 3,
+                                'satisfacao_clube': 4,
+                                'relacao_familiares': 5,
+                                'influencias_externas': 2,
+                                'pendencia_empresa': 'true',
+                                'pendencia_clube': 'true',
+                                'data_avaliacao': '2024-01-01',
+                            },
+                        }
+                    },
                 }
             },
             'required': True,
