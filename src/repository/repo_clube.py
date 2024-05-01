@@ -32,3 +32,11 @@ class ClubeRepo:
             ).where(HistoricoClube.atleta_id == atleta_id)
 
             return self._create_clube_objects(session.exec(query).all())
+
+    def create_clube(self, clube_data: int) -> dict:
+        with self.session_factory() as session:
+            new_clube = HistoricoClube(**clube_data)
+            session.add(new_clube)
+            session.commit()
+            session.refresh(new_clube)
+            return {'id': new_clube.id}

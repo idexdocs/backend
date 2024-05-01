@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
+from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
 from src.main.rest.competicao_list import competicao
 from src.main.rest.controle_create import controle_create
@@ -11,6 +12,7 @@ from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
+from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
 from src.schemas.controle import (
     ControleCreateResponse,
     ControleCreateSchema,
@@ -26,8 +28,8 @@ router = APIRouter()
 router.add_api_route(
     '/atleta',
     endpoint=atleta,
+    tags=['Atleta'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -102,8 +104,8 @@ router.add_api_route(
 router.add_api_route(
     '/atleta/{id}',
     endpoint=atleta_detail,
+    tags=['Atleta'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -153,8 +155,8 @@ router.add_api_route(
 router.add_api_route(
     '/questionario/relacionamento/atleta/{id}',
     endpoint=relacionamento,
+    tags=['Relacionamento'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -214,8 +216,8 @@ router.add_api_route(
 router.add_api_route(
     '/competicao/atleta/{id}',
     endpoint=competicao,
+    tags=['Competição'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -272,8 +274,8 @@ router.add_api_route(
 router.add_api_route(
     '/lesao/atleta/{id}',
     endpoint=lesao,
+    tags=['Lesão'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -320,9 +322,9 @@ router.add_api_route(
 router.add_api_route(
     '/create/atleta',
     endpoint=atleta_create,
+    tags=['Atleta'],
     methods=['POST'],
     response_model=AtletaCreateResponse,
-    include_in_schema=True,
     openapi_extra={
         'requestBody': {
             'content': {
@@ -354,9 +356,9 @@ router.add_api_route(
 router.add_api_route(
     '/questionario/relacionamento/create',
     endpoint=relacionamento_create,
+    tags=['Relacionamento'],
     methods=['POST'],
     response_model=RelacionamentoResponse,
-    include_in_schema=True,
     openapi_extra={
         'requestBody': {
             'content': {
@@ -388,8 +390,8 @@ router.add_api_route(
 router.add_api_route(
     '/clube/atleta/{id}',
     endpoint=clube,
+    tags=['Clube'],
     methods=['GET'],
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -436,9 +438,9 @@ router.add_api_route(
 router.add_api_route(
     '/create/controle',
     endpoint=controle_create,
+    tags=['Controle'],
     methods=['POST'],
     response_model=ControleCreateResponse,
-    include_in_schema=True,
     openapi_extra={
         'requestBody': {
             'content': {
@@ -461,31 +463,14 @@ router.add_api_route(
             },
             'required': True,
         },
-        'responses': {
-            '404': {
-                'description': 'Not found',
-                'content': {
-                    'text/plain': {
-                        'example': {
-                            'errors': [
-                                {
-                                    'title': 'NotFound',
-                                    'message': 'Atleta não encontrado',
-                                }
-                            ]
-                        }
-                    }
-                },
-            },
-        },
     },
 )
 router.add_api_route(
     '/controle/atleta/{id}',
     endpoint=controle,
+    tags=['Controle'],
     methods=['GET'],
     response_model=ControleListResponse,
-    include_in_schema=True,
     openapi_extra={
         'responses': {
             '200': {
@@ -531,6 +516,53 @@ router.add_api_route(
                 },
             },
         }
+    },
+)
+
+router.add_api_route(
+    '/create/clube',
+    endpoint=clube_create,
+    tags=['Clube'],
+    methods=['POST'],
+    response_model=ClubeCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ClubeCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de clube',
+                            'description': 'Caso seja o clube atual não insesir data_fim',
+                            'value': {
+                                'atleta_id': 20,
+                                'nome': 'São João',
+                                'data_inicio': '2024-01-01',
+                                'data_fim': 'null',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+        'responses': {
+            '409': {
+                'description': 'Conflict',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'Conflict',
+                                    'message': 'O atleta já possui clube ativo',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
     },
 )
 

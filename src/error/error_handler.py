@@ -6,6 +6,7 @@ from src.presentation.http_types.http_response import HttpResponse
 
 from .types import (
     BadRequestError,
+    ClubeAtivoExistente,
     ExpiredTokenError,
     NotFoundError,
     TokenInvalidError,
@@ -22,6 +23,7 @@ def handle_errors(error: Exception) -> HttpResponse:
             NotFoundError,
             ExpiredTokenError,
             TokenInvalidError,
+            ClubeAtivoExistente,
         ),
     ):
         logger.info(f'Handling known error: {error.name}')

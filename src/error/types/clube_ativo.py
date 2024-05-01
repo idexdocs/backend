@@ -1,6 +1,6 @@
-class RegrasAssociacaoError(Exception):
+class ClubeAtivoExistente(Exception):
     def __init__(self, message: str) -> None:
         super().__init__(message)
         self.message = message
-        self.name = 'NotFound'
-        self.status_code = 404
+        self.name = 'Conflict'
+        self.status_code = 409
