@@ -92,12 +92,13 @@ class AtletaRepo:
             ).one()
 
             # aplica paginação
-            if page := int(filters.get('page', 1)):
-                query = (
-                    query.order_by(Atleta.nome)
-                    .limit(15)
-                    .offset((page - 1) * 15)
-                )
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
+            query = (
+                query.order_by(Atleta.nome)
+                .limit(per_page)
+                .offset((page - 1) * per_page)
+            )
 
             # executa query com paginação
             paginated_results = session.exec(query).all()

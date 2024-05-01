@@ -27,3 +27,11 @@ class LesaoRepo:
             ).where(HistoricoLesao.atleta_id == atleta_id)
 
             return self._create_lesao_objects(session.exec(query).all())
+
+    def create_lesao(self, lesao_data: dict) -> dict:
+        with self.session_factory() as session:
+            new_lesao = HistoricoLesao(**lesao_data)
+            session.add(new_lesao)
+            session.commit()
+            session.refresh(new_lesao)
+            return {'id': new_lesao.id}

@@ -8,6 +8,7 @@ from src.main.rest.clube_list import clube
 from src.main.rest.competicao_list import competicao
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
+from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
@@ -18,6 +19,7 @@ from src.schemas.controle import (
     ControleCreateSchema,
     ControleListResponse,
 )
+from src.schemas.lesao import LesaoCreateResponse, LesaoCreateSchema
 from src.schemas.relacionamento import (
     RelacionamentoCreateSchema,
     RelacionamentoResponse,
@@ -98,6 +100,12 @@ router.add_api_route(
                 'required': False,
                 'schema': {'type': 'integer'},
             },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
     },
 )
@@ -107,6 +115,15 @@ router.add_api_route(
     tags=['Atleta'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -149,7 +166,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 router.add_api_route(
@@ -158,6 +175,15 @@ router.add_api_route(
     tags=['Relacionamento'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -209,7 +235,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 
@@ -219,6 +245,15 @@ router.add_api_route(
     tags=['Competição'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -268,7 +303,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 router.add_api_route(
@@ -277,6 +312,15 @@ router.add_api_route(
     tags=['Lesão'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -316,7 +360,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 router.add_api_route(
@@ -396,6 +440,15 @@ router.add_api_route(
     tags=['Clube'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -435,7 +488,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 router.add_api_route(
@@ -475,6 +528,15 @@ router.add_api_route(
     methods=['GET'],
     response_model=ControleListResponse,
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -518,7 +580,7 @@ router.add_api_route(
                     }
                 },
             },
-        }
+        },
     },
 )
 
@@ -533,6 +595,53 @@ router.add_api_route(
             'content': {
                 'application/json': {
                     'schema': ClubeCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de clube',
+                            'description': 'Caso seja o clube atual não insesir data_fim',
+                            'value': {
+                                'atleta_id': 20,
+                                'nome': 'São João',
+                                'data_inicio': '2024-01-01',
+                                'data_fim': 'null',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+        'responses': {
+            '409': {
+                'description': 'Conflict',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'Conflict',
+                                    'message': 'O atleta já possui clube ativo',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+
+router.add_api_route(
+    '/create/lesao',
+    endpoint=lesao_create,
+    tags=['Lesão'],
+    methods=['POST'],
+    response_model=LesaoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': LesaoCreateSchema.model_json_schema(),
                     'examples': {
                         'example1': {
                             'summary': 'Exemplo de payload para criação de clube',
