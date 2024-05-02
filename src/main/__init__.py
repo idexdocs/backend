@@ -11,6 +11,8 @@ from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
+from src.main.rest.observacao_create import observacao_create
+from src.main.rest.observacao_list import observacao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
@@ -25,6 +27,11 @@ from src.schemas.controle import (
     ControleListResponse,
 )
 from src.schemas.lesao import LesaoCreateResponse, LesaoCreateSchema
+from src.schemas.observacao import (
+    ObservacaoCreateResponse,
+    ObservacaoCreateSchema,
+    ObservacaoListResponse,
+)
 from src.schemas.relacionamento import (
     RelacionamentoCreateSchema,
     RelacionamentoResponse,
@@ -719,6 +726,92 @@ router.add_api_route(
                                 {
                                     'title': 'Conflict',
                                     'message': 'O atleta já possui clube ativo',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+
+router.add_api_route(
+    '/create/observacao',
+    endpoint=observacao_create,
+    tags=['Observação'],
+    methods=['POST'],
+    response_model=ObservacaoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ObservacaoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de observação',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+
+router.add_api_route(
+    '/observacao/atleta/{id}',
+    endpoint=observacao,
+    tags=['Observação'],
+    methods=['GET'],
+    response_model=ObservacaoListResponse,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Observação',
+                            'data': [
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'relacionamento',
+                                    'descricao': 'sua observação',
+                                    'data_observacao': '2024-01-01',
+                                },
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'desempenho',
+                                    'descricao': 'sua observação',
+                                    'data_observacao': '2024-03-01',
+                                },
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'desempenho',
+                                    'descricao': 'sua observação foi editada no dia seguinte',
+                                    'data_observacao': '2024-03-02',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui observações cadastrados',
                                 }
                             ]
                         }
