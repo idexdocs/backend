@@ -34,3 +34,11 @@ class CompeticaoRepo:
             ).where(HistoricoCompeticao.atleta_id == atleta_id)
 
             return self._create_competicao_object(session.exec(query).all())
+
+    def create_competicao(self, competicao_data: dict) -> dict:
+        with self.session_factory() as session:
+            new_competicao = HistoricoCompeticao(**competicao_data)
+            session.add(new_competicao)
+            session.commit()
+            session.refresh(new_competicao)
+            return {'id': new_competicao.id}

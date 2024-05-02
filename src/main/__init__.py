@@ -5,6 +5,7 @@ from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
 from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
+from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
@@ -14,6 +15,10 @@ from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
+from src.schemas.competicao import (
+    CompeticaoCreateResponse,
+    CompeticaoCreateSchema,
+)
 from src.schemas.controle import (
     ControleCreateResponse,
     ControleCreateSchema,
@@ -646,6 +651,52 @@ router.add_api_route(
                         'example1': {
                             'summary': 'Exemplo de payload para criação de clube',
                             'description': 'Caso seja o clube atual não insesir data_fim',
+                            'value': {
+                                'atleta_id': 20,
+                                'nome': 'São João',
+                                'data_inicio': '2024-01-01',
+                                'data_fim': 'null',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+        'responses': {
+            '409': {
+                'description': 'Conflict',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'Conflict',
+                                    'message': 'O atleta já possui clube ativo',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+
+router.add_api_route(
+    '/create/competicao',
+    endpoint=competicao_create,
+    tags=['Competição'],
+    methods=['POST'],
+    response_model=CompeticaoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': CompeticaoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de competição',
                             'value': {
                                 'atleta_id': 20,
                                 'nome': 'São João',
