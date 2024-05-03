@@ -832,6 +832,22 @@ router.add_api_route(
     tags=['Característica'],
     methods=['GET'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            },
+            {
+                'name': 'model',
+                'in': 'query',
+                'required': True,
+                'description': 'Parâmetro de característica do atleta',
+                'schema': {'type': 'string', 'example': 'fisico, atacante, zagueiro, ...'},
+            }
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
