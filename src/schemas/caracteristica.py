@@ -129,3 +129,7 @@ class CaracteristicaMeiaCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+
+
+class CaracteristicaCreateResponse(BaseModel):
+    id: int
