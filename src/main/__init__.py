@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
+from src.main.rest.caracteristica_create import caracteristica_create
 from src.main.rest.caracteristica_list import caracteristica
 from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
@@ -870,6 +871,82 @@ router.add_api_route(
                     }
                 },
             },
+        },
+    },
+)
+
+router.add_api_route(
+    '/create/caracteristica',
+    endpoint=caracteristica_create,
+    tags=['Característica'],
+    methods=['POST'],
+    # response_model=ObservacaoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ObservacaoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de características físicas',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example2': {
+                            'summary': 'Exemplo de payload para criação de características para zagueiro',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example3': {
+                            'summary': 'Exemplo de payload para criação de características para lateral',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example4': {
+                            'summary': 'Exemplo de payload para criação de características para goleiro',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example5': {
+                            'summary': 'Exemplo de payload para criação de características para volante',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example6': {
+                            'summary': 'Exemplo de payload para criação de características para atacante',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                        'example7': {
+                            'summary': 'Exemplo de payload para criação de características para meia',
+                            'value': {
+                                'atleta_id': 2,
+                                'tipo': 'relacionamento',
+                                'descricao': 'sua obervação',
+                            },
+                        },
+                    },
+                }
+            },
+            'required': True,
         },
     },
 )

@@ -1,11 +1,31 @@
 from datetime import datetime
 
-from sqlmodel import SQLModel, select
+from sqlmodel import select
+
+from src.repository.model_objects import (
+    CaracteristicaAtacante,
+    CaracteristicaFisica,
+    CaracteristicaGoleiro,
+    CaracteristicaLateral,
+    CaracteristicaMeia,
+    CaracteristicaVolante,
+    CaracteristicaZagueiro,
+)
 
 from .base_repo import create_session
 
 
 class CaracteristicasRepo:
+    MODELS = {
+        'fisico': CaracteristicaFisica,
+        'zagueiro': CaracteristicaZagueiro,
+        'lateral': CaracteristicaLateral,
+        'goleiro': CaracteristicaGoleiro,
+        'volante': CaracteristicaVolante,
+        'atacante': CaracteristicaAtacante,
+        'meia': CaracteristicaMeia,
+    }
+
     def __init__(self) -> None:
         self.session_factory = create_session
 
@@ -13,7 +33,7 @@ class CaracteristicasRepo:
         self, result: list, model_fields: list, model_name: str
     ) -> list[dict]:
         if not result:
-            return []
+            return [], model_name
 
         # Determina os campos existentes utilizando a primeira row como amostra
         existing_fields = {
@@ -29,16 +49,23 @@ class CaracteristicasRepo:
             for field_name, field in existing_fields.items():
                 value = getattr(row, field_name)
                 if isinstance(value, datetime):
-                    row_dict[field_name] = value.strftime('%Y-%m-%d')
+                    row_dict[field_name] = value.strftime('%Y-%m-%d %H:%M:%S')
                 else:
                     row_dict[field_name] = value
             dicts.append(row_dict)
 
         return dicts, model_name
 
-    def list_caracteristica(
-        self, atleta_id: int, filters: dict, model: SQLModel
-    ):
+    def _get_model(self, model_name: str):
+
+        if model_name not in self.MODELS:
+            raise ValueError(f'Característica não é válida: {model_name}')
+
+        return self.MODELS.get(model_name)
+
+    def list_caracteristica(self, atleta_id: int, filters: dict):
+        model = self._get_model(filters.get('model'))
+
         with self.session_factory() as session:
             query = select(model).where(model.atleta_id == atleta_id)
 
@@ -48,7 +75,9 @@ class CaracteristicasRepo:
                 model.__name__,
             )
 
-    def create_caracteristica(self, model: SQLModel, data: dict):
+    def create_caracteristica(self, data: dict, model_name: str):
+        model = self._get_model(model_name)
+
         with self.session_factory() as session:
             data = model(**data)
             session.add(data)
