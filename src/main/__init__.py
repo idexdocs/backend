@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
+from src.main.rest.caracteristica_list import caracteristica
 from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
 from src.main.rest.competicao_create import competicao_create
@@ -770,6 +771,65 @@ router.add_api_route(
     tags=['Observação'],
     methods=['GET'],
     response_model=ObservacaoListResponse,
+    openapi_extra={
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'type': 'Observação',
+                            'data': [
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'relacionamento',
+                                    'descricao': 'sua observação',
+                                    'data_observacao': '2024-01-01',
+                                },
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'desempenho',
+                                    'descricao': 'sua observação',
+                                    'data_observacao': '2024-03-01',
+                                },
+                                {
+                                    'atleta_id': 3,
+                                    'tipo': 'desempenho',
+                                    'descricao': 'sua observação foi editada no dia seguinte',
+                                    'data_observacao': '2024-03-02',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '404': {
+                'description': 'Not found',
+                'content': {
+                    'text/plain': {
+                        'example': {
+                            'errors': [
+                                {
+                                    'title': 'NotFound',
+                                    'message': 'O Atleta não possui observações cadastrados',
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+
+
+router.add_api_route(
+    '/caracteristica/atleta/{id}/',
+    endpoint=caracteristica,
+    tags=['Característica'],
+    methods=['GET'],
+    # response_model=Nenhum,
     openapi_extra={
         'responses': {
             '200': {

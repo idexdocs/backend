@@ -23,7 +23,7 @@ class CompeticaoRepo:
 
         return competicao_list
 
-    def list_competicao(self, atleta_id: int):
+    def list_competicao(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
             query = select(
                 HistoricoCompeticao.nome,

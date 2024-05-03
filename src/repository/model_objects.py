@@ -192,3 +192,168 @@ class HistoricoObservacao(SQLModel, table=True):
 
     tipo: str = Field(sa_column=Column(Enum(ObsevacaoTypes)))
     atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaFisica(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: float | None
+    envergadura: float | None
+    peso: float | None
+    percentual_gordura: float | None
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaZagueiro(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: int
+    força: int
+    passe_curto: int
+    passe_longo: int
+    jogo_aereo: int
+    confronto_defensivo: int
+    leitura_jogo: int
+    ambidestria: int
+    participacao_ofensica: int
+    cabeceio_ofensivo: int
+    passe_entre_linhas: int
+    lideranca: int
+    confianca: int
+    inteligencia_tatica: int
+    competitividade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaLateral(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: int
+    velocidade: int
+    passe_curto: int
+    passe_longo: int
+    capacidade_aerobia: int
+    fechemanento_defensivo: int
+    leitura_jogo: int
+    participacao_ofensiva: int
+    cruzamento: int
+    jogo_aereo: int
+    conducao_bola: int
+    lideranca: int
+    confianca: int
+    inteligencia_tatica: int
+    competitividade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaGoleiro(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    perfil: int
+    maturacao: int
+    agilidade: int
+    velocidade_membros_superiores: int
+    flexibilidade: int
+    leitura_jogo: int
+    jogo_com_pes: int
+    organizacao_da_defesa: int
+    dominio_coberturas_e_saidas: int
+    lideranca: int
+    coragem: int
+    concentracao: int
+    controle_estresse: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaVolante(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: int
+    forca: int
+    passe_curto: int
+    capacidade_aerobia: int
+    dinamica: int
+    visao_espacial: int
+    leitura_jogo: int
+    dominio_orientado: int
+    jogo_aereo_ofensivo: int
+    passes_verticais: int
+    finalizacao_media_distancia: int
+    lideranca: int
+    confianca: int
+    inteligencia_tatica: int
+    competitividade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaAtacante(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: int
+    velocidade: int
+    um_contra_um_ofensivo: int
+    desmarques: int
+    controle_bola: int
+    cruzamentos: int
+    finalizacao: int
+    visao_espacial: int
+    dominio_orientado: int
+    dribles_em_diagonal: int
+    leitura_jogo: int
+    reacao_pos_perda: int
+    criatividade: int
+    capacidade_decisao: int
+    inteligencia_tatica: int
+    competitividade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+
+
+class CaracteristicaMeia(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    estatura: int
+    velocidade: int
+    leitura_jogo: int
+    desmarques: int
+    controle_bola: int
+    capacidade_aerobia: int
+    finalizacao: int
+    visao_espacial: int
+    dominio_orientado: int
+    dribles: int
+    organizacao_acao_ofensica: int
+    pisada_na_area_para_finalizar: int
+    criatividade: int
+    capacidade_decisao: int
+    confianca: int
+    inteligencia_tatica: int
+    competitividade: int
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
