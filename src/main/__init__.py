@@ -837,27 +837,19 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 2,
-                            'type': 'Observação',
+                            'count': 1,
+                            'type': 'CaracteristicaFisica',
                             'data': [
                                 {
-                                    'atleta_id': 3,
-                                    'tipo': 'relacionamento',
-                                    'descricao': 'sua observação',
-                                    'data_observacao': '2024-01-01',
-                                },
-                                {
-                                    'atleta_id': 3,
-                                    'tipo': 'desempenho',
-                                    'descricao': 'sua observação',
-                                    'data_observacao': '2024-03-01',
-                                },
-                                {
-                                    'atleta_id': 3,
-                                    'tipo': 'desempenho',
-                                    'descricao': 'sua observação foi editada no dia seguinte',
-                                    'data_observacao': '2024-03-02',
-                                },
+                                    'id': 1,
+                                    'estatura': 177.0,
+                                    'envergadura': 183.0,
+                                    'peso': 92.0,
+                                    'percentual_gordura': 17.0,
+                                    'data_criacao': '2024-05-03',
+                                    'data_atualizado': 'null',
+                                    'atleta_id': 1,
+                                }
                             ],
                         }
                     }
@@ -871,7 +863,7 @@ router.add_api_route(
                             'errors': [
                                 {
                                     'title': 'NotFound',
-                                    'message': 'O Atleta não possui observações cadastrados',
+                                    'message': 'O Atleta não possui características cadastrados',
                                 }
                             ]
                         }

@@ -67,7 +67,12 @@ class CaracteristicaListUseCase:
         )
 
         if len(caracteristicas) == 0:
-            raise NotFoundError('Não existem dados cadastrados')
+            caracteristica = model.__name__[:14].lower()
+            tipo = model.__name__[14:].lower()
+
+            raise NotFoundError(
+                f'O Atleta não possui {caracteristica} {tipo} cadastrada'
+            )
 
         return caracteristicas
 

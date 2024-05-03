@@ -12,6 +12,8 @@ class CaracteristicasRepo:
     def _create_dict_from_object(
         self, result: list, model_fields: list, model_name: str
     ) -> list[dict]:
+        if not result:
+            return []
 
         # Determina os campos existentes utilizando a primeira row como amostra
         existing_fields = {
