@@ -13,3 +13,4 @@ class HttpRequest:
     query_params: str = None
     path_params: str = None
     url: str = None
+    files: bytes = None

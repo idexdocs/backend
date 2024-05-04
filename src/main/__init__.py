@@ -11,6 +11,7 @@ from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
+from src.main.rest.file_upload import file_upload
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
 from src.main.rest.observacao_create import observacao_create
@@ -253,7 +254,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/competicao/atleta/{id}',
     endpoint=competicao,
@@ -598,7 +598,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/create/clube',
     endpoint=clube_create,
@@ -645,7 +644,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/create/lesao',
     endpoint=lesao_create,
@@ -692,7 +690,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/create/competicao',
     endpoint=competicao_create,
@@ -738,7 +735,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/create/observacao',
     endpoint=observacao_create,
@@ -766,7 +762,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/observacao/atleta/{id}',
     endpoint=observacao,
@@ -824,8 +819,6 @@ router.add_api_route(
         },
     },
 )
-
-
 router.add_api_route(
     '/caracteristica/atleta/{id}/',
     endpoint=caracteristica,
@@ -845,8 +838,11 @@ router.add_api_route(
                 'in': 'query',
                 'required': True,
                 'description': 'Parâmetro de característica do atleta',
-                'schema': {'type': 'string', 'example': 'fisico, atacante, zagueiro, ...'},
-            }
+                'schema': {
+                    'type': 'string',
+                    'example': 'fisico, atacante, zagueiro, ...',
+                },
+            },
         ],
         'responses': {
             '200': {
@@ -890,7 +886,6 @@ router.add_api_route(
         },
     },
 )
-
 router.add_api_route(
     '/create/caracteristica',
     endpoint=caracteristica_create,
@@ -1053,6 +1048,30 @@ router.add_api_route(
             },
             'required': True,
         },
+    },
+)
+router.add_api_route(
+    '/file-upload/atleta/{id}',
+    endpoint=file_upload,
+    tags=['File Upload'],
+    methods=['POST'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'multipart/form-data': {
+                    'schema': {
+                        'type': 'object',
+                        'properties': {
+                            'file': {
+                                'type': 'string',
+                                'format': 'binary',
+                                'description': 'Upload an image file. Supported formats: .png, .jpeg',
+                            }
+                        },
+                    }
+                }
+            }
+        }
     },
 )
 
