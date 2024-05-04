@@ -11,6 +11,7 @@ from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
+from src.main.rest.file_download import file_download
 from src.main.rest.file_upload import file_upload
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
@@ -1053,7 +1054,7 @@ router.add_api_route(
 router.add_api_route(
     '/file-upload/atleta/{id}',
     endpoint=file_upload,
-    tags=['File Upload'],
+    tags=['File'],
     methods=['POST'],
     openapi_extra={
         'requestBody': {
@@ -1072,6 +1073,23 @@ router.add_api_route(
                 }
             }
         }
+    },
+)
+router.add_api_route(
+    '/file-download/atleta/{id}',
+    endpoint=file_download,
+    tags=['Arquivo'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
     },
 )
 
