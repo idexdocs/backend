@@ -8,9 +8,8 @@ from src.use_cases.atleta_create import AtletaCreateUseCase
 
 def atleta_create_composer():
     atleta_repository = AtletaRepo()
-    storage_service = AzureBlobStorage()
     use_case = AtletaCreateUseCase(
-        atleta_repository=atleta_repository, storage_service=storage_service
+        atleta_repository=atleta_repository
     )
     controller = AtletaCreateController(use_case=use_case)
 

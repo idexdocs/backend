@@ -3,8 +3,8 @@ from src.repository.repo_atleta import AtletaRepo
 
 
 class AtletaCreateUseCase:
-    def __init__(self, repository: AtletaRepo):
-        self.repository = repository
+    def __init__(self, atleta_repository: AtletaRepo):
+        self.atleta_repository = atleta_repository
 
     def execute(self, http_request: HttpRequest):
         atleta_data: dict = http_request.json
@@ -13,4 +13,4 @@ class AtletaCreateUseCase:
         return result
 
     def _create_atleta(self, atleta_data: dict) -> dict:
-        return self.repository.create_atleta(atleta_data)
+        return self.atleta_repository.create_atleta(atleta_data)
