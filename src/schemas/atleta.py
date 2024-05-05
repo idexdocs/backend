@@ -38,7 +38,6 @@ class AtletaCreateSchema(BaseModel):
     clube: Clube
     contrato: Contrato
     posicao_id: int
-    image: bytes | None
 
     _validate_data_nascimento = field_validator('data_nascimento')(
         validate_date_format
