@@ -37,11 +37,31 @@ class AtletaCreateSchema(BaseModel):
     data_nascimento: str
     clube: Clube
     contrato: Contrato
-    posicao_id: int
+    posicao_primaria: str
+    posicao_secundaria: str | None
+    posicao_terciaria: str | None
 
     _validate_data_nascimento = field_validator('data_nascimento')(
         validate_date_format
     )
+
+    @field_validator(
+        'posicao_primaria', 'posicao_secundaria', 'posicao_terciaria'
+    )
+    def validate_posicao_id(cls, v):
+        allowed_positions = (
+            'atacante',
+            'goleiro',
+            'lateral',
+            'meia',
+            'volante',
+            'zagueiro',
+        )
+        if v and v not in allowed_positions:
+            raise ValueError(
+                f'Posição inválida: {v}. Posições permitidas: {allowed_positions}'
+            )
+        return v
 
 
 class AtletaCreateResponse(BaseModel):

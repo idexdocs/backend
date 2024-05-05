@@ -25,25 +25,6 @@ class AtletaContrato(SQLModel, table=True):
     )
 
 
-class AtletaPosicao(SQLModel, table=True):
-    data_criacao: datetime = Field(
-        default_factory=datetime_now_sec, nullable=False
-    )
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
-    posicao_id: int = Field(
-        default=None, foreign_key='posicao.id', primary_key=True
-    )
-
-
-class AtletaCaracteristica(SQLModel, table=True):
-    atleta_id: int = Field(
-        default=None, foreign_key='atleta.id', primary_key=True
-    )
-    caracteristica_id: int = Field(
-        default=None, foreign_key='posicao.id', primary_key=True
-    )
-
-
 class Atleta(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
@@ -56,10 +37,6 @@ class Atleta(SQLModel, table=True):
 
     contratos: list['Contrato'] = Relationship(
         back_populates='atletas', link_model=AtletaContrato
-    )
-
-    posicoes: list['Posicao'] = Relationship(
-        back_populates='atletas', link_model=AtletaPosicao
     )
 
 
@@ -92,17 +69,26 @@ class Contrato(SQLModel, table=True):
     )
 
 
+class PosicaoTypes(enum.Enum):
+    atacante = 'atacante'
+    goleiro = 'goleiro'
+    lateral = 'lateral'
+    meia = 'meia'
+    volante = 'volante'
+    zagueiro = 'zagueiro'
+
+
 class Posicao(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    nome: str
+    primeira: str = Field(sa_column=Column(Enum(PosicaoTypes)))
+    segunda: str | None = Field(sa_column=Column(Enum(PosicaoTypes)))
+    terceira: str | None = Field(sa_column=Column(Enum(PosicaoTypes)))
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
     data_atualizado: datetime | None = None
 
-    atletas: list['Atleta'] = Relationship(
-        back_populates='posicoes', link_model=AtletaPosicao
-    )
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
 
 
 class Relacionamento(SQLModel, table=True):

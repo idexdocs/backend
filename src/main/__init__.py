@@ -61,14 +61,18 @@ router.add_api_route(
                             'data': [
                                 {
                                     'nome': 'Atleta 1',
-                                    'data_nascimento': '1985-03-11',
-                                    'posicao': 1,
+                                    'data_nascimento': '1980-09-21',
+                                    'posicao_primaria': 'atacante',
+                                    'posicao_secundaria': 'meia',
+                                    'posicao_terciaria': 'null',
                                     'clube_atual': 'Clube 1',
                                 },
                                 {
                                     'nome': 'Atleta 2',
                                     'data_nascimento': '1985-03-11',
-                                    'posicao': 2,
+                                    'posicao_primaria': 'Goleiro',
+                                    'posicao_secundaria': 'null',
+                                    'posicao_terciaria': 'null',
                                     'clube_atual': 'Clube 1a',
                                 },
                             ],
@@ -155,10 +159,12 @@ router.add_api_route(
                                 'data': {
                                     'nome': 'Atleta 1',
                                     'data_nascimento': '1985-03-11',
-                                    'posicao': 'Goleiro',
+                                    'posicao_primaria': 'atacante',
+                                    'posicao_secundaria': 'meia',
+                                    'posicao_terciaria': 'null',
                                     'clube_atual': 'Clube 1a',
                                     'contrato': {
-                                        'tipo': 'Nenhum',
+                                        'tipo': 'Amador',
                                         'data_inicio': '2024-03-23',
                                         'data_termino': '2025-04-23',
                                     },
@@ -406,7 +412,9 @@ router.add_api_route(
                                     'data_inicio': '2024-05-01',
                                     'data_fim': '2024-05-01',
                                 },
-                                'posicao_id': 1,
+                                'posicao_primaria': 'atacante',
+                                'posicao_secundaria': 'volante',
+                                'posicao_terciaria': 'null',
                             },
                         }
                     },

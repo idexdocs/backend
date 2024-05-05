@@ -8,9 +8,7 @@ from src.use_cases.atleta_create import AtletaCreateUseCase
 
 def atleta_create_composer():
     atleta_repository = AtletaRepo()
-    use_case = AtletaCreateUseCase(
-        atleta_repository=atleta_repository
-    )
+    use_case = AtletaCreateUseCase(atleta_repository=atleta_repository)
     controller = AtletaCreateController(use_case=use_case)
 
     return controller.handle

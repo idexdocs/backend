@@ -7,7 +7,6 @@ from .base_repo import create_session
 from .model_objects import (
     Atleta,
     AtletaContrato,
-    AtletaPosicao,
     Contrato,
     HistoricoClube,
     Posicao,
@@ -24,17 +23,21 @@ class AtletaRepo:
                 'id': id_,
                 'nome': nome,
                 'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
-                'posicao': posicao,
+                'posicao_primaria': primeira.value if primeira else None,
+                'posicao_secundaria': segunda.value if segunda else None,
+                'posicao_terciaria': terceira.value if terceira else None,
                 'clube_atual': clube,
             }
-            for id_, nome, data_nascimento, posicao, clube in result
+            for id_, nome, data_nascimento, primeira, segunda, terceira, clube in result
         ]
 
     def _create_atleta_detail_object(self, result) -> dict:
         (
             nome,
             data_nascimento,
-            posicao,
+            primeira,
+            segunda,
+            terceira,
             tipo,
             data_inicio,
             data_termino,
@@ -44,7 +47,9 @@ class AtletaRepo:
         return {
             'nome': nome,
             'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
-            'posicao': posicao,
+            'posicao_primaria': primeira.value if primeira else None,
+            'posicao_secundaria': segunda.value if segunda else None,
+            'posicao_terciaria': terceira.value if terceira else None,
             'clube_atual': clube,
             'contrato': {
                 'tipo': tipo,
@@ -64,12 +69,13 @@ class AtletaRepo:
                     Atleta.id.label('id_'),
                     Atleta.nome.label('nome'),
                     Atleta.data_nascimento.label('data_nascimento'),
-                    Posicao.nome.label('posicao'),
+                    Posicao.primeira,
+                    Posicao.segunda,
+                    Posicao.terceira,
                     HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
-                .outerjoin(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
-                .outerjoin(Posicao, AtletaPosicao.posicao_id == Posicao.id)
+                .outerjoin(Posicao, Posicao.atleta_id == Atleta.id)
                 .outerjoin(
                     HistoricoClube, Atleta.id == HistoricoClube.atleta_id
                 )
@@ -81,7 +87,7 @@ class AtletaRepo:
                 query = query.filter(Atleta.nome == atleta)
 
             if posicao := filters.get('posicao'):
-                query = query.filter(Posicao.nome == posicao)
+                query = query.filter(Posicao.primeira == posicao)
 
             if clube := filters.get('clube'):
                 query = query.filter(HistoricoClube.nome == clube)
@@ -123,7 +129,9 @@ class AtletaRepo:
                 select(
                     Atleta.nome,
                     Atleta.data_nascimento,
-                    Posicao.nome.label('posicao'),
+                    Posicao.primeira,
+                    Posicao.segunda,
+                    Posicao.terceira,
                     Contrato.tipo,
                     AtletaContrato.data_inicio,
                     AtletaContrato.data_fim,
@@ -134,8 +142,7 @@ class AtletaRepo:
                     AtletaContrato, Atleta.id == AtletaContrato.atleta_id
                 )
                 .outerjoin(Contrato, AtletaContrato.contrato_id == Contrato.id)
-                .outerjoin(AtletaPosicao, Atleta.id == AtletaPosicao.atleta_id)
-                .outerjoin(Posicao, Atleta.id == Posicao.id)
+                .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
                 .outerjoin(
                     HistoricoClube, HistoricoClube.atleta_id == atleta_id
                 )
@@ -187,9 +194,11 @@ class AtletaRepo:
                 session.add(new_atleta_contrato)
 
                 # Criando relacionameno N:N Atleta Posição
-                new_atleta_posicao = AtletaPosicao(
+                new_atleta_posicao = Posicao(
                     atleta_id=new_atleta.id,
-                    posicao_id=atleta_data.get('posicao_id'),
+                    primeira=atleta_data.get('posicao_primaria'),
+                    segunda=atleta_data.get('posicao_secundaria'),
+                    terceira=atleta_data.get('posicao_terciaria'),
                 )
                 session.add(new_atleta_posicao)
 
