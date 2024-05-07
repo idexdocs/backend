@@ -1,12 +1,10 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from error.types.credentials_exception import CredentialsException
-from src.repository.base_repo import create_session
+from src.error.types.credentials_exception import CredentialsException
 from src.repository.repo_usuario import UsuarioRepo
 from src.schemas.token import TokenData
 
