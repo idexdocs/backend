@@ -19,6 +19,7 @@ from src.main.rest.observacao_create import observacao_create
 from src.main.rest.observacao_list import observacao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
+from src.main.rest.token import token
 from src.main.rest.usuario_create import usuario_create
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.caracteristica import CaracteristicaCreateResponse
@@ -42,6 +43,7 @@ from src.schemas.relacionamento import (
     RelacionamentoCreateSchema,
     RelacionamentoResponse,
 )
+from src.schemas.token import Token
 
 router = APIRouter()
 
@@ -53,13 +55,14 @@ router.add_api_route(
     openapi_extra={},
 )
 
-# router.add_api_route(
-#     '/token',
-#     endpoint=token,
-#     tags=['Token'],
-#     methods=['POST'],
-#     openapi_extra={},
-#     )
+router.add_api_route(
+    '/token',
+    endpoint=token,
+    response_model=Token,
+    tags=['Token'],
+    methods=['POST'],
+    openapi_extra={},
+)
 
 
 router.add_api_route(

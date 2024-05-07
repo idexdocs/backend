@@ -1,10 +1,7 @@
-from passlib.context import CryptContext
-
 from src.error.types.usuario_exists import UsuarioExistente
 from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_usuario import UsuarioRepo
-
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+from src.security import get_password_hash
 
 
 class UsuarioCreateUseCase:
@@ -25,7 +22,7 @@ class UsuarioCreateUseCase:
         return self.usuario_repository.create_usuario(usuario_data)
 
     def _get_password_hash(self, password: str) -> str:
-        return pwd_context.hash(password)
+        return get_password_hash.hash(password)
 
     def _check_usuario_exists(self, usuario_email: str):
         usuario = self.usuario_repository.get_usuario_by_email(usuario_email)
