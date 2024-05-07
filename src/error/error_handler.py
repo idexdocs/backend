@@ -10,6 +10,7 @@ from .types import (
     ExpiredTokenError,
     NotFoundError,
     TokenInvalidError,
+    UsuarioExistente,
 )
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ def handle_errors(error: Exception) -> HttpResponse:
             ExpiredTokenError,
             TokenInvalidError,
             ClubeAtivoExistente,
+            UsuarioExistente,
         ),
     ):
         logger.info(f'Handling known error: {error.name}')

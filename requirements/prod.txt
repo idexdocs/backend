@@ -8,4 +8,5 @@ pyodbc
 azure-storage-blob
 azure-identity
 python-multipart
-
+python-jose[cryptography]
+passlib[bcrypt]

@@ -19,6 +19,7 @@ from src.main.rest.observacao_create import observacao_create
 from src.main.rest.observacao_list import observacao
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
+from src.main.rest.usuario_create import usuario_create
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.caracteristica import CaracteristicaCreateResponse
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
@@ -43,6 +44,23 @@ from src.schemas.relacionamento import (
 )
 
 router = APIRouter()
+
+router.add_api_route(
+    '/usuario/create',
+    endpoint=usuario_create,
+    tags=['Usuário'],
+    methods=['POST'],
+    openapi_extra={},
+)
+
+# router.add_api_route(
+#     '/token',
+#     endpoint=token,
+#     tags=['Token'],
+#     methods=['POST'],
+#     openapi_extra={},
+#     )
+
 
 router.add_api_route(
     '/atleta',

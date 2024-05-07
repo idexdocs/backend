@@ -8,6 +8,32 @@ def datetime_now_sec():
     return datetime.now(UTC).replace(microsecond=0)
 
 
+class UsuarioTipoTypes(enum.Enum):
+    admin = 'admin'
+    treinador = 'treinador'
+    externo = 'externo'
+
+
+class UsuarioTipo(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    tipo: str = Field(sa_column=Column(Enum(UsuarioTipoTypes)))
+
+
+class Usuario(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    email: str = Field(index=False, unique=True)
+    hash_password: str
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    usuario_tipo_id: int | None = Field(
+        default=None, foreign_key='usuariotipo.id'
+    )
+
+
 # Many to many relationships
 class AtletaContrato(SQLModel, table=True):
     data_inicio: date
