@@ -19,11 +19,11 @@ class CaracteristicaListUseCase:
 
         self._check_atleta_exists(atleta_id)
 
-        result, model_name = self._list_caracteristica(
+        total_count, result, model_name = self._list_caracteristica(
             atleta_id, filters, filters.get('model')
         )
 
-        return self._format_response(result, model_name)
+        return self._format_response(total_count, result, model_name)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
@@ -34,6 +34,7 @@ class CaracteristicaListUseCase:
         self, atleta_id: int, filters: dict, model_name: str
     ):
         (
+            total_count,
             caracteristicas,
             model_name,
         ) = self.caracteristica_repository.list_caracteristica(
@@ -48,11 +49,14 @@ class CaracteristicaListUseCase:
                 f'O Atleta não possui {caracteristica} {tipo} cadastrada'
             )
 
-        return caracteristicas, model_name
+        return total_count, caracteristicas, model_name
 
-    def _format_response(self, result: list[dict], model_name: str) -> dict:
+    def _format_response(
+        self, total_count: int, result: list[dict], model_name: str
+    ) -> dict:
         return {
             'count': len(result),
+            'total': total_count,
             'type': model_name,
             'data': result,
         }

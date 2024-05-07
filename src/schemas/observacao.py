@@ -1,9 +1,16 @@
+from enum import Enum
+
 from pydantic import BaseModel, Field
+
+
+class ObservacaoTypes(str, Enum):
+    desempenho = 'desempenho'
+    relacionamento = 'relacionamento'
 
 
 class ObservacaoCreateSchema(BaseModel):
     atleta_id: int = Field(..., gt=0)
-    tipo: str
+    tipo: ObservacaoTypes
     descricao: str
 
 

@@ -54,7 +54,6 @@ router.add_api_route(
     methods=['POST'],
     openapi_extra={},
 )
-
 router.add_api_route(
     '/token',
     endpoint=token,
@@ -63,8 +62,6 @@ router.add_api_route(
     methods=['POST'],
     openapi_extra={},
 )
-
-
 router.add_api_route(
     '/atleta',
     endpoint=atleta,
@@ -226,7 +223,19 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
-            }
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
         'responses': {
             '200': {
@@ -244,8 +253,8 @@ router.add_api_route(
                                     'satisfacao_clube': 2,
                                     'relacao_familiares': 3,
                                     'influencias_externas': 4,
-                                    'pendencia_empresa': 'false',
-                                    'pendencia_clube': 'true',
+                                    'pendencia_empresa': False,
+                                    'pendencia_clube': True,
                                     'data_criacao': '2024-05-01',
                                 },
                                 {
@@ -255,8 +264,8 @@ router.add_api_route(
                                     'satisfacao_clube': 4,
                                     'relacao_familiares': 5,
                                     'influencias_externas': 5,
-                                    'pendencia_empresa': 'false',
-                                    'pendencia_clube': 'false',
+                                    'pendencia_empresa': False,
+                                    'pendencia_clube': False,
                                     'data_criacao': '2024-06-05',
                                 },
                             ],
@@ -295,7 +304,19 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
-            }
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
         'responses': {
             '200': {
@@ -362,7 +383,19 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
-            }
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
         'responses': {
             '200': {
@@ -467,8 +500,8 @@ router.add_api_route(
                                 'satisfacao_clube': 4,
                                 'relacao_familiares': 5,
                                 'influencias_externas': 2,
-                                'pendencia_empresa': 'true',
-                                'pendencia_clube': 'true',
+                                'pendencia_empresa': True,
+                                'pendencia_clube': True,
                                 'data_avaliacao': '2024-01-01',
                             },
                         }
@@ -492,7 +525,19 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
-            }
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
         'responses': {
             '200': {
@@ -580,7 +625,19 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
-            }
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
         ],
         'responses': {
             '200': {
@@ -799,6 +856,27 @@ router.add_api_route(
     methods=['GET'],
     response_model=ObservacaoListResponse,
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+        ],
         'responses': {
             '200': {
                 'description': 'Successful Response',
@@ -872,6 +950,18 @@ router.add_api_route(
                     'type': 'string',
                     'example': 'fisico, atacante, zagueiro, ...',
                 },
+            },
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
             },
         ],
         'responses': {

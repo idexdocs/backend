@@ -9,21 +9,23 @@ class LesaoListUseCase:
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = int(http_request.path_params.get('id'))
+        filters: dict = dict(http_request.query_params.items())
 
-        result = self._list_lesao(atleta_id)
-        return self._format_response(result)
+        total_count, result = self._list_lesao(atleta_id, filters)
+        return self._format_response(total_count, result)
 
-    def _list_lesao(self, atleta_id: int):
-        lesoes = self.repository.list_lesao(atleta_id)
+    def _list_lesao(self, atleta_id: int, filters: dict):
+        lesoes = self.repository.list_lesao(atleta_id, filters)
 
         if len(lesoes) == 0:
             raise NotFoundError('O Atleta não possui lesões cadastradas')
 
         return lesoes
 
-    def _format_response(self, result: list[dict]) -> dict:
+    def _format_response(self, total_count: int, result: list[dict]) -> dict:
         return {
             'count': len(result),
+            'total': total_count,
             'type': 'Lesão',
             'data': result,
         }

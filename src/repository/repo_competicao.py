@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlmodel import func, select
 
 from src.repository.model_objects import HistoricoCompeticao
 
@@ -33,7 +33,26 @@ class CompeticaoRepo:
                 HistoricoCompeticao.minutagem,
             ).where(HistoricoCompeticao.atleta_id == atleta_id)
 
-            return self._create_competicao_object(session.exec(query).all())
+            # conta o número total de items sem paginação
+            total_count = session.exec(
+                select(func.count()).select_from(query.subquery())
+            ).one()
+
+            # aplica paginação
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
+            query = (
+                query.order_by(HistoricoCompeticao.data_criacao)
+                .limit(per_page)
+                .offset((page - 1) * per_page)
+            )
+
+            # executa query com paginação
+            paginated_results = session.exec(query).all()
+
+            return total_count, self._create_competicao_object(
+                paginated_results
+            )
 
     def create_competicao(self, competicao_data: dict) -> dict:
         with self.session_factory() as session:

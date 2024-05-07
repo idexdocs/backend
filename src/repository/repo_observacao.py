@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlmodel import func, select
 
 from .base_repo import create_session
 from .model_objects import HistoricoObservacao
@@ -21,19 +21,32 @@ class ObservacaoRepo:
 
     def list_observacao(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
+            query = select(
+                HistoricoObservacao.id,
+                HistoricoObservacao.tipo,
+                HistoricoObservacao.descricao,
+                HistoricoObservacao.data_criacao,
+            ).filter(HistoricoObservacao.atleta_id == atleta_id)
+
+            # conta o número total de items sem paginação
+            total_count = session.exec(
+                select(func.count()).select_from(query.subquery())
+            ).one()
+
+            # aplica paginação
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
             query = (
-                select(
-                    HistoricoObservacao.id,
-                    HistoricoObservacao.tipo,
-                    HistoricoObservacao.descricao,
-                    HistoricoObservacao.data_criacao,
-                )
-                .filter(HistoricoObservacao.atleta_id == atleta_id)
-                .order_by('data_criacao')
+                query.order_by(HistoricoObservacao.data_criacao)
+                .limit(per_page)
+                .offset((page - 1) * per_page)
             )
 
-            return self._create_observacao_list_objects(
-                session.exec(query).all()
+            # executa query com paginação
+            paginated_results = session.exec(query).all()
+
+            return total_count, self._create_observacao_list_objects(
+                paginated_results
             )
 
     def create_observacao(self, observacao_data: dict) -> dict:

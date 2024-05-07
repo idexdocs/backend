@@ -24,8 +24,6 @@ class ControleCreateSchema(BaseModel):
         str_value = f'{v}'
         if '.' not in str_value:
             raise ValueError('O preço deve conter separador .00')
-        if len(str_value.split('.')[1]) != 2:
-            raise ValueError('O preço deve conter duas casas decimais')
         return v
 
 

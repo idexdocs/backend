@@ -19,8 +19,8 @@ class ControleListUseCase:
 
         self._check_atleta_exists(atleta_id)
 
-        result = self._list_controle(atleta_id, filters)
-        return self._format_response(result)
+        total_count, result = self._list_controle(atleta_id, filters)
+        return self._format_response(total_count, result)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
@@ -35,9 +35,10 @@ class ControleListUseCase:
 
         return controles
 
-    def _format_response(self, result: list[dict]) -> dict:
+    def _format_response(self, total_count: int, result: list[dict]) -> dict:
         return {
             'count': len(result),
+            'total': total_count,
             'type': 'Controle',
             'data': result,
         }

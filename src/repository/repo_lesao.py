@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlmodel import func, select
 
 from src.repository.model_objects import HistoricoLesao
 
@@ -20,13 +20,30 @@ class LesaoRepo:
 
         return lesao_list
 
-    def list_lesao(self, atleta_id: int):
+    def list_lesao(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
             query = select(
                 HistoricoLesao.data_lesao, HistoricoLesao.descricao
             ).where(HistoricoLesao.atleta_id == atleta_id)
 
-            return self._create_lesao_objects(session.exec(query).all())
+            # conta o número total de items sem paginação
+            total_count = session.exec(
+                select(func.count()).select_from(query.subquery())
+            ).one()
+
+            # aplica paginação
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
+            query = (
+                query.order_by(HistoricoLesao.data_criacao)
+                .limit(per_page)
+                .offset((page - 1) * per_page)
+            )
+
+            # executa query com paginação
+            paginated_results = session.exec(query).all()
+
+            return total_count, self._create_lesao_objects(paginated_results)
 
     def create_lesao(self, lesao_data: dict) -> dict:
         with self.session_factory() as session:

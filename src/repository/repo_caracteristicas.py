@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlmodel import select
+from sqlmodel import func, select
 
 from src.repository.model_objects import (
     CaracteristicaAtacante,
@@ -69,11 +69,30 @@ class CaracteristicasRepo:
         with self.session_factory() as session:
             query = select(model).where(model.atleta_id == atleta_id)
 
-            return self._create_dict_from_object(
-                session.exec(query).all(),
+            # conta o número total de items sem paginação
+            total_count = session.exec(
+                select(func.count()).select_from(query.subquery())
+            ).one()
+
+            # aplica paginação
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
+            query = (
+                query.order_by(model.data_criacao)
+                .limit(per_page)
+                .offset((page - 1) * per_page)
+            )
+
+            # executa query com paginação
+            paginated_results = session.exec(query).all()
+
+            dicts, model_name = self._create_dict_from_object(
+                paginated_results,
                 model.__table__.columns,
                 model.__name__,
             )
+
+            return total_count, dicts, model_name
 
     def create_caracteristica(self, data: dict, model_name: str):
         model = self._get_model(model_name)
