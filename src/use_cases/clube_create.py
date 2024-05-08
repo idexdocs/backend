@@ -15,14 +15,14 @@ class ClubeCreateUseCase:
         self.atleta_repository = atleta_repository
 
     def execute(self, http_request: HttpRequest):
-        controle_data: dict = dict(http_request.json)
+        clube_data: dict = dict(http_request.json)
 
-        atleta_id: int = controle_data.get('atleta_id')
+        atleta_id: int = clube_data.get('atleta_id')
 
         self._check_atleta_exists(atleta_id)
         self._check_clube_ativo_exists(atleta_id)
 
-        return self._create_clube(controle_data)
+        return self._create_clube(clube_data)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
@@ -30,7 +30,7 @@ class ClubeCreateUseCase:
             raise NotFoundError('Atleta não encontrado')
 
     def _check_clube_ativo_exists(self, atleta_id: int):
-        clubes = self.clube_repository.list_clube(atleta_id)
+        _, clubes = self.clube_repository.list_clube(atleta_id)
 
         for clube in clubes:
             if clube['data_fim'] is None:
