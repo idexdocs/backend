@@ -17,6 +17,7 @@ from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
 from src.main.rest.observacao_create import observacao_create
 from src.main.rest.observacao_list import observacao
+from src.main.rest.pdf_create import pdf_create
 from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.main.rest.token import token
@@ -1033,7 +1034,6 @@ router.add_api_route(
                             'summary': 'Exemplo de payload para criação de características para zagueiro',
                             'value': {
                                 'caracteristica': 'zagueiro',
-                                'caracteristica': 'zagueiro',
                                 'atleta_id': 2,
                                 'estatura': 3,
                                 'força': 3,
@@ -1198,6 +1198,23 @@ router.add_api_route(
     '/file-download/atleta/{id}',
     endpoint=file_download,
     tags=['Arquivo'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
+    },
+)
+router.add_api_route(
+    '/create/pdf/atleta/{id}',
+    endpoint=pdf_create,
+    tags=['PDF'],
     methods=['GET'],
     openapi_extra={
         'parameters': [

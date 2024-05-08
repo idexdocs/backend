@@ -197,12 +197,12 @@ class ObsevacaoTypes(enum.Enum):
 
 class HistoricoObservacao(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    tipo: str = Field(sa_column=Column(Enum(ObsevacaoTypes)))
     descricao: str
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
 
-    tipo: str = Field(sa_column=Column(Enum(ObsevacaoTypes)))
     atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
 
 

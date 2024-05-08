@@ -17,7 +17,7 @@ markers = [
 ]
 
 [tool.blue]
-extend-exclude = '(migrations/)'
+extend-exclude = ['(migrations/)', '(src/use_cases/pdf_create.py)']
 
 [tool.taskipy.tasks]
 lint = 'ruff check . && blue --check . --diff'
