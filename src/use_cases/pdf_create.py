@@ -1,3 +1,4 @@
+from src.error.types.http_not_found import NotFoundError
 from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_atleta import AtletaRepo
 from src.repository.repo_caracteristicas import CaracteristicasRepo
@@ -36,7 +37,8 @@ class PdfCreateUseCase:
 
         filters: dict = {'page': 1, 'per_page': 1000, 'model': 'fisico'}
 
-        atleta = self.atleta_repository.get_atleta(atleta_id)
+        atleta = self._get_atleta(atleta_id)
+        
         _, clubes = self.clube_repository.list_clube(atleta_id, filters)
         _, lesoes = self.lesao_repository.list_lesao(atleta_id, filters)
         _, controles = self.controle_repository.list_controle(atleta_id, filters)
@@ -61,3 +63,11 @@ class PdfCreateUseCase:
         }
 
         return data
+    
+    def _get_atleta(self, atleta_id: int) -> dict:
+        atleta = self.atleta_repository.get_atleta(atleta_id)
+
+        if atleta is not None:
+            return atleta
+
+        raise NotFoundError('Atleta não encontrado')
