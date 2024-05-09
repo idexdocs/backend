@@ -80,7 +80,7 @@ router.add_api_route(
 )
 
 router.add_api_route(
-    '/token',
+    '/auth/token',
     endpoint=token,
     response_model=Token,
     tags=['Token'],
