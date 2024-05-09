@@ -22,6 +22,7 @@ from src.main.rest.relacionamento_create import relacionamento_create
 from src.main.rest.relacionamento_list import relacionamento
 from src.main.rest.token import token
 from src.main.rest.usuario_create import usuario_create
+from src.main.rest.usuario_list import usuario_list
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.caracteristica import CaracteristicaCreateResponse
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
@@ -1226,6 +1227,50 @@ router.add_api_route(
                 'schema': {'type': 'integer', 'example': 1},
             }
         ],
+    },
+)
+router.add_api_route(
+    '/usuarios',
+    endpoint=usuario_list,
+    tags=['Usuário'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+        ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            "count": 1,
+                            "total": 1,
+                            "type": "Usuarios",
+                            "data": [
+                                {
+                                    "nome": "Igor de Freitas Cruz",
+                                    "email": "igor.freitas.cruz@icloud.com",
+                                    "data_criacao": "2024-05-07",
+                                    "tipo": "admin"
+                                }
+                            ]
+                        }
+                    }
+                },
+            },
+        },
     },
 )
 
