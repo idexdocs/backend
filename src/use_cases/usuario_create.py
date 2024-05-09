@@ -22,7 +22,7 @@ class UsuarioCreateUseCase:
         return self.usuario_repository.create_usuario(usuario_data)
 
     def _get_password_hash(self, password: str) -> str:
-        return get_password_hash.hash(password)
+        return get_password_hash(password)
 
     def _check_usuario_exists(self, usuario_email: str):
         usuario = self.usuario_repository.get_usuario_by_email(usuario_email)

@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 
-from src.schemas.usuario import UsuarioCreateResponse
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
@@ -47,6 +46,7 @@ from src.schemas.relacionamento import (
     RelacionamentoResponse,
 )
 from src.schemas.token import Token
+from src.schemas.usuario import UsuarioCreateResponse
 
 router = APIRouter()
 
