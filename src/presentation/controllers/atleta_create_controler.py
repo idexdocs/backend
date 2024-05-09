@@ -16,4 +16,4 @@ class AtletaCreateController(ControllerInterface):
     def handle(self, http_request: HttpRequest) -> HttpResponse:
         result: list = self._use_case.execute(http_request=http_request)
 
-        return HttpResponse(body=result, status_code=HttpStatusCode.OK.value)
+        return HttpResponse(body=result, status_code=HttpStatusCode.CREATED.value)

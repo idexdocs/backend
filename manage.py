@@ -211,7 +211,7 @@ def test(args):
     cmdline = docker_compose_cmdline('up -d')
     subprocess.call(cmdline)
 
-    cmdline = docker_compose_cmdline('logs sqlserv-cross-selling-test')
+    cmdline = docker_compose_cmdline('logs sqlserver-test')
     wait_for_logs(cmdline, 'Service Broker manager has started.')
 
     run_sql([f"CREATE DATABASE {os.getenv('APPLICATION_DB')}"])

@@ -16,7 +16,6 @@ class BaseSQL:
 
         self.engine = create_engine(self._connection_string)
         SQLModel.metadata.create_all(self.engine)
-        SQLModel.metadata.bind = self.engine
 
 
 base = BaseSQL()
