@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.schemas.usuario import UsuarioCreateResponse
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
@@ -52,17 +53,56 @@ router = APIRouter()
 router.add_api_route(
     '/usuario/create',
     endpoint=usuario_create,
+    response_model=UsuarioCreateResponse,
     tags=['Usuário'],
     methods=['POST'],
-    openapi_extra={},
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para login de usuário',
+                            'description': 'usuario_tipo_id: 1 - admim 2 - treinador 3 - externo',
+                            'value': {
+                                'nome': 'Nome completo',
+                                'email': 'email@cloud.com',
+                                'password': 'teste1234',
+                                'usuario_tipo_id': '1',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
 )
+
 router.add_api_route(
     '/token',
     endpoint=token,
     response_model=Token,
     tags=['Token'],
     methods=['POST'],
-    openapi_extra={},
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para login de usuário',
+                            'value': {
+                                'email': 'emaill@cloud.com',
+                                'password': 'teste1234',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
 )
 router.add_api_route(
     '/atleta',
@@ -1255,17 +1295,17 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            "count": 1,
-                            "total": 1,
-                            "type": "Usuarios",
-                            "data": [
+                            'count': 1,
+                            'total': 1,
+                            'type': 'Usuarios',
+                            'data': [
                                 {
-                                    "nome": "Igor de Freitas Cruz",
-                                    "email": "igor.freitas.cruz@icloud.com",
-                                    "data_criacao": "2024-05-07",
-                                    "tipo": "admin"
+                                    'nome': 'Igor de Freitas Cruz',
+                                    'email': 'igor.freitas.cruz@icloud.com',
+                                    'data_criacao': '2024-05-07',
+                                    'tipo': 'admin',
                                 }
-                            ]
+                            ],
                         }
                     }
                 },

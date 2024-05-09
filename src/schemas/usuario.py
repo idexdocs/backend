@@ -6,3 +6,7 @@ class UsuarioCreateSchema(BaseModel):
     email: EmailStr
     password: str
     usuario_tipo_id: int = Field(..., ge=1, le=3)
+
+
+class UsuarioCreateResponse(BaseModel):
+    id: int

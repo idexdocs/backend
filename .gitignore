@@ -5,7 +5,6 @@
 memo.txt
 config/
 docker/
-:memory
 
 ### macOS ###
 # General
