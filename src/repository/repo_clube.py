@@ -50,7 +50,7 @@ class ClubeRepo:
 
             return total_count, self._create_clube_objects(paginated_results)
 
-    def create_clube(self, clube_data: int) -> dict:
+    def create_clube(self, clube_data: dict) -> dict:
         with self.session_factory() as session:
             new_clube = HistoricoClube(**clube_data)
             session.add(new_clube)
