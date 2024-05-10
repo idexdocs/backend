@@ -791,7 +791,7 @@ router.add_api_route(
                             'value': {
                                 'atleta_id': 1,
                                 'descricao': 'Entorse de tornozelo esquerdo',
-                                'data_lesao': '2024-01-01'
+                                'data_lesao': '2024-01-01',
                             },
                         }
                     },
@@ -833,10 +833,13 @@ router.add_api_route(
                         'example1': {
                             'summary': 'Exemplo de payload para criação de competição',
                             'value': {
-                                'atleta_id': 20,
-                                'nome': 'São João',
-                                'data_inicio': '2024-01-01',
-                                'data_fim': None,
+                                'atleta_id': 1,
+                                'nome': 'Brasileiro 2023',
+                                'data_competicao': '2023-06-13',
+                                'jogos_completos': 5,
+                                'jogos_parciais': 1,
+                                'minutagem': 480,
+                                'gols': 12,
                             },
                         }
                     },
