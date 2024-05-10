@@ -789,10 +789,9 @@ router.add_api_route(
                             'summary': 'Exemplo de payload para criação de clube',
                             'description': 'Caso seja o clube atual não insesir data_fim',
                             'value': {
-                                'atleta_id': 20,
-                                'nome': 'São João',
-                                'data_inicio': '2024-01-01',
-                                'data_fim': None,
+                                'atleta_id': 1,
+                                'descricao': 'Entorse de tornozelo esquerdo',
+                                'data_lesao': '2024-01-01'
                             },
                         }
                     },
