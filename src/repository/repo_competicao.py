@@ -17,8 +17,9 @@ class CompeticaoRepo:
                 'jogos_completos': jogos_completos,
                 'jogos_parciais': jogos_parciais,
                 'minutagem': minutagem,
+                'gols': gols,
             }
-            for nome, data_competicao, jogos_completos, jogos_parciais, minutagem in result
+            for nome, data_competicao, jogos_completos, jogos_parciais, minutagem, gols in result
         ]
 
         return competicao_list
@@ -31,6 +32,7 @@ class CompeticaoRepo:
                 HistoricoCompeticao.jogos_completos,
                 HistoricoCompeticao.jogos_parciais,
                 HistoricoCompeticao.minutagem,
+                HistoricoCompeticao.gols,
             ).where(HistoricoCompeticao.atleta_id == atleta_id)
 
             # conta o número total de items sem paginação
