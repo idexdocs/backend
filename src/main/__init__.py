@@ -124,15 +124,15 @@ router.add_api_route(
                                     'data_nascimento': '1980-09-21',
                                     'posicao_primaria': 'atacante',
                                     'posicao_secundaria': 'meia',
-                                    'posicao_terciaria': 'null',
+                                    'posicao_terciaria': None,
                                     'clube_atual': 'Clube 1',
                                 },
                                 {
                                     'nome': 'Atleta 2',
                                     'data_nascimento': '1985-03-11',
                                     'posicao_primaria': 'Goleiro',
-                                    'posicao_secundaria': 'null',
-                                    'posicao_terciaria': 'null',
+                                    'posicao_secundaria': None,
+                                    'posicao_terciaria': None,
                                     'clube_atual': 'Clube 1a',
                                 },
                             ],
@@ -221,7 +221,7 @@ router.add_api_route(
                                     'data_nascimento': '1985-03-11',
                                     'posicao_primaria': 'atacante',
                                     'posicao_secundaria': 'meia',
-                                    'posicao_terciaria': 'null',
+                                    'posicao_terciaria': None,
                                     'clube_atual': 'Clube 1a',
                                     'contrato': {
                                         'tipo': 'Amador',
@@ -456,7 +456,7 @@ router.add_api_route(
                                 {
                                     'nome': 'Clube B',
                                     'data_inicio': '2023-01-01',
-                                    'data_fim': 'null',
+                                    'data_fim': None,
                                 },
                             ],
                         }
@@ -510,7 +510,7 @@ router.add_api_route(
                                 },
                                 'posicao_primaria': 'atacante',
                                 'posicao_secundaria': 'volante',
-                                'posicao_terciaria': 'null',
+                                'posicao_terciaria': None,
                             },
                         }
                     },
@@ -598,7 +598,7 @@ router.add_api_route(
                                 {
                                     'nome': 'Clube B',
                                     'data_inicio': '2023-01-01',
-                                    'data_fim': 'null',
+                                    'data_fim': None,
                                 },
                             ],
                         }
@@ -746,7 +746,7 @@ router.add_api_route(
                                 'atleta_id': 20,
                                 'nome': 'São João',
                                 'data_inicio': '2024-01-01',
-                                'data_fim': 'null',
+                                'data_fim': None,
                             },
                         }
                     },
@@ -792,7 +792,7 @@ router.add_api_route(
                                 'atleta_id': 20,
                                 'nome': 'São João',
                                 'data_inicio': '2024-01-01',
-                                'data_fim': 'null',
+                                'data_fim': None,
                             },
                         }
                     },
@@ -837,7 +837,7 @@ router.add_api_route(
                                 'atleta_id': 20,
                                 'nome': 'São João',
                                 'data_inicio': '2024-01-01',
-                                'data_fim': 'null',
+                                'data_fim': None,
                             },
                         }
                     },
@@ -1022,7 +1022,7 @@ router.add_api_route(
                                     'peso': 92.0,
                                     'percentual_gordura': 17.0,
                                     'data_criacao': '2024-05-03',
-                                    'data_atualizado': 'null',
+                                    'data_atualizado': None,
                                     'atleta_id': 1,
                                 }
                             ],
