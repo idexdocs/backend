@@ -7,6 +7,12 @@ from src.repository.repo_atleta import AtletaRepo
 
 
 class FileUploadUseCase:
+    MIME_TYPE_EXT_MAP: dict[str, str] = {
+        'image/jpeg': '.jpeg',
+        'image/png': '.png',
+        # Add more MIME types and their corresponding extensions as needed
+    }
+
     def __init__(
         self, atleta_repository: AtletaRepo, storage_service: AzureBlobStorage
     ):
@@ -29,10 +35,19 @@ class FileUploadUseCase:
 
     def _upload_image(self, image_file: UploadFile, atleta_id: int):
         filename = f'atleta_{atleta_id}'
+
+        mime_type = image_file.content_type
+        extension = self.MIME_TYPE_EXT_MAP.get(mime_type)
+
+        if not extension:
+            raise RuntimeError(f'Tipo de arquivo não suportado: {mime_type}')
+        
+        filename_with_extension = f'{filename}{extension}'
+
         try:
-            self.storage_service.upload_image(image_file.file.read(), filename)
+            file_data = image_file.file.read()
+            self.storage_service.upload_image(file_data, filename_with_extension)
         except Exception as e:
-            # Handle upload failure
             raise RuntimeError(f'Erro ao salvar a imagem: {e}')
 
     def _format_response(self) -> dict:

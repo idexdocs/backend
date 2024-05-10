@@ -24,8 +24,7 @@ class AzureBlobStorage:
             blob_client = self._blob_service_client.get_blob_client(
                 container=self.container_name, blob=filename
             )
-            blob_client.upload_blob(image_data)
-            print(f'Upload of {filename} successful')
+            blob_client.upload_blob(image_data, overwrite=True)
         except Exception as e:
             # Handle exceptions
             print(f'An error occurred while uploading {filename}: {e}')
