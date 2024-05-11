@@ -22,6 +22,17 @@ class UsuarioRepo:
 
         return usuario_list
 
+    def _create_usuario_token_objects(self, usuario: Usuario) -> list[dict]:
+        usuario = {
+            'id': usuario.id,
+            'nome': usuario.nome,
+            'email': usuario.email,
+            'data_criacao': usuario.data_criacao.strftime('%Y-%m-%d'),
+            'tipo': usuario.tipo.value,
+        }
+
+        return usuario
+
     def create_usuario(self, usuario_data: dict) -> dict:
         with self.session_factory() as session:
             new_usuario = Usuario(**usuario_data)
@@ -33,21 +44,32 @@ class UsuarioRepo:
 
     def get_usuario_by_email(self, usuario_email: str) -> dict:
         with self.session_factory() as session:
-            query = select(Usuario).where(Usuario.email == usuario_email)
+            query = (
+                select(
+                    Usuario.id,
+                    Usuario.nome,
+                    Usuario.email,
+                    Usuario.data_criacao,
+                    UsuarioTipo.tipo,
+                )
+                .join(UsuarioTipo)
+                .where(Usuario.email == usuario_email)
+            )
 
         try:
             result = session.exec(query).one()
-            return result
+            return self._create_usuario_token_objects(result)
         except NoResultFound:
             return None
 
     def list_usuario(self, filters: dict = {}):
         with self.session_factory() as session:
             query = select(
+                Usuario.id,
                 Usuario.nome,
                 Usuario.email,
                 Usuario.data_criacao,
-                UsuarioTipo.tipo
+                UsuarioTipo.tipo,
             ).join(UsuarioTipo)
 
             # conta o Usuarionúmero total de items sem paginação

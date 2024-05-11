@@ -63,7 +63,7 @@ class CaracteristicaListUseCase:
         mapper = {'_fis': 'fisico', '_tec': 'tecnico', '_psi': 'psicologico'}
 
         # Collect keys that don't need processing for sums and means just once
-        excluded_keys = {'id', 'data_avaliacao'}
+        excluded_keys = {'data_avaliacao'}
         for item in data:
             for suffix in suffixes:
                 extracted = {
