@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from src.error.types.http_not_found import NotFoundError
 from src.presentation.http_types.http_request import HttpRequest
 from src.repository.repo_atleta import AtletaRepo
@@ -49,7 +51,42 @@ class CaracteristicaListUseCase:
                 f'O Atleta não possui {caracteristica} {tipo} cadastrada'
             )
 
-        return total_count, caracteristicas, model_name
+        agregado = self._agrega_total_e_media(caracteristicas)
+
+        return total_count, agregado, model_name
+
+    def _agrega_total_e_media(self, caracteristicas: list):
+        data = caracteristicas
+
+        result = defaultdict(list)
+        suffixes = ['_fis', '_tec', '_psi']
+        mapper = {'_fis': 'fisico', '_tec': 'tecnico', '_psi': 'psicologico'}
+
+        # Collect keys that don't need processing for sums and means just once
+        excluded_keys = {'id', 'data_avaliacao'}
+        for item in data:
+            for suffix in suffixes:
+                extracted = {
+                    key: value
+                    for key, value in item.items()
+                    if key.endswith(suffix) or key in excluded_keys
+                }
+
+                # Calculate the sum and mean outside of the innermost loop
+                numeric_values = [
+                    value
+                    for key, value in extracted.items()
+                    if key not in excluded_keys
+                ]
+                total = sum(numeric_values)
+                mean = total / len(numeric_values)
+
+                extracted['sum'] = total
+                extracted['mean'] = mean
+
+                result[mapper.get(suffix)].append(extracted)
+
+        return dict(result)
 
     def _format_response(
         self, total_count: int, result: list[dict], model_name: str

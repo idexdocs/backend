@@ -56,11 +56,6 @@ class CaracteristicasRepo:
                     row_dict[field_name] = value
             dicts.append(row_dict)
 
-        import sys
-        from pprint import pprint
-        print('*'*10,__name__,': line',sys._getframe().f_lineno,'*'*10, flush=True)
-        pprint(dicts)
-
         return dicts, model_name
 
     def _get_model(self, model_name: str):

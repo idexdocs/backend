@@ -28,21 +28,21 @@ class CaracteristicaFisicaCreateSchema(BaseModel):
 
 class CaracteristicaZagueiroCreateSchema(BaseModel):
     caracteristica: str
-    estatura: int
-    força: int
-    passe_curto: int
-    passe_longo: int
-    jogo_aereo: int
-    confronto_defensivo: int
-    leitura_jogo: int
-    ambidestria: int
-    participacao_ofensica: int
-    cabeceio_ofensivo: int
-    passe_entre_linhas: int
-    lideranca: int
-    confianca: int
-    inteligencia_tatica: int
-    competitividade: int
+    estatura_fis: int
+    força_fis: int
+    passe_curto_fis: int
+    passe_longo_fis: int
+    jogo_aereo_fis: int
+    confronto_defensivo_fis: int
+    leitura_jogo_tec: int
+    ambidestria_tec: int
+    participacao_ofensica_tec: int
+    cabeceio_ofensivo_tec: int
+    passe_entre_linhas_tec: int
+    lideranca_psi: int
+    confianca_psi: int
+    inteligencia_tatica_psi: int
+    competitividade_psi: int
     atleta_id: int
     data_avaliacao: str
 
@@ -53,124 +53,130 @@ class CaracteristicaZagueiroCreateSchema(BaseModel):
 
 class CaracteristicaLateralCreateSchema(BaseModel):
     caracteristica: str
-    estatura: int
-    velocidade: int
-    passe_curto: int
-    passe_longo: int
-    capacidade_aerobia: int
-    fechemanento_defensivo: int
-    leitura_jogo: int
-    participacao_ofensiva: int
-    cruzamento: int
-    jogo_aereo: int
-    conducao_bola: int
-    lideranca: int
-    confianca: int
-    inteligencia_tatica: int
-    competitividade: int
+    estatura_fis: int
+    velocidade_fis: int
+    passe_curto_fis: int
+    passe_longo_fis: int
+    capacidade_aerobia_fis: int
+    fechemanento_defensivo_fis: int
+    leitura_jogo_tec: int
+    participacao_ofensiva_tec: int
+    cruzamento_tec: int
+    jogo_aereo_tec: int
+    conducao_bola_tec: int
+    lideranca_psi: int
+    confianca_psi: int
+    inteligencia_tatica_psi: int
+    competitividade_psi: int
     atleta_id: int
     data_avaliacao: str
 
     _validate_data_inicio = field_validator('data_avaliacao')(
         validate_date_format
     )
+
 
 class CaracteristicaGoleiroCreateSchema(BaseModel):
     caracteristica: str
-    perfil: int
-    maturacao: int
-    agilidade: int
-    velocidade_membros_superiores: int
-    flexibilidade: int
-    leitura_jogo: int
-    jogo_com_pes: int
-    organizacao_da_defesa: int
-    dominio_coberturas_e_saidas: int
-    lideranca: int
-    coragem: int
-    concentracao: int
-    controle_estresse: int
+    perfil_fis: int
+    maturacao_fis: int
+    agilidade_fis: int
+    velocidade_membros_superiores_fis: int
+    flexibilidade_fis: int
+    posicionamento_fis: int
+    leitura_jogo_tec: int
+    jogo_com_pes_tec: int
+    organizacao_da_defesa_tec: int
+    dominio_coberturas_e_saidas_tec: int
+    lideranca_psi: int
+    coragem_psi: int
+    concentracao_psi: int
+    controle_estresse_psi: int
     atleta_id: int
     data_avaliacao: str
 
     _validate_data_inicio = field_validator('data_avaliacao')(
         validate_date_format
     )
+
 
 class CaracteristicaVolanteCreateSchema(BaseModel):
     caracteristica: str
-    estatura: int
-    forca: int
-    passe_curto: int
-    capacidade_aerobia: int
-    dinamica: int
-    visao_espacial: int
-    leitura_jogo: int
-    dominio_orientado: int
-    jogo_aereo_ofensivo: int
-    passes_verticais: int
-    finalizacao_media_distancia: int
-    lideranca: int
-    confianca: int
-    inteligencia_tatica: int
-    competitividade: int
+    estatura_fis: int
+    forca_fis: int
+    passe_curto_fis: int
+    capacidade_aerobia_fis: int
+    dinamica_fis: int
+    visao_espacial_fis: int
+    leitura_jogo_tec: int
+    dominio_orientado_tec: int
+    jogo_aereo_ofensivo_tec: int
+    passes_verticais_tec: int
+    finalizacao_media_distancia_tec: int
+    lideranca_psi: int
+    confianca_psi: int
+    inteligencia_tatica_psi: int
+    competitividade_psi: int
     atleta_id: int
     data_avaliacao: str
 
     _validate_data_inicio = field_validator('data_avaliacao')(
         validate_date_format
     )
+
 
 class CaracteristicaAtacanteCreateSchema(BaseModel):
     caracteristica: str
-    estatura: int
-    velocidade: int
-    um_contra_um_ofensivo: int
-    desmarques: int
-    controle_bola: int
-    cruzamentos: int
-    finalizacao: int
-    visao_espacial: int
-    dominio_orientado: int
-    dribles_em_diagonal: int
-    leitura_jogo: int
-    reacao_pos_perda: int
-    criatividade: int
-    capacidade_decisao: int
-    inteligencia_tatica: int
-    competitividade: int
+    estatura_fis: int
+    velocidade_fis: int
+    um_contra_um_ofensivo_fis: int
+    desmarques_fis: int
+    controle_bola_fis: int
+    cruzamentos_fis: int
+    finalizacao_fis: int
+    visao_espacial_tec: int
+    dominio_orientado_tec: int
+    dribles_em_diagonal_tec: int
+    leitura_jogo_tec: int
+    reacao_pos_perda_tec: int
+    criatividade_psi: int
+    capacidade_decisao_psi: int
+    inteligencia_tatica_psi: int
+    competitividade_psi: int
     atleta_id: int
     data_avaliacao: str
 
     _validate_data_inicio = field_validator('data_avaliacao')(
         validate_date_format
     )
+
 
 class CaracteristicaMeiaCreateSchema(BaseModel):
     caracteristica: str
-    estatura: int
-    velocidade: int
-    leitura_jogo: int
-    desmarques: int
-    controle_bola: int
-    capacidade_aerobia: int
-    finalizacao: int
-    visao_espacial: int
-    dominio_orientado: int
-    dribles: int
-    organizacao_acao_ofensica: int
-    pisada_na_area_para_finalizar: int
-    criatividade: int
-    capacidade_decisao: int
-    confianca: int
-    inteligencia_tatica: int
-    competitividade: int
+    estatura_fis: int
+    velocidade_fis: int
+    leitura_jogo_fis: int
+    desmarques_fis: int
+    controle_bola_fis: int
+    capacidade_aerobia_fis: int
+    finalizacao_fis: int
+    visao_espacial_tec: int
+    dominio_orientado_tec: int
+    dribles_tec: int
+    organizacao_acao_ofensica_tec: int
+    pisada_na_area_para_finalizar_tec: int
+    criatividade_psi: int
+    capacidade_decisao_psi: int
+    confianca_psi: int
+    inteligencia_tatica_psi: int
+    competitividade_psi: int
     atleta_id: int
     data_avaliacao: str
 
     _validate_data_inicio = field_validator('data_avaliacao')(
         validate_date_format
     )
+
 
 class CaracteristicaCreateResponse(BaseModel):
     id: int
