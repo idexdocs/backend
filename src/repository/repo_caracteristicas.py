@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlmodel import func, select
 
@@ -50,9 +50,16 @@ class CaracteristicasRepo:
                 value = getattr(row, field_name)
                 if isinstance(value, datetime):
                     row_dict[field_name] = value.strftime('%Y-%m-%d %H:%M:%S')
+                elif isinstance(value, date):
+                    row_dict[field_name] = value.strftime('%Y-%m-%d')
                 else:
                     row_dict[field_name] = value
             dicts.append(row_dict)
+
+        import sys
+        from pprint import pprint
+        print('*'*10,__name__,': line',sys._getframe().f_lineno,'*'*10, flush=True)
+        pprint(dicts)
 
         return dicts, model_name
 
