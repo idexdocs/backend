@@ -1078,7 +1078,6 @@ router.add_api_route(
         'requestBody': {
             'content': {
                 'application/json': {
-                    'schema': ObservacaoCreateSchema.model_json_schema(),
                     'examples': {
                         'example1': {
                             'summary': 'Exemplo de payload para criação de características físicas',
@@ -1089,6 +1088,7 @@ router.add_api_route(
                                 'envergadura': 183.0,
                                 'peso': 90.0,
                                 'percentual_gordura': 15.3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example2': {
@@ -1111,6 +1111,7 @@ router.add_api_route(
                                 'confianca': 3,
                                 'inteligencia_tatica': 3,
                                 'competitividade': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example3': {
@@ -1133,6 +1134,7 @@ router.add_api_route(
                                 'confianca': 3,
                                 'inteligencia_tatica': 3,
                                 'competitividade': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example4': {
@@ -1153,6 +1155,7 @@ router.add_api_route(
                                 'coragem': 3,
                                 'concentracao': 3,
                                 'controle_estresse': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example5': {
@@ -1175,6 +1178,7 @@ router.add_api_route(
                                 'confianca': 3,
                                 'inteligencia_tatica': 3,
                                 'competitividade': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example6': {
@@ -1198,6 +1202,7 @@ router.add_api_route(
                                 'capacidade_decisao': 3,
                                 'inteligencia_tatica': 3,
                                 'competitividade': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                         'example7': {
@@ -1222,6 +1227,7 @@ router.add_api_route(
                                 'confianca': 3,
                                 'inteligencia_tatica': 3,
                                 'competitividade': 3,
+                                'data_avaliacao': '2024-01-01',
                             },
                         },
                     },

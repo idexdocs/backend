@@ -212,6 +212,7 @@ class CaracteristicaFisica(SQLModel, table=True):
     envergadura: float | None
     peso: float | None
     percentual_gordura: float | None
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -237,6 +238,7 @@ class CaracteristicaZagueiro(SQLModel, table=True):
     confianca: int
     inteligencia_tatica: int
     competitividade: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -262,6 +264,7 @@ class CaracteristicaLateral(SQLModel, table=True):
     confianca: int
     inteligencia_tatica: int
     competitividade: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -285,6 +288,7 @@ class CaracteristicaGoleiro(SQLModel, table=True):
     coragem: int
     concentracao: int
     controle_estresse: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -310,6 +314,7 @@ class CaracteristicaVolante(SQLModel, table=True):
     confianca: int
     inteligencia_tatica: int
     competitividade: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -336,6 +341,7 @@ class CaracteristicaAtacante(SQLModel, table=True):
     capacidade_decisao: int
     inteligencia_tatica: int
     competitividade: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
@@ -363,6 +369,7 @@ class CaracteristicaMeia(SQLModel, table=True):
     confianca: int
     inteligencia_tatica: int
     competitividade: int
+    data_avaliacao: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )

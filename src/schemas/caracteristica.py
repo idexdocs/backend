@@ -1,4 +1,15 @@
-from pydantic import BaseModel
+from datetime import datetime
+
+from pydantic import BaseModel, field_validator
+
+
+def validate_date_format(date_str: str) -> str:
+    if date_str is not None:
+        try:
+            datetime.strptime(date_str, '%Y-%m-%d')
+            return date_str
+        except ValueError:
+            raise ValueError('Formato de data inválido, utilize YYYY-MM-DD')
 
 
 class CaracteristicaFisicaCreateSchema(BaseModel):
@@ -8,6 +19,11 @@ class CaracteristicaFisicaCreateSchema(BaseModel):
     peso: float
     percentual_gordura: float
     atleta_id: int
+    data_avaliacao: str
+
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 
 class CaracteristicaZagueiroCreateSchema(BaseModel):
@@ -28,6 +44,11 @@ class CaracteristicaZagueiroCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+    data_avaliacao: str
+
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 
 class CaracteristicaLateralCreateSchema(BaseModel):
@@ -48,7 +69,11 @@ class CaracteristicaLateralCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+    data_avaliacao: str
 
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 class CaracteristicaGoleiroCreateSchema(BaseModel):
     caracteristica: str
@@ -66,7 +91,11 @@ class CaracteristicaGoleiroCreateSchema(BaseModel):
     concentracao: int
     controle_estresse: int
     atleta_id: int
+    data_avaliacao: str
 
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 class CaracteristicaVolanteCreateSchema(BaseModel):
     caracteristica: str
@@ -86,7 +115,11 @@ class CaracteristicaVolanteCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+    data_avaliacao: str
 
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 class CaracteristicaAtacanteCreateSchema(BaseModel):
     caracteristica: str
@@ -107,7 +140,11 @@ class CaracteristicaAtacanteCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+    data_avaliacao: str
 
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 class CaracteristicaMeiaCreateSchema(BaseModel):
     caracteristica: str
@@ -129,7 +166,11 @@ class CaracteristicaMeiaCreateSchema(BaseModel):
     inteligencia_tatica: int
     competitividade: int
     atleta_id: int
+    data_avaliacao: str
 
+    _validate_data_inicio = field_validator('data_avaliacao')(
+        validate_date_format
+    )
 
 class CaracteristicaCreateResponse(BaseModel):
     id: int
