@@ -1,5 +1,5 @@
 from sqlmodel import func, select
-
+from datetime import datetime
 from src.repository.model_objects import HistoricoClube
 
 from .base_repo import create_session
@@ -12,13 +12,14 @@ class ClubeRepo:
     def _create_clube_objects(self, result: list) -> list[dict]:
         clube_list = [
             {
+                'clube_id': id_,
                 'nome': nome,
                 'data_inicio': data_inicio.strftime('%Y-%m-%d'),
                 'data_fim': data_fim.strftime('%Y-%m-%d')
                 if data_fim is not None
                 else None,
             }
-            for nome, data_inicio, data_fim in result
+            for id_, nome, data_inicio, data_fim in result
         ]
 
         return clube_list
@@ -26,6 +27,7 @@ class ClubeRepo:
     def list_clube(self, atleta_id: int, filters: dict = {}):
         with self.session_factory() as session:
             query = select(
+                HistoricoClube.id,
                 HistoricoClube.nome,
                 HistoricoClube.data_inicio,
                 HistoricoClube.data_fim,
@@ -57,3 +59,16 @@ class ClubeRepo:
             session.commit()
             session.refresh(new_clube)
             return {'id': new_clube.id}
+
+    def update_data_fim(self, historico_clube_id: int, new_data_fim: str):
+        with self.session_factory() as session:
+            statement = select(HistoricoClube).where(
+                HistoricoClube.id == historico_clube_id
+            )
+            clube = session.exec(statement).one()
+
+            clube.data_fim = new_data_fim
+            clube.data_atualizado = datetime.now()
+            session.add(clube)
+            session.commit()
+            session.refresh(clube)

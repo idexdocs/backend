@@ -7,6 +7,7 @@ class ClubeCreateSchema(BaseModel):
     atleta_id: int = Field(..., gt=0)
     nome: str
     data_inicio: str
+    clube_atual: bool
     data_fim: str | None
 
     @field_validator('data_inicio', 'data_fim')
