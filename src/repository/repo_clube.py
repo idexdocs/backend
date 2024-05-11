@@ -1,5 +1,7 @@
-from sqlmodel import func, select
 from datetime import datetime
+
+from sqlmodel import func, select
+
 from src.repository.model_objects import HistoricoClube
 
 from .base_repo import create_session

@@ -740,15 +740,27 @@ router.add_api_route(
                     'schema': ClubeCreateSchema.model_json_schema(),
                     'examples': {
                         'example1': {
-                            'summary': 'Exemplo de payload para criação de clube',
-                            'description': 'Caso seja o clube atual não insesir data_fim',
+                            'summary': 'Exemplo de payload para criação de clube atual',
+                            'description': 'Caso seja o clube atual a data fim pertencerá ao clube anterior',
                             'value': {
-                                'atleta_id': 20,
-                                'nome': 'São João',
+                                'atleta_id': 1,
+                                'nome': 'Clube novo',
                                 'data_inicio': '2024-01-01',
-                                'data_fim': None,
+                                'clube_atual': True,
+                                'data_fim': 'null',
                             },
-                        }
+                        },
+                        'example2': {
+                            'summary': 'Exemplo de payload para adição de clube ao histórico',
+                            'description': 'Caso seja não seja o clube atual a data fim pertencerá ao clube adicionado',
+                            'value': {
+                                'atleta_id': 1,
+                                'nome': 'Clube antigo',
+                                'data_inicio': '2024-01-01',
+                                'clube_atual': False,
+                                'data_fim': '2024-06-01',
+                            },
+                        },
                     },
                 }
             },
