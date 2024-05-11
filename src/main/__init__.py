@@ -922,6 +922,12 @@ router.add_api_route(
             },
             {
                 'in': 'query',
+                'name': 'tipo',
+                'required': False,
+                'schema': {'type': 'string'},
+            },
+            {
+                'in': 'query',
                 'name': 'page',
                 'required': False,
                 'schema': {'type': 'integer'},

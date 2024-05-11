@@ -28,6 +28,9 @@ class ObservacaoRepo:
                 HistoricoObservacao.data_criacao,
             ).filter(HistoricoObservacao.atleta_id == atleta_id)
 
+            if tipo := filters.get('tipo'):
+                query = query.filter(HistoricoObservacao.tipo == tipo)
+
             # conta o número total de items sem paginação
             total_count = session.exec(
                 select(func.count()).select_from(query.subquery())
