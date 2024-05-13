@@ -12,12 +12,13 @@ class UsuarioRepo:
     def _create_usuario_objects(self, result: list) -> list[dict]:
         usuario_list = [
             {
+                'id': id_,
                 'nome': nome,
                 'email': email,
                 'data_criacao': data_criacao.strftime('%Y-%m-%d'),
                 'tipo': tipo.value,
             }
-            for nome, email, data_criacao, tipo in result
+            for id_, nome, email, data_criacao, tipo in result
         ]
 
         return usuario_list
