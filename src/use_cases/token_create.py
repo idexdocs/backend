@@ -18,6 +18,7 @@ class TokenCreateUseCase:
             token_data.get('password'), usuario.get('hash_password')
         )
 
+        del usuario['hash_password']
         token = self._create_access_token(usuario)
 
         return {'access_token': token, 'token_type': 'bearer'}
@@ -31,9 +32,9 @@ class TokenCreateUseCase:
         return usuario
 
     def _verify_password(self, usuario_password: str, hashed_password: str):
-        result = verify_password(usuario_password, hashed_password)
+        valid_password = verify_password(usuario_password, hashed_password)
 
-        if not result:
+        if not valid_password:
             raise BadRequestError('Email ou senha incorretos')
 
     def _create_access_token(self, usuario: dict):

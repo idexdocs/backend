@@ -29,6 +29,7 @@ class UsuarioRepo:
             'nome': usuario.nome,
             'email': usuario.email,
             'data_criacao': usuario.data_criacao.strftime('%Y-%m-%d'),
+            'hash_password': usuario.hash_password,
             'tipo': usuario.tipo.value,
         }
 
@@ -51,6 +52,7 @@ class UsuarioRepo:
                     Usuario.nome,
                     Usuario.email,
                     Usuario.data_criacao,
+                    Usuario.hash_password,
                     UsuarioTipo.tipo,
                 )
                 .join(UsuarioTipo)
