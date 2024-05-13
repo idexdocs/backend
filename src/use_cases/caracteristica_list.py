@@ -43,20 +43,16 @@ class CaracteristicaListUseCase:
             atleta_id, filters
         )
 
-        if len(caracteristicas) == 0:
-            caracteristica = model_name[:14].lower()
-            tipo = model_name[14:].lower()
-
-            raise NotFoundError(
-                f'O Atleta não possui {caracteristica} {tipo} cadastrada'
-            )
-
-        agregado = self._agrega_total_e_media(caracteristicas)
+        # As características físicas não possuem valores para agregação
+        agregado = (
+            self._agrega_total_e_media(caracteristicas)
+            if model_name != 'CaracteristicaFisica'
+            else caracteristicas
+        )
 
         return total_count, agregado, model_name
 
     def _agrega_total_e_media(self, caracteristicas: list):
-        data = caracteristicas
 
         result = defaultdict(list)
         suffixes = ['_fis', '_tec', '_psi']
@@ -64,27 +60,28 @@ class CaracteristicaListUseCase:
 
         # Collect keys that don't need processing for sums and means just once
         excluded_keys = {'data_avaliacao'}
-        for item in data:
+
+        for item in caracteristicas:
             for suffix in suffixes:
+                # Extract numeric values and calculate sum and mean separately
+                numeric_values = [
+                    value
+                    for key, value in item.items()
+                    if key.endswith(suffix)
+                ]
+                total = sum(numeric_values)
+                mean = total / len(numeric_values) if numeric_values else 0
+
+                # Create a dictionary with the required extracted data
                 extracted = {
                     key: value
                     for key, value in item.items()
                     if key.endswith(suffix) or key in excluded_keys
                 }
-
-                # Calculate the sum and mean outside of the innermost loop
-                numeric_values = [
-                    value
-                    for key, value in extracted.items()
-                    if key not in excluded_keys
-                ]
-                total = sum(numeric_values)
-                mean = total / len(numeric_values)
-
                 extracted['sum'] = total
                 extracted['mean'] = mean
 
-                result[mapper.get(suffix)].append(extracted)
+                result[mapper[suffix]].append(extracted)
 
         return dict(result)
 
