@@ -11,6 +11,7 @@ class CompeticaoCreateSchema(BaseModel):
     jogos_parciais: int = Field(..., ge=0)
     minutagem: int = Field(..., ge=0)
     gols: int = Field(..., ge=0)
+    assistencias: int = Field(..., ge=0)
 
     @field_validator('data_competicao')
     def validate_date(cls, v):

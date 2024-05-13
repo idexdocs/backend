@@ -156,6 +156,7 @@ class HistoricoCompeticao(SQLModel, table=True):
     jogos_parciais: int
     minutagem: int
     gols: int
+    assistencias: int
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )

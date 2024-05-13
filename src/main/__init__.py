@@ -379,6 +379,7 @@ router.add_api_route(
                                         'jogos_parciais': 2,
                                         'minutagem': 320,
                                         'gols': 8,
+                                        'assistencias': 1,
                                     },
                                     {
                                         'nome': 'Competição 2',
@@ -387,6 +388,7 @@ router.add_api_route(
                                         'jogos_parciais': 4,
                                         'minutagem': 375,
                                         'gols': 8,
+                                        'assistencias': 0,
                                     },
                                 ],
                             },
@@ -852,6 +854,7 @@ router.add_api_route(
                                 'jogos_parciais': 1,
                                 'minutagem': 480,
                                 'gols': 12,
+                                'assistencias': 2,
                             },
                         }
                     },
