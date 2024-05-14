@@ -24,6 +24,7 @@ from src.main.rest.token import token
 from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
 from src.main.rest.usuario_update import usuario_update
+from src.main.rest.usuario_update_password import usuario_update_password
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.caracteristica import CaracteristicaCreateResponse
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
@@ -103,6 +104,33 @@ router.add_api_route(
                                 'nome': 'Nome completo',
                                 'email': 'email@cloud.com',
                                 'usuario_tipo_id': '1',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+
+router.add_api_route(
+    '/usuario/update/password',
+    endpoint=usuario_update_password,
+    tags=['Usuário'],
+    methods=['PUT'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': UsuarioUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para atualização de senha',
+                            'value': {
+                                'id': 1,
+                                'password': 'teste1234',
+                                'new_password': 'nova_senha',
                             },
                         }
                     },

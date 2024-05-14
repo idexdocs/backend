@@ -9,6 +9,7 @@ from .types import (
     ClubeAtivoExistente,
     ExpiredTokenError,
     NotFoundError,
+    SenhaInvalida,
     TokenInvalidError,
     UsuarioExistente,
     UsuarioNaoEncontrado,
@@ -27,7 +28,8 @@ def handle_errors(error: Exception) -> HttpResponse:
             TokenInvalidError,
             ClubeAtivoExistente,
             UsuarioExistente,
-            UsuarioNaoEncontrado
+            UsuarioNaoEncontrado,
+            SenhaInvalida,
         ),
     ):
         logger.info(f'Handling known error: {error.name}')

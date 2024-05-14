@@ -119,13 +119,9 @@ class UsuarioRepo:
 
     def update_usuario(self, usuario_id: int, usuario_data: dict) -> dict:
         with self.session_factory() as session:
-            # Retrieve the existing user by ID
             usuario: Usuario = session.exec(
                 select(Usuario).where(Usuario.id == usuario_id)
             ).one()
-
-            if not usuario:
-                return None
 
             for key, value in usuario_data.items():
                 if value is not None:
@@ -138,3 +134,27 @@ class UsuarioRepo:
             session.refresh(usuario)
 
             return usuario.model_dump(exclude=['data_criacao', 'data_atualizado', 'hash_password'])
+        
+
+    def update_usurio_password(self, usuario_id: int, new_password: str):
+        with self.session_factory() as session:
+            try:
+                usuario: Usuario = session.exec(
+                    select(Usuario).where(Usuario.id == usuario_id)
+                ).one()
+
+                import sys
+                from pprint import pprint
+                print('*'*10,__name__,': line',sys._getframe().f_lineno,'*'*10, flush=True)
+                pprint(usuario)
+                pprint(new_password)
+
+                usuario.hash_password = new_password
+                session.commit()
+                return {'status': True, 'message': 'Senha alterada com sucesso'}
+            except Exception:
+                session.rollback()
+                return {'status': False, 'message': 'Operação não realizada'}
+
+
+

@@ -11,7 +11,7 @@ class UsuarioUpdateUseCase:
         usuario_data: dict = http_request.json
         usuario_id: int = usuario_data.get('id')
 
-        usuario = self._get_usuario_by_id(usuario_id)
+        self._check_usuario_by_id(usuario_id)
 
         return self._update_usuario(usuario_id, usuario_data)
 
@@ -24,5 +24,3 @@ class UsuarioUpdateUseCase:
 
         if usuario is None:
             raise UsuarioNaoEncontrado('Usuário não encontrado')
-        
-        return usuario

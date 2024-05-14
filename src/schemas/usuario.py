@@ -23,3 +23,9 @@ class UsuarioUpdateResponse(BaseModel):
     nome: str
     email: str
     usuario_tipo_id: int
+
+
+class UsuarioUpdatePasswordSchema(BaseModel):
+    id: int = Field(..., ge=1)
+    password: str
+    new_password: str
