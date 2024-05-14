@@ -1,11 +1,12 @@
 import enum
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 
+import pytz
 from sqlmodel import Column, Enum, Field, Relationship, SQLModel
 
 
 def datetime_now_sec():
-    return datetime.now(UTC).replace(microsecond=0)
+    return datetime.now(pytz.timezone('America/Sao_Paulo')).replace(microsecond=0)
 
 
 class UsuarioTipoTypes(enum.Enum):
@@ -33,6 +34,17 @@ class Usuario(SQLModel, table=True):
         default=None, foreign_key='usuariotipo.id'
     )
 
+class UsuarioAvatar(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    blob_url: str
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int = Field(
+        default=None, foreign_key='atleta.id'
+    )
 
 # Many to many relationships
 class AtletaContrato(SQLModel, table=True):

@@ -16,19 +16,18 @@ class FileDownloadUseCase:
         atleta_id: int = http_request.path_params.get('id')
 
         self._check_atleta_exists(atleta_id)
-        image = self._download_image(atleta_id)
+        blob_url = self._get_blob_url(atleta_id)
 
-        return image
+        return self._format_response(blob_url)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
         if atleta is None:
             raise NotFoundError('Atleta não encontrado')
 
-    def _download_image(self, atleta_id: int):
-        filename = f'atleta_{atleta_id}'
-        try:
-            return self.storage_service.download_image(filename)
-        except Exception as e:
-            # Handle upload failure
-            raise RuntimeError(f'Erro ao baixar a imagem: {e}')
+    def _get_blob_url(self, atleta_id: int):
+            return self.atleta_repository.get_blob_url(atleta_id)
+    
+    def _format_response(self, blob_url: str | None):
+        return {'status': bool(blob_url), 'blob_url': blob_url}
+         

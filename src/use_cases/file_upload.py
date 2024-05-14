@@ -47,8 +47,14 @@ class FileUploadUseCase:
         try:
             file_data = image_file.file.read()
             self.storage_service.upload_image(file_data, filename_with_extension)
+            self._save_blob_url_in_database(atleta_id, filename_with_extension)
         except Exception as e:
             raise RuntimeError(f'Erro ao salvar a imagem: {e}')
+
+    def _save_blob_url_in_database(self, atleta_id: int, file_name: str):
+            account_url = self.storage_service.account_url
+            blob_url = account_url + "/" + file_name
+            self.atleta_repository.save_blob_url(atleta_id, blob_url)
 
     def _format_response(self) -> dict:
         return {

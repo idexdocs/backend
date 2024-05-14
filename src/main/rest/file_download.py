@@ -1,5 +1,5 @@
 from fastapi import Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse
 
 from src.error.error_handler import handle_errors
 from src.main.adapters.request_adapter import request_adapter
@@ -13,8 +13,4 @@ async def file_download(request: Request):
         )
     except Exception as exc:
         http_response = handle_errors(exc)
-    return StreamingResponse(
-        iter([http_response.body]),
-        media_type='image/jpeg',
-        headers={'Content-Disposition': 'attachment; filename=atleta-avatar'},
-    )
+    return JSONResponse(http_response.body, http_response.status_code)

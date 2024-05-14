@@ -1330,9 +1330,9 @@ router.add_api_route(
     },
 )
 router.add_api_route(
-    '/file-download/atleta/{id}',
+    '/avatar/atleta/{id}',
     endpoint=file_download,
-    tags=['Arquivo'],
+    tags=['Avatar'],
     methods=['GET'],
     openapi_extra={
         'parameters': [
@@ -1344,6 +1344,27 @@ router.add_api_route(
                 'schema': {'type': 'integer', 'example': 1},
             }
         ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'status': True,
+                            'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta_1.jpeg',
+                        }
+                    }
+                },
+            },
+            '400': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {'status': False, 'blob_url': 'null'},
+                    }
+                },
+            },
+        },
     },
 )
 router.add_api_route(

@@ -10,6 +10,7 @@ from .model_objects import (
     Contrato,
     HistoricoClube,
     Posicao,
+    UsuarioAvatar,
 )
 
 
@@ -208,3 +209,20 @@ class AtletaRepo:
             except Exception:
                 session.rollback()
                 raise
+
+    def save_blob_url(self, atleta_id: int, blob_url: str):
+        with self.session_factory() as session:
+            new_user_avatar = UsuarioAvatar(blob_url=blob_url, atleta_id=atleta_id)
+            session.add(new_user_avatar)
+            session.commit()
+
+
+    def get_blob_url(self, atleta_id: int):
+        with self.session_factory() as session:
+            query = select(UsuarioAvatar).where(UsuarioAvatar.atleta_id == atleta_id)
+
+        try:
+            result = session.exec(query).one()
+            return result.blob_url
+        except NoResultFound:
+            return None
