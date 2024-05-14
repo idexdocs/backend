@@ -10,3 +10,16 @@ class UsuarioCreateSchema(BaseModel):
 
 class UsuarioCreateResponse(BaseModel):
     id: int
+
+
+class UsuarioUpdateSchema(BaseModel):
+    id: int = Field(..., ge=1)
+    nome: str
+    email: EmailStr
+    usuario_tipo_id: int = Field(..., ge=1, le=3)
+
+
+class UsuarioUpdateResponse(BaseModel):
+    nome: str
+    email: str
+    usuario_tipo_id: int

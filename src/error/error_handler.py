@@ -11,6 +11,7 @@ from .types import (
     NotFoundError,
     TokenInvalidError,
     UsuarioExistente,
+    UsuarioNaoEncontrado,
 )
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ def handle_errors(error: Exception) -> HttpResponse:
             TokenInvalidError,
             ClubeAtivoExistente,
             UsuarioExistente,
+            UsuarioNaoEncontrado
         ),
     ):
         logger.info(f'Handling known error: {error.name}')

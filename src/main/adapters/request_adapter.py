@@ -22,7 +22,7 @@ async def request_adapter(
         headers=request.headers,
         data=request.body,
         json=await request.json()
-        if request.method == 'POST' and not await request.form()
+        if request.method in ['POST', 'PUT'] and not await request.form()
         else None,
         query_params=request.query_params,
         path_params=request.path_params,

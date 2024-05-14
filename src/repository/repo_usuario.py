@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select
 
@@ -65,6 +67,27 @@ class UsuarioRepo:
         except NoResultFound:
             return None
 
+    def get_usuario_by_id(self, usuario_id: int) -> dict:
+        with self.session_factory() as session:
+            query = (
+                select(
+                    Usuario.id,
+                    Usuario.nome,
+                    Usuario.email,
+                    Usuario.data_criacao,
+                    Usuario.hash_password,
+                    UsuarioTipo.tipo,
+                )
+                .join(UsuarioTipo)
+                .where(Usuario.id == usuario_id)
+            )
+
+        try:
+            result = session.exec(query).one()
+            return self._create_usuario_token_objects(result)
+        except NoResultFound:
+            return None
+
     def list_usuario(self, filters: dict = {}):
         with self.session_factory() as session:
             query = select(
@@ -93,3 +116,25 @@ class UsuarioRepo:
             paginated_results = session.exec(query).all()
 
             return total_count, self._create_usuario_objects(paginated_results)
+
+    def update_usuario(self, usuario_id: int, usuario_data: dict) -> dict:
+        with self.session_factory() as session:
+            # Retrieve the existing user by ID
+            usuario: Usuario = session.exec(
+                select(Usuario).where(Usuario.id == usuario_id)
+            ).one()
+
+            if not usuario:
+                return None
+
+            for key, value in usuario_data.items():
+                if value is not None:
+                    setattr(usuario, key, value)
+
+            usuario.data_atualizado = datetime.strftime(
+                datetime.now(), '%Y-%m-%d %H:%M:%S'
+            )
+            session.commit()
+            session.refresh(usuario)
+
+            return usuario.model_dump(exclude=['data_criacao', 'data_atualizado', 'hash_password'])

@@ -15,7 +15,7 @@ CARACTERISTICAS_SCHEMA = {
 
 
 async def validate_schema(request: Request, schema: BaseModel = None):
-    if request.method == 'POST' and schema is not None:
+    if request.method in  ['POST', 'PUT'] and schema is not None:
         request_body = await request.json()
         schema.model_validate(request_body)
 

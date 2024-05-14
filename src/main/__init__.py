@@ -23,6 +23,7 @@ from src.main.rest.relacionamento_list import relacionamento
 from src.main.rest.token import token
 from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
+from src.main.rest.usuario_update import usuario_update
 from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
 from src.schemas.caracteristica import CaracteristicaCreateResponse
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
@@ -46,7 +47,11 @@ from src.schemas.relacionamento import (
     RelacionamentoResponse,
 )
 from src.schemas.token import Token
-from src.schemas.usuario import UsuarioCreateResponse
+from src.schemas.usuario import (
+    UsuarioCreateResponse,
+    UsuarioUpdateResponse,
+    UsuarioUpdateSchema,
+)
 
 router = APIRouter()
 
@@ -68,6 +73,35 @@ router.add_api_route(
                                 'nome': 'Nome completo',
                                 'email': 'email@cloud.com',
                                 'password': 'teste1234',
+                                'usuario_tipo_id': '1',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+
+router.add_api_route(
+    '/usuario/update',
+    endpoint=usuario_update,
+    response_model=UsuarioUpdateResponse,
+    tags=['Usuário'],
+    methods=['PUT'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': UsuarioUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para atualização de usuário',
+                            'value': {
+                                'id': 1,
+                                'nome': 'Nome completo',
+                                'email': 'email@cloud.com',
                                 'usuario_tipo_id': '1',
                             },
                         }
