@@ -19,7 +19,7 @@ class UsuarioUpdateUseCase:
         return self.usuario_repository.update_usuario(usuario_id, usuario_data)
 
 
-    def _get_usuario_by_id(self, usuario_id: int):
+    def _check_usuario_by_id(self, usuario_id: int):
         usuario = self.usuario_repository.get_usuario_by_id(usuario_id)
 
         if usuario is None:
