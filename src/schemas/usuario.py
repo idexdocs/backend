@@ -29,3 +29,7 @@ class UsuarioUpdatePasswordSchema(BaseModel):
     id: int = Field(..., ge=1)
     password: str
     new_password: str
+
+class UsuarioUpdatePasswordResponse(BaseModel):
+    status: bool
+    message: str

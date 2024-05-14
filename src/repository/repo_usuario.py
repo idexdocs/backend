@@ -143,12 +143,6 @@ class UsuarioRepo:
                     select(Usuario).where(Usuario.id == usuario_id)
                 ).one()
 
-                import sys
-                from pprint import pprint
-                print('*'*10,__name__,': line',sys._getframe().f_lineno,'*'*10, flush=True)
-                pprint(usuario)
-                pprint(new_password)
-
                 usuario.hash_password = new_password
                 session.commit()
                 return {'status': True, 'message': 'Senha alterada com sucesso'}

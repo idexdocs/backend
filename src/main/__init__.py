@@ -50,6 +50,7 @@ from src.schemas.relacionamento import (
 from src.schemas.token import Token
 from src.schemas.usuario import (
     UsuarioCreateResponse,
+    UsuarioUpdatePasswordResponse,
     UsuarioUpdateResponse,
     UsuarioUpdateSchema,
 )
@@ -117,6 +118,7 @@ router.add_api_route(
 router.add_api_route(
     '/usuario/update/password',
     endpoint=usuario_update_password,
+    response_model=UsuarioUpdatePasswordResponse,
     tags=['Usuário'],
     methods=['PUT'],
     openapi_extra={
