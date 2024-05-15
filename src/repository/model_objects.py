@@ -6,7 +6,9 @@ from sqlmodel import Column, Enum, Field, Relationship, SQLModel
 
 
 def datetime_now_sec():
-    return datetime.now(pytz.timezone('America/Sao_Paulo')).replace(microsecond=0)
+    return datetime.now(pytz.timezone('America/Sao_Paulo')).replace(
+        microsecond=0
+    )
 
 
 class UsuarioTipoTypes(enum.Enum):
@@ -18,6 +20,33 @@ class UsuarioTipoTypes(enum.Enum):
 class UsuarioTipo(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str = Field(sa_column=Column(Enum(UsuarioTipoTypes)))
+
+
+class Permissao(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    descricao: str
+    data_criacao: datetime = Field(
+        default_factory=datetime.now, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    usuarios: list['RolePermissao'] = Relationship(back_populates='permissao')
+    roles: list['UsuarioPermissao'] = Relationship(back_populates='permissao')
+
+
+class Role(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    nome: str
+    descricao: str
+
+    data_criacao: datetime = Field(
+        default_factory=datetime.now, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    usuarios: list['UsuarioRole'] = Relationship(back_populates='role')
+    permissoes: list['RolePermissao'] = Relationship(back_populates='role')
 
 
 class Usuario(SQLModel, table=True):
@@ -34,6 +63,60 @@ class Usuario(SQLModel, table=True):
         default=None, foreign_key='usuariotipo.id'
     )
 
+    roles: list['UsuarioRole'] = Relationship(back_populates='usuario')
+    permissoes: list['UsuarioPermissao'] = Relationship(
+        back_populates='usuario'
+    )
+
+
+class UsuarioRole(SQLModel, table=True):
+    usuario_id: int | None = Field(
+        default=None, foreign_key='usuario.id', primary_key=True
+    )
+    role_id: int | None = Field(
+        default=None, foreign_key='role.id', primary_key=True
+    )
+
+    data_criacao: datetime = Field(
+        default_factory=datetime.now, nullable=False
+    )
+
+    usuario: Usuario = Relationship(back_populates='roles')
+    role: Role = Relationship(back_populates='user_roles')
+
+
+class UsuarioPermissao(SQLModel, table=True):
+    usuario_id: int | None = Field(
+        default=None, foreign_key='usuario.id', primary_key=True
+    )
+    permissao_id: int | None = Field(
+        default=None, foreign_key='permissao.id', primary_key=True
+    )
+
+    data_criacao: datetime = Field(
+        default_factory=datetime.now, nullable=False
+    )
+
+    usuario: Usuario = Relationship(back_populates='permissions')
+    permissao: Permissao = Relationship(back_populates='user_permissions')
+
+
+class RolePermissao(SQLModel, table=True):
+    role_id: int | None = Field(
+        default=None, foreign_key='role.id', primary_key=True
+    )
+    permissao_id: int | None = Field(
+        default=None, foreign_key='permissao.id', primary_key=True
+    )
+
+    data_criacao: datetime = Field(
+        default_factory=datetime.now, nullable=False
+    )
+
+    role: Role = Relationship(back_populates='role_permissions')
+    permissao: Permissao = Relationship(back_populates='role_permissions')
+
+
 class UsuarioAvatar(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     blob_url: str
@@ -42,9 +125,8 @@ class UsuarioAvatar(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(
-        default=None, foreign_key='atleta.id'
-    )
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+
 
 # Many to many relationships
 class AtletaContrato(SQLModel, table=True):
