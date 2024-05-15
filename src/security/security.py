@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 import pytz
-from fastapi import HTTPException
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlmodel import Session, select
@@ -17,7 +16,6 @@ from src.repository.model_objects import (
     UsuarioRole,
 )
 from src.repository.repo_usuario import UsuarioRepo
-from src.schemas.token import TokenData
 
 SECRET_KEY = '131e9590439e5e7bc331cfa2044861a21a2e39c021610ae2bfa7c94649d4e771'
 ALGORITHM = 'HS256'
@@ -114,6 +112,7 @@ def login_user(email: str, password: str):
     access_token = create_access_token(
         data={
             'sub': user['email'],
+            'user_id': user['id'],
             'user_name': user['nome'],
             'last_login': datetime.now(
                 pytz.timezone('America/Sao_Paulo')
