@@ -31,8 +31,12 @@ class Permissao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    usuarios: list['RolePermissao'] = Relationship(back_populates='permissao')
-    roles: list['UsuarioPermissao'] = Relationship(back_populates='permissao')
+    role_permissions: list['RolePermissao'] = Relationship(
+        back_populates='permissao'
+    )
+    user_permissions: list['UsuarioPermissao'] = Relationship(
+        back_populates='permissao'
+    )
 
 
 class Role(SQLModel, table=True):
@@ -45,8 +49,10 @@ class Role(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    usuarios: list['UsuarioRole'] = Relationship(back_populates='role')
-    permissoes: list['RolePermissao'] = Relationship(back_populates='role')
+    user_roles: list['UsuarioRole'] = Relationship(back_populates='role')
+    role_permissions: list['RolePermissao'] = Relationship(
+        back_populates='role'
+    )
 
 
 class Usuario(SQLModel, table=True):
@@ -97,7 +103,7 @@ class UsuarioPermissao(SQLModel, table=True):
         default_factory=datetime.now, nullable=False
     )
 
-    usuario: Usuario = Relationship(back_populates='permissions')
+    usuario: Usuario = Relationship(back_populates='permissoes')
     permissao: Permissao = Relationship(back_populates='user_permissions')
 
 
