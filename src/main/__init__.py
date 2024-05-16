@@ -385,10 +385,12 @@ router.add_api_route(
                                             'tipo': 'profissional',
                                             'data_inicio': '2020-03-01',
                                             'data_termino': '2022-03-01',
+                                            "data_expiracao": '2021-09-01',
                                         },
                                         'contrato_empresa': {
                                             'data_inicio': '2021-03-01',
                                             'data_termino': '2021-12-31',
+                                            "data_expiracao": '2021-06-31',
                                         },
                                     },
                                 },

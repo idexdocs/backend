@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from sqlmodel import func, select
@@ -11,6 +11,7 @@ from .model_objects import (
     Contrato,
     HistoricoClube,
     Posicao,
+    Relacionamento,
     UsuarioAvatar,
 )
 
@@ -29,8 +30,13 @@ class AtletaRepo:
                 'posicao_secundaria': segunda.value if segunda else None,
                 'posicao_terciaria': terceira.value if terceira else None,
                 'clube_atual': clube,
+                'data_proxima_avaliacao_relacionamento': (
+                    data_avaliacao + timedelta(days=30)
+                ).strftime('%Y-%m-%d')
+                if data_avaliacao
+                else 'Não avaliado',
             }
-            for id_, nome, data_nascimento, primeira, segunda, terceira, clube in result
+            for id_, nome, data_nascimento, primeira, segunda, terceira, clube, data_avaliacao in result
         ]
 
     def _create_atleta_detail_object(self, result) -> dict:
@@ -60,22 +66,49 @@ class AtletaRepo:
                 'data_inicio': data_inicio_contrato_clube.strftime('%Y-%m-%d')
                 if data_inicio_contrato_clube is not None
                 else None,
-                'data_termino': data_termino_contrato_clube.strftime('%Y-%m-%d')
+                'data_termino': data_termino_contrato_clube.strftime(
+                    '%Y-%m-%d'
+                )
                 if data_termino_contrato_clube is not None
+                else None,
+                'data_expiracao': (
+                    data_termino_contrato_clube - timedelta(days=180)
+                ).strftime('%Y-%m-%d')
+                if data_termino_contrato_clube
                 else None,
             },
             'contrato_empresa': {
-                'data_inicio': data_inicio_contrato_empresa.strftime('%Y-%m-%d')
+                'data_inicio': data_inicio_contrato_empresa.strftime(
+                    '%Y-%m-%d'
+                )
                 if data_inicio_contrato_empresa is not None
                 else None,
-                'data_termino': data_temino_contrato_empresa.strftime('%Y-%m-%d')
+                'data_termino': data_temino_contrato_empresa.strftime(
+                    '%Y-%m-%d'
+                )
                 if data_temino_contrato_empresa is not None
                 else None,
-            }
+                'data_expiracao': (
+                    data_temino_contrato_empresa - timedelta(days=180)
+                ).strftime('%Y-%m-%d')
+                if data_temino_contrato_empresa
+                else None,
+            },
         }
 
     def list_atleta(self, filters: dict):
         with self.session_factory() as session:
+            subquery = (
+                select(
+                    Relacionamento.atleta_id,
+                    func.max(Relacionamento.data_avaliacao).label(
+                        'max_data_avaliacao'
+                    ),
+                )
+                .group_by(Relacionamento.atleta_id)
+                .subquery()
+            )
+
             query = (
                 select(
                     Atleta.id.label('id_'),
@@ -85,11 +118,23 @@ class AtletaRepo:
                     Posicao.segunda,
                     Posicao.terceira,
                     HistoricoClube.nome.label('clube'),
+                    Relacionamento.data_avaliacao,
                 )
                 .select_from(Atleta)
                 .outerjoin(Posicao, Posicao.atleta_id == Atleta.id)
                 .outerjoin(
                     HistoricoClube, Atleta.id == HistoricoClube.atleta_id
+                )
+                .outerjoin(subquery, subquery.c.atleta_id == Atleta.id)
+                .outerjoin(
+                    Relacionamento,
+                    (
+                        (Relacionamento.atleta_id == subquery.c.atleta_id)
+                        & (
+                            Relacionamento.data_avaliacao
+                            == subquery.c.max_data_avaliacao
+                        )
+                    ),
                 )
                 .where(HistoricoClube.data_fim.is_(None))
                 .order_by(Atleta.id)
@@ -145,10 +190,18 @@ class AtletaRepo:
                     Posicao.segunda,
                     Posicao.terceira,
                     Contrato.tipo,
-                    AtletaContratoClube.data_inicio.label('data_inicio_contrato_clube'),
-                    AtletaContratoClube.data_fim.label('data_termino_contrato_clube'),
-                    AtletaContratoEmpresa.data_inicio.label('data_inicio_contrato_empresa'),
-                    AtletaContratoEmpresa.data_fim.label('data_temino_contrato_empresa'),
+                    AtletaContratoClube.data_inicio.label(
+                        'data_inicio_contrato_clube'
+                    ),
+                    AtletaContratoClube.data_fim.label(
+                        'data_termino_contrato_clube'
+                    ),
+                    AtletaContratoEmpresa.data_inicio.label(
+                        'data_inicio_contrato_empresa'
+                    ),
+                    AtletaContratoEmpresa.data_fim.label(
+                        'data_temino_contrato_empresa'
+                    ),
                     HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
@@ -164,7 +217,8 @@ class AtletaRepo:
                     HistoricoClube, HistoricoClube.atleta_id == atleta_id
                 )
                 .outerjoin(
-                    AtletaContratoEmpresa, AtletaContratoEmpresa.atleta_id == atleta_id
+                    AtletaContratoEmpresa,
+                    AtletaContratoEmpresa.atleta_id == atleta_id,
                 )
                 .where(
                     Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
