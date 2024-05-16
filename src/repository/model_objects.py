@@ -2,7 +2,13 @@ import enum
 from datetime import date, datetime
 
 import pytz
-from sqlmodel import Column, Enum, Field, Relationship, SQLModel
+from sqlmodel import (
+    Column,
+    Enum,
+    Field,
+    Relationship,
+    SQLModel,
+)
 
 
 def datetime_now_sec():
@@ -136,6 +142,7 @@ class UsuarioAvatar(SQLModel, table=True):
 
 # Many to many relationships
 class AtletaContrato(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     data_inicio: date
     data_fim: date
     data_criacao: datetime = Field(
@@ -143,12 +150,13 @@ class AtletaContrato(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(
-        default=None, foreign_key='atleta.id', primary_key=True
-    )
+    atleta_id: int = Field(default=None, foreign_key='atleta.id', index=True)
     contrato_id: int = Field(
-        default=None, foreign_key='contrato.id', primary_key=True
+        default=None, foreign_key='contrato.id', index=True
     )
+
+    atleta: 'Atleta' = Relationship(back_populates='contratos')
+    contrato: 'Contrato' = Relationship(back_populates='atletas')
 
 
 class Atleta(SQLModel, table=True):
@@ -161,9 +169,7 @@ class Atleta(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    contratos: list['Contrato'] = Relationship(
-        back_populates='atletas', link_model=AtletaContrato
-    )
+    contratos: list['AtletaContrato'] = Relationship(back_populates='atleta')
 
 
 class Perfil(SQLModel, table=True):
@@ -190,9 +196,7 @@ class Contrato(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str
 
-    atletas: list['Atleta'] = Relationship(
-        back_populates='contratos', link_model=AtletaContrato
-    )
+    atletas: list['AtletaContrato'] = Relationship(back_populates='contrato')
 
 
 class PosicaoTypes(enum.Enum):
