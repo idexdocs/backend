@@ -1514,16 +1514,26 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 1,
-                            'total': 1,
-                            'type': 'Usuarios',
+                            'count': 2,
+                            'total': 2,
+                            'type': 'Contratos',
                             'data': [
                                 {
-                                    'nome': 'Igor de Freitas Cruz',
-                                    'email': 'igor.freitas.cruz@icloud.com',
-                                    'data_criacao': '2024-05-07',
-                                    'tipo': 'admin',
-                                }
+                                    'contrato_tipo': 'Clube',
+                                    'contrato_nome': 'Profissional',
+                                    'data_inicio': '2024-02-16',
+                                    'data_termino': '2024-08-16',
+                                    'observacao': 'null',
+                                    'ativo': True,
+                                },
+                                {
+                                    'contrato_tipo': 'Empresa',
+                                    'contrato_nome': 'Agenciamento',
+                                    'data_inicio': '2024-02-16',
+                                    'data_termino': '2024-08-16',
+                                    'observacao': 'Recisão de contrato',
+                                    'ativo': False,
+                                },
                             ],
                         }
                     }
