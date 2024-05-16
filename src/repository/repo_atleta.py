@@ -210,16 +210,73 @@ class AtletaRepo:
                 session.rollback()
                 raise
 
+    def update_atleta(self, atleta_id: int, atleta_data: dict) -> dict:
+        with self.session_factory() as session:
+            atleta: Atleta = session.exec(
+                select(Atleta).where(Atleta.id == atleta_id)
+            ).one()
+
+            # Configurando horário da atualização
+            data_atualizacao = datetime.strftime(
+                datetime.now(), '%Y-%m-%d %H:%M:%S'
+            )
+
+            # Preparando os campos de atleta para atualização
+            atleta_update_fields = {
+                'nome': atleta_data.get('nome', atleta.nome),
+                'data_nascimento': atleta_data.get(
+                    'data_nascimento', atleta.data_nascimento
+                ),
+                'ativo': atleta_data.get('ativo', atleta.ativo),
+                'data_atualizado': data_atualizacao,
+            }
+
+            # Apenas inclue campos que são novos para atualizar
+            updated_fields = {
+                k: v
+                for k, v in atleta_update_fields.items()
+                if getattr(atleta, k) != v
+            }
+
+            # Faz a atualização se existirem valores novos para atualizar
+            if updated_fields:
+                for key, value in updated_fields.items():
+                    setattr(atleta, key, value)
+
+            # Faz a atualização de posições se existirem valores novos para atualizar
+            posicao = session.exec(
+                select(Posicao).where(Posicao.atleta_id == atleta_id)
+            ).one()
+            posicao.primeira = atleta_data['posicao_primaria']
+            posicao.segunda = atleta_data['posicao_secundaria']
+            posicao.terceira = atleta_data['posicao_terciaria']
+            posicao.data_atualizado = data_atualizacao
+
+            if 'contrato' in atleta_data:
+                contrato_data = atleta_data.get('contrato')
+                atleta_contrato = AtletaContrato(
+                    atleta_id=atleta_id,
+                    contrato_id=contrato_data['tipo_id'],
+                    data_inicio=contrato_data['data_inicio'],
+                    data_fim=contrato_data['data_fim'],
+                )
+                session.add(atleta_contrato)
+
+            session.commit()
+
     def save_blob_url(self, atleta_id: int, blob_url: str):
         with self.session_factory() as session:
-            new_user_avatar = UsuarioAvatar(blob_url=blob_url, atleta_id=atleta_id)
+            new_user_avatar = UsuarioAvatar(
+                blob_url=blob_url, atleta_id=atleta_id
+            )
             session.add(new_user_avatar)
             session.commit()
 
-
     def get_blob_url(self, atleta_id: int):
         with self.session_factory() as session:
-            query = select(UsuarioAvatar).where(UsuarioAvatar.atleta_id == atleta_id)
+            query = select(UsuarioAvatar).where(
+                UsuarioAvatar.atleta_id == atleta_id
+            )
 
         try:
             result = session.exec(query).one()

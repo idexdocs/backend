@@ -66,3 +66,16 @@ class AtletaCreateSchema(BaseModel):
 
 class AtletaCreateResponse(BaseModel):
     id: int
+
+
+class AtletaUpdateSchema(BaseModel):
+    nome: str
+    data_nascimento: str
+    contrato: Contrato | None = None
+    posicao_primaria: str
+    posicao_secundaria: str | None
+    posicao_terciaria: str | None
+
+    _validate_data_nascimento = field_validator('data_nascimento')(
+        validate_date_format
+    )

@@ -1,4 +1,3 @@
-from src.main.adapters.azure_blob_storage import AzureBlobStorage
 from src.presentation.controllers.atleta_create_controler import (
     AtletaCreateController,
 )

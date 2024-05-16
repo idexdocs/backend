@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from src.main.rest.atleta_create import atleta_create
 from src.main.rest.atleta_detail import atleta_detail
 from src.main.rest.atleta_list import atleta
+from src.main.rest.atleta_update import atleta_update
 from src.main.rest.caracteristica_create import caracteristica_create
 from src.main.rest.caracteristica_list import caracteristica
 from src.main.rest.clube_create import clube_create
@@ -25,7 +26,11 @@ from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
 from src.main.rest.usuario_update import usuario_update
 from src.main.rest.usuario_update_password import usuario_update_password
-from src.schemas.atleta import AtletaCreateResponse, AtletaCreateSchema
+from src.schemas.atleta import (
+    AtletaCreateResponse,
+    AtletaCreateSchema,
+    AtletaUpdateSchema,
+)
 from src.schemas.caracteristica import CaracteristicaCreateResponse
 from src.schemas.clube import ClubeCreateResponse, ClubeCreateSchema
 from src.schemas.competicao import (
@@ -159,6 +164,89 @@ router.add_api_route(
                             'value': {
                                 'email': 'emaill@cloud.com',
                                 'password': 'teste1234',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+router.add_api_route(
+    '/create/atleta',
+    endpoint=atleta_create,
+    tags=['Atleta'],
+    methods=['POST'],
+    response_model=AtletaCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': AtletaCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de atleta',
+                            # 'description': 'Valores de preço deve ser no formato 300.00',
+                            'value': {
+                                'nome': 'Janjão',
+                                'data_nascimento': '1985-03-11',
+                                'clube': {
+                                    'nome': 'Siga Maré',
+                                    'data_inicio': '2024-05-01',
+                                },
+                                'contrato': {
+                                    'tipo_id': 1,
+                                    'data_inicio': '2024-05-01',
+                                    'data_fim': '2024-05-01',
+                                },
+                                'posicao_primaria': 'atacante',
+                                'posicao_secundaria': 'volante',
+                                'posicao_terciaria': None,
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+router.add_api_route(
+    '/update/atleta/{id}',
+    endpoint=atleta_update,
+    tags=['Atleta'],
+    methods=['PUT'],
+    response_model=AtletaCreateResponse,
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': AtletaUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de atleta',
+                            # 'description': 'Valores de preço deve ser no formato 300.00',
+                            'value': {
+                                'nome': 'Atleta',
+                                'data_nascimento': '2000-01-01',
+                                'contrato': {
+                                    'tipo_id': 1,
+                                    'data_inicio': '2024-05-01',
+                                    'data_fim': '2024-05-01',
+                                },
+                                'posicao_primaria': 'atacante',
+                                'posicao_secundaria': 'volante',
+                                'posicao_terciaria': None,
                             },
                         }
                     },
@@ -547,45 +635,7 @@ router.add_api_route(
         },
     },
 )
-router.add_api_route(
-    '/create/atleta',
-    endpoint=atleta_create,
-    tags=['Atleta'],
-    methods=['POST'],
-    response_model=AtletaCreateResponse,
-    openapi_extra={
-        'requestBody': {
-            'content': {
-                'application/json': {
-                    'schema': AtletaCreateSchema.model_json_schema(),
-                    'examples': {
-                        'example1': {
-                            'summary': 'Exemplo de payload para criação de atleta',
-                            # 'description': 'Valores de preço deve ser no formato 300.00',
-                            'value': {
-                                'nome': 'Janjão',
-                                'data_nascimento': '1985-03-11',
-                                'clube': {
-                                    'nome': 'Siga Maré',
-                                    'data_inicio': '2024-05-01',
-                                },
-                                'contrato': {
-                                    'tipo_id': 1,
-                                    'data_inicio': '2024-05-01',
-                                    'data_fim': '2024-05-01',
-                                },
-                                'posicao_primaria': 'atacante',
-                                'posicao_secundaria': 'volante',
-                                'posicao_terciaria': None,
-                            },
-                        }
-                    },
-                }
-            },
-            'required': True,
-        },
-    },
-)
+
 router.add_api_route(
     '/questionario/relacionamento/create',
     endpoint=relacionamento_create,
