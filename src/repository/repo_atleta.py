@@ -34,7 +34,7 @@ class AtletaRepo:
                     data_avaliacao + timedelta(days=30)
                 ).strftime('%Y-%m-%d')
                 if data_avaliacao
-                else 'Não avaliado',
+                else None,
             }
             for id_, nome, data_nascimento, primeira, segunda, terceira, clube, data_avaliacao in result
         ]
