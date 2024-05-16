@@ -2,25 +2,19 @@ import enum
 from datetime import date, datetime
 
 import pytz
-from sqlmodel import (
-    Column,
-    Enum,
-    Field,
-    Relationship,
-    SQLModel,
-)
+from sqlmodel import Column, Enum, Field, Relationship, SQLModel
 
 
 def datetime_now_sec():
-    return datetime.now(pytz.timezone('America/Sao_Paulo')).replace(
+    return datetime.now(pytz.timezone("America/Sao_Paulo")).replace(
         microsecond=0
     )
 
 
 class UsuarioTipoTypes(enum.Enum):
-    admin = 'admin'
-    treinador = 'treinador'
-    externo = 'externo'
+    admin = "admin"
+    treinador = "treinador"
+    externo = "externo"
 
 
 class UsuarioTipo(SQLModel, table=True):
@@ -37,11 +31,11 @@ class Permissao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    role_permissions: list['RolePermissao'] = Relationship(
-        back_populates='permissao'
+    role_permissions: list["RolePermissao"] = Relationship(
+        back_populates="permissao"
     )
-    user_permissions: list['UsuarioPermissao'] = Relationship(
-        back_populates='permissao'
+    user_permissions: list["UsuarioPermissao"] = Relationship(
+        back_populates="permissao"
     )
 
 
@@ -55,9 +49,9 @@ class Role(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    user_roles: list['UsuarioRole'] = Relationship(back_populates='role')
-    role_permissions: list['RolePermissao'] = Relationship(
-        back_populates='role'
+    user_roles: list["UsuarioRole"] = Relationship(back_populates="role")
+    role_permissions: list["RolePermissao"] = Relationship(
+        back_populates="role"
     )
 
 
@@ -72,61 +66,61 @@ class Usuario(SQLModel, table=True):
     data_atualizado: datetime | None = None
 
     usuario_tipo_id: int | None = Field(
-        default=None, foreign_key='usuariotipo.id'
+        default=None, foreign_key="usuariotipo.id"
     )
 
-    roles: list['UsuarioRole'] = Relationship(back_populates='usuario')
-    permissoes: list['UsuarioPermissao'] = Relationship(
-        back_populates='usuario'
+    roles: list["UsuarioRole"] = Relationship(back_populates="usuario")
+    permissoes: list["UsuarioPermissao"] = Relationship(
+        back_populates="usuario"
     )
 
 
 class UsuarioRole(SQLModel, table=True):
     usuario_id: int | None = Field(
-        default=None, foreign_key='usuario.id', primary_key=True
+        default=None, foreign_key="usuario.id", primary_key=True
     )
     role_id: int | None = Field(
-        default=None, foreign_key='role.id', primary_key=True
+        default=None, foreign_key="role.id", primary_key=True
     )
 
     data_criacao: datetime = Field(
         default_factory=datetime.now, nullable=False
     )
 
-    usuario: Usuario = Relationship(back_populates='roles')
-    role: Role = Relationship(back_populates='user_roles')
+    usuario: Usuario = Relationship(back_populates="roles")
+    role: Role = Relationship(back_populates="user_roles")
 
 
 class UsuarioPermissao(SQLModel, table=True):
     usuario_id: int | None = Field(
-        default=None, foreign_key='usuario.id', primary_key=True
+        default=None, foreign_key="usuario.id", primary_key=True
     )
     permissao_id: int | None = Field(
-        default=None, foreign_key='permissao.id', primary_key=True
+        default=None, foreign_key="permissao.id", primary_key=True
     )
 
     data_criacao: datetime = Field(
         default_factory=datetime.now, nullable=False
     )
 
-    usuario: Usuario = Relationship(back_populates='permissoes')
-    permissao: Permissao = Relationship(back_populates='user_permissions')
+    usuario: Usuario = Relationship(back_populates="permissoes")
+    permissao: Permissao = Relationship(back_populates="user_permissions")
 
 
 class RolePermissao(SQLModel, table=True):
     role_id: int | None = Field(
-        default=None, foreign_key='role.id', primary_key=True
+        default=None, foreign_key="role.id", primary_key=True
     )
     permissao_id: int | None = Field(
-        default=None, foreign_key='permissao.id', primary_key=True
+        default=None, foreign_key="permissao.id", primary_key=True
     )
 
     data_criacao: datetime = Field(
         default_factory=datetime.now, nullable=False
     )
 
-    role: Role = Relationship(back_populates='role_permissions')
-    permissao: Permissao = Relationship(back_populates='role_permissions')
+    role: Role = Relationship(back_populates="role_permissions")
+    permissao: Permissao = Relationship(back_populates="role_permissions")
 
 
 class UsuarioAvatar(SQLModel, table=True):
@@ -137,11 +131,21 @@ class UsuarioAvatar(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int = Field(default=None, foreign_key="atleta.id")
 
+
+class AtletaContratoEmpresa(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    data_inicio: date
+    data_fim: date
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+    atleta_id: int = Field(default=None, foreign_key="atleta.id", index=True)
 
 # Many to many relationships
-class AtletaContrato(SQLModel, table=True):
+class AtletaContratoClube(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     data_inicio: date
     data_fim: date
@@ -150,13 +154,13 @@ class AtletaContrato(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(default=None, foreign_key='atleta.id', index=True)
+    atleta_id: int = Field(default=None, foreign_key="atleta.id", index=True)
     contrato_id: int = Field(
-        default=None, foreign_key='contrato.id', index=True
+        default=None, foreign_key="contrato.id", index=True
     )
 
-    atleta: 'Atleta' = Relationship(back_populates='contratos')
-    contrato: 'Contrato' = Relationship(back_populates='atletas')
+    atleta: "Atleta" = Relationship(back_populates="contratos")
+    contrato: "Contrato" = Relationship(back_populates="atletas")
 
 
 class Atleta(SQLModel, table=True):
@@ -169,7 +173,10 @@ class Atleta(SQLModel, table=True):
     data_atualizado: datetime | None = None
     ativo: bool = True
 
-    contratos: list['AtletaContrato'] = Relationship(back_populates='atleta')
+    contratos: list["AtletaContratoClube"] = Relationship(
+        back_populates="atleta"
+    )
+    relacionamento: "Relacionamento" = Relationship(back_populates="atleta")
 
 
 class Perfil(SQLModel, table=True):
@@ -189,23 +196,25 @@ class Caracteristica(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    perfil_id: int | None = Field(default=None, foreign_key='perfil.id')
+    perfil_id: int | None = Field(default=None, foreign_key="perfil.id")
 
 
 class Contrato(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str
 
-    atletas: list['AtletaContrato'] = Relationship(back_populates='contrato')
+    atletas: list["AtletaContratoClube"] = Relationship(
+        back_populates="contrato"
+    )
 
 
 class PosicaoTypes(enum.Enum):
-    atacante = 'atacante'
-    goleiro = 'goleiro'
-    lateral = 'lateral'
-    meia = 'meia'
-    volante = 'volante'
-    zagueiro = 'zagueiro'
+    atacante = "atacante"
+    goleiro = "goleiro"
+    lateral = "lateral"
+    meia = "meia"
+    volante = "volante"
+    zagueiro = "zagueiro"
 
 
 class Posicao(SQLModel, table=True):
@@ -218,7 +227,7 @@ class Posicao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int = Field(default=None, foreign_key="atleta.id")
 
 
 class Relacionamento(SQLModel, table=True):
@@ -236,7 +245,8 @@ class Relacionamento(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
+    atleta: Atleta = Relationship(back_populates="relacionamento")
 
 
 class HistoricoClube(SQLModel, table=True):
@@ -249,7 +259,7 @@ class HistoricoClube(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class HistoricoCompeticao(SQLModel, table=True):
@@ -266,7 +276,7 @@ class HistoricoCompeticao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class HistoricoLesao(SQLModel, table=True):
@@ -278,7 +288,7 @@ class HistoricoLesao(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class HistoricoControle(SQLModel, table=True):
@@ -292,12 +302,12 @@ class HistoricoControle(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class ObsevacaoTypes(enum.Enum):
-    desempenho = 'desempenho'
-    relacionamento = 'relacionamento'
+    desempenho = "desempenho"
+    relacionamento = "relacionamento"
 
 
 class HistoricoObservacao(SQLModel, table=True):
@@ -308,7 +318,7 @@ class HistoricoObservacao(SQLModel, table=True):
         default_factory=datetime_now_sec, nullable=False
     )
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaFisica(SQLModel, table=True):
@@ -323,7 +333,7 @@ class CaracteristicaFisica(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaZagueiro(SQLModel, table=True):
@@ -349,7 +359,7 @@ class CaracteristicaZagueiro(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaLateral(SQLModel, table=True):
@@ -375,7 +385,7 @@ class CaracteristicaLateral(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaGoleiro(SQLModel, table=True):
@@ -400,7 +410,7 @@ class CaracteristicaGoleiro(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaVolante(SQLModel, table=True):
@@ -426,7 +436,7 @@ class CaracteristicaVolante(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaAtacante(SQLModel, table=True):
@@ -453,7 +463,7 @@ class CaracteristicaAtacante(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
 
 
 class CaracteristicaMeia(SQLModel, table=True):
@@ -481,4 +491,4 @@ class CaracteristicaMeia(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int | None = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int | None = Field(default=None, foreign_key="atleta.id")
