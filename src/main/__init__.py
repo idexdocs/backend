@@ -392,6 +392,7 @@ router.add_api_route(
                                             'data_termino': '2021-12-31',
                                             "data_expiracao": '2021-06-31',
                                         },
+                                        'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta_id.jpeg'
                                     },
                                 },
                             },

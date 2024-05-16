@@ -52,6 +52,7 @@ class AtletaRepo:
             data_inicio_contrato_empresa,
             data_temino_contrato_empresa,
             clube,
+            blob_url,
         ) = result
 
         return {
@@ -94,6 +95,7 @@ class AtletaRepo:
                 if data_temino_contrato_empresa
                 else None,
             },
+            'blob_url': blob_url,
         }
 
     def list_atleta(self, filters: dict):
@@ -203,6 +205,7 @@ class AtletaRepo:
                         'data_temino_contrato_empresa'
                     ),
                     HistoricoClube.nome.label('clube'),
+                    UsuarioAvatar.blob_url,
                 )
                 .select_from(Atleta)
                 .outerjoin(
@@ -220,6 +223,7 @@ class AtletaRepo:
                     AtletaContratoEmpresa,
                     AtletaContratoEmpresa.atleta_id == atleta_id,
                 )
+                .outerjoin(UsuarioAvatar, UsuarioAvatar.atleta_id == atleta_id)
                 .where(
                     Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
                 )
