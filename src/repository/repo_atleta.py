@@ -338,16 +338,6 @@ class AtletaRepo:
             posicao.terceira = atleta_data['posicao_terciaria']
             posicao.data_atualizado = data_atualizacao
 
-            if 'contrato' in atleta_data:
-                contrato_data = atleta_data.get('contrato')
-                atleta_contrato = AtletaContratoClube(
-                    atleta_id=atleta_id,
-                    contrato_id=contrato_data['tipo_id'],
-                    data_inicio=contrato_data['data_inicio'],
-                    data_fim=contrato_data['data_fim'],
-                )
-                session.add(atleta_contrato)
-
             session.commit()
 
     def save_blob_url(self, atleta_id: int, blob_url: str):

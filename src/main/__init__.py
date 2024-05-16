@@ -238,18 +238,13 @@ router.add_api_route(
                     'examples': {
                         'example1': {
                             'summary': 'Exemplo de payload para criação de atleta',
-                            # 'description': 'Valores de preço deve ser no formato 300.00',
                             'value': {
                                 'nome': 'Atleta',
                                 'data_nascimento': '2000-01-01',
-                                'contrato': {
-                                    'tipo_id': 1,
-                                    'data_inicio': '2024-05-01',
-                                    'data_fim': '2024-05-01',
-                                },
                                 'posicao_primaria': 'atacante',
                                 'posicao_secundaria': 'volante',
-                                'posicao_terciaria': None,
+                                'posicao_terciaria': 'null',
+                                'ativo': False,
                             },
                         }
                     },
