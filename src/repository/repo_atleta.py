@@ -6,8 +6,6 @@ from sqlmodel import func, select
 from .base_repo import create_session
 from .model_objects import (
     Atleta,
-    AtletaContratoClube,
-    AtletaContratoEmpresa,
     Contrato,
     HistoricoClube,
     Posicao,
@@ -27,8 +25,6 @@ class AtletaRepo:
                 'nome': nome,
                 'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
                 'posicao_primaria': primeira.value if primeira else None,
-                'posicao_secundaria': segunda.value if segunda else None,
-                'posicao_terciaria': terceira.value if terceira else None,
                 'clube_atual': clube,
                 'data_proxima_avaliacao_relacionamento': (
                     data_avaliacao + timedelta(days=30)
@@ -36,7 +32,7 @@ class AtletaRepo:
                 if data_avaliacao
                 else None,
             }
-            for id_, nome, data_nascimento, primeira, segunda, terceira, clube, data_avaliacao in result
+            for id_, nome, data_nascimento, primeira, clube, data_avaliacao in result
         ]
 
     def _create_atleta_detail_object(self, result) -> dict:
@@ -117,8 +113,6 @@ class AtletaRepo:
                     Atleta.nome.label('nome'),
                     Atleta.data_nascimento.label('data_nascimento'),
                     Posicao.primeira,
-                    Posicao.segunda,
-                    Posicao.terceira,
                     HistoricoClube.nome.label('clube'),
                     Relacionamento.data_avaliacao,
                 )

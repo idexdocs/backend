@@ -10,6 +10,7 @@ from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
 from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
+from src.main.rest.contrato_list import contrato_list
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.file_download import file_download
@@ -380,14 +381,14 @@ router.add_api_route(
                                             'tipo': 'profissional',
                                             'data_inicio': '2020-03-01',
                                             'data_termino': '2022-03-01',
-                                            "data_expiracao": '2021-09-01',
+                                            'data_expiracao': '2021-09-01',
                                         },
                                         'contrato_empresa': {
                                             'data_inicio': '2021-03-01',
                                             'data_termino': '2021-12-31',
-                                            "data_expiracao": '2021-06-31',
+                                            'data_expiracao': '2021-06-31',
                                         },
-                                        'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta_id.jpeg'
+                                        'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta_id.jpeg',
                                     },
                                 },
                             },
@@ -1447,6 +1448,50 @@ router.add_api_route(
     '/usuarios',
     endpoint=usuario_list,
     tags=['Usuário'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+        ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 1,
+                            'total': 1,
+                            'type': 'Usuarios',
+                            'data': [
+                                {
+                                    'nome': 'Igor de Freitas Cruz',
+                                    'email': 'igor.freitas.cruz@icloud.com',
+                                    'data_criacao': '2024-05-07',
+                                    'tipo': 'admin',
+                                }
+                            ],
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+router.add_api_route(
+    '/contrato/atleta/{id}',
+    endpoint=contrato_list,
+    tags=['Contrato'],
     methods=['GET'],
     openapi_extra={
         'parameters': [
