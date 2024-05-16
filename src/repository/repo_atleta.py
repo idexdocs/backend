@@ -7,6 +7,7 @@ from .base_repo import create_session
 from .model_objects import (
     Atleta,
     AtletaContratoClube,
+    AtletaContratoEmpresa,
     Contrato,
     HistoricoClube,
     Posicao,
@@ -21,13 +22,13 @@ class AtletaRepo:
     def _create_atleta_list_objects(self, result: list) -> dict:
         return [
             {
-                "id": id_,
-                "nome": nome,
-                "data_nascimento": data_nascimento.strftime("%Y-%m-%d"),
-                "posicao_primaria": primeira.value if primeira else None,
-                "posicao_secundaria": segunda.value if segunda else None,
-                "posicao_terciaria": terceira.value if terceira else None,
-                "clube_atual": clube,
+                'id': id_,
+                'nome': nome,
+                'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
+                'posicao_primaria': primeira.value if primeira else None,
+                'posicao_secundaria': segunda.value if segunda else None,
+                'posicao_terciaria': terceira.value if terceira else None,
+                'clube_atual': clube,
             }
             for id_, nome, data_nascimento, primeira, segunda, terceira, clube in result
         ]
@@ -40,40 +41,50 @@ class AtletaRepo:
             segunda,
             terceira,
             tipo,
-            data_inicio,
-            data_termino,
+            data_inicio_contrato_clube,
+            data_termino_contrato_clube,
+            data_inicio_contrato_empresa,
+            data_temino_contrato_empresa,
             clube,
         ) = result
 
         return {
-            "nome": nome,
-            "data_nascimento": data_nascimento.strftime("%Y-%m-%d"),
-            "posicao_primaria": primeira.value if primeira else None,
-            "posicao_secundaria": segunda.value if segunda else None,
-            "posicao_terciaria": terceira.value if terceira else None,
-            "clube_atual": clube,
-            "contrato": {
-                "tipo": tipo,
-                "data_inicio": data_inicio.strftime("%Y-%m-%d")
-                if data_inicio is not None
+            'nome': nome,
+            'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
+            'posicao_primaria': primeira.value if primeira else None,
+            'posicao_secundaria': segunda.value if segunda else None,
+            'posicao_terciaria': terceira.value if terceira else None,
+            'clube_atual': clube,
+            'contrato_clube': {
+                'tipo': tipo,
+                'data_inicio': data_inicio_contrato_clube.strftime('%Y-%m-%d')
+                if data_inicio_contrato_clube is not None
                 else None,
-                "data_termino": data_termino.strftime("%Y-%m-%d")
-                if data_inicio is not None
+                'data_termino': data_termino_contrato_clube.strftime('%Y-%m-%d')
+                if data_termino_contrato_clube is not None
                 else None,
             },
+            'contrato_empresa': {
+                'data_inicio': data_inicio_contrato_empresa.strftime('%Y-%m-%d')
+                if data_inicio_contrato_empresa is not None
+                else None,
+                'data_termino': data_temino_contrato_empresa.strftime('%Y-%m-%d')
+                if data_temino_contrato_empresa is not None
+                else None,
+            }
         }
 
     def list_atleta(self, filters: dict):
         with self.session_factory() as session:
             query = (
                 select(
-                    Atleta.id.label("id_"),
-                    Atleta.nome.label("nome"),
-                    Atleta.data_nascimento.label("data_nascimento"),
+                    Atleta.id.label('id_'),
+                    Atleta.nome.label('nome'),
+                    Atleta.data_nascimento.label('data_nascimento'),
                     Posicao.primeira,
                     Posicao.segunda,
                     Posicao.terceira,
-                    HistoricoClube.nome.label("clube"),
+                    HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
                 .outerjoin(Posicao, Posicao.atleta_id == Atleta.id)
@@ -84,13 +95,13 @@ class AtletaRepo:
                 .order_by(Atleta.id)
             )
 
-            if atleta := filters.get("atleta"):
+            if atleta := filters.get('atleta'):
                 query = query.filter(Atleta.nome == atleta)
 
-            if posicao := filters.get("posicao"):
+            if posicao := filters.get('posicao'):
                 query = query.filter(Posicao.primeira == posicao)
 
-            if clube := filters.get("clube"):
+            if clube := filters.get('clube'):
                 query = query.filter(HistoricoClube.nome == clube)
 
             # conta o número total de items sem paginação
@@ -99,8 +110,8 @@ class AtletaRepo:
             ).one()
 
             # aplica paginação
-            page = int(filters.get("page", 1))
-            per_page = int(filters.get("per_page", 10))
+            page = int(filters.get('page', 1))
+            per_page = int(filters.get('per_page', 10))
             query = (
                 query.order_by(Atleta.nome)
                 .limit(per_page)
@@ -134,9 +145,11 @@ class AtletaRepo:
                     Posicao.segunda,
                     Posicao.terceira,
                     Contrato.tipo,
-                    AtletaContratoClube.data_inicio,
-                    AtletaContratoClube.data_fim,
-                    HistoricoClube.nome.label("clube"),
+                    AtletaContratoClube.data_inicio.label('data_inicio_contrato_clube'),
+                    AtletaContratoClube.data_fim.label('data_termino_contrato_clube'),
+                    AtletaContratoEmpresa.data_inicio.label('data_inicio_contrato_empresa'),
+                    AtletaContratoEmpresa.data_fim.label('data_temino_contrato_empresa'),
+                    HistoricoClube.nome.label('clube'),
                 )
                 .select_from(Atleta)
                 .outerjoin(
@@ -149,6 +162,9 @@ class AtletaRepo:
                 .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
                 .outerjoin(
                     HistoricoClube, HistoricoClube.atleta_id == atleta_id
+                )
+                .outerjoin(
+                    AtletaContratoEmpresa, AtletaContratoEmpresa.atleta_id == atleta_id
                 )
                 .where(
                     Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
@@ -176,38 +192,48 @@ class AtletaRepo:
 
                 # Criando clube
                 new_clube = HistoricoClube(
-                    nome=atleta_data.get("clube").get("nome"),
+                    nome=atleta_data.get('clube').get('nome'),
                     atleta_id=new_atleta.id,
-                    data_inicio=atleta_data.get("clube").get("data_inicio"),
+                    data_inicio=atleta_data.get('clube').get('data_inicio'),
                 )
                 session.add(new_clube)
 
-                # Criando relacionamento N:N Atleta contrato
-                new_atleta_contrato = AtletaContratoClube(
+                # Criando relacionamento N:N Atleta contrato clube
+                contrato_clube = atleta_data.get('contrato_clube')
+                new_atleta_contrato_clube = AtletaContratoClube(
                     atleta_id=new_atleta.id,
-                    contrato_id=atleta_data.get("contrato").get("tipo_id"),
+                    contrato_id=contrato_clube.get('tipo_id'),
                     data_inicio=datetime.strptime(
-                        atleta_data.get("contrato").get("data_inicio"),
-                        "%Y-%m-%d",
+                        contrato_clube.get('data_inicio'),
+                        '%Y-%m-%d',
                     ),
                     data_fim=datetime.strptime(
-                        atleta_data.get("contrato").get("data_fim"), "%Y-%m-%d"
+                        contrato_clube.get('data_fim'), '%Y-%m-%d'
                     ),
                 )
-                session.add(new_atleta_contrato)
+                session.add(new_atleta_contrato_clube)
+
+                # Criando relacionamento 1:1 Atleta contrato empresa
+                contrato_empresa = atleta_data.get('contrato_empresa')
+                new_atleta_contrato_empresa = AtletaContratoEmpresa(
+                    data_inicio=contrato_empresa.get('data_inicio'),
+                    data_fim=contrato_empresa.get('data_fim'),
+                    atleta_id=new_atleta.id,
+                )
+                session.add(new_atleta_contrato_empresa)
 
                 # Criando relacionameno N:N Atleta Posição
                 new_atleta_posicao = Posicao(
                     atleta_id=new_atleta.id,
-                    primeira=atleta_data.get("posicao_primaria"),
-                    segunda=atleta_data.get("posicao_secundaria"),
-                    terceira=atleta_data.get("posicao_terciaria"),
+                    primeira=atleta_data.get('posicao_primaria'),
+                    segunda=atleta_data.get('posicao_secundaria'),
+                    terceira=atleta_data.get('posicao_terciaria'),
                 )
                 session.add(new_atleta_posicao)
 
                 session.commit()
 
-                return {"id": new_atleta.id}
+                return {'id': new_atleta.id}
             except Exception:
                 session.rollback()
                 raise
@@ -220,17 +246,17 @@ class AtletaRepo:
 
             # Configurando horário da atualização
             data_atualizacao = datetime.strftime(
-                datetime.now(), "%Y-%m-%d %H:%M:%S"
+                datetime.now(), '%Y-%m-%d %H:%M:%S'
             )
 
             # Preparando os campos de atleta para atualização
             atleta_update_fields = {
-                "nome": atleta_data.get("nome", atleta.nome),
-                "data_nascimento": atleta_data.get(
-                    "data_nascimento", atleta.data_nascimento
+                'nome': atleta_data.get('nome', atleta.nome),
+                'data_nascimento': atleta_data.get(
+                    'data_nascimento', atleta.data_nascimento
                 ),
-                "ativo": atleta_data.get("ativo", atleta.ativo),
-                "data_atualizado": data_atualizacao,
+                'ativo': atleta_data.get('ativo', atleta.ativo),
+                'data_atualizado': data_atualizacao,
             }
 
             # Apenas inclue campos que são novos para atualizar
@@ -249,18 +275,18 @@ class AtletaRepo:
             posicao = session.exec(
                 select(Posicao).where(Posicao.atleta_id == atleta_id)
             ).one()
-            posicao.primeira = atleta_data["posicao_primaria"]
-            posicao.segunda = atleta_data["posicao_secundaria"]
-            posicao.terceira = atleta_data["posicao_terciaria"]
+            posicao.primeira = atleta_data['posicao_primaria']
+            posicao.segunda = atleta_data['posicao_secundaria']
+            posicao.terceira = atleta_data['posicao_terciaria']
             posicao.data_atualizado = data_atualizacao
 
-            if "contrato" in atleta_data:
-                contrato_data = atleta_data.get("contrato")
+            if 'contrato' in atleta_data:
+                contrato_data = atleta_data.get('contrato')
                 atleta_contrato = AtletaContratoClube(
                     atleta_id=atleta_id,
-                    contrato_id=contrato_data["tipo_id"],
-                    data_inicio=contrato_data["data_inicio"],
-                    data_fim=contrato_data["data_fim"],
+                    contrato_id=contrato_data['tipo_id'],
+                    data_inicio=contrato_data['data_inicio'],
+                    data_fim=contrato_data['data_fim'],
                 )
                 session.add(atleta_contrato)
 

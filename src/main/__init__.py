@@ -187,22 +187,25 @@ router.add_api_route(
                     'examples': {
                         'example1': {
                             'summary': 'Exemplo de payload para criação de atleta',
-                            # 'description': 'Valores de preço deve ser no formato 300.00',
                             'value': {
-                                'nome': 'Janjão',
+                                'nome': 'Igor',
                                 'data_nascimento': '1985-03-11',
                                 'clube': {
-                                    'nome': 'Siga Maré',
+                                    'nome': 'SIGA SPORTS',
                                     'data_inicio': '2024-05-01',
                                 },
-                                'contrato': {
+                                'contrato_clube': {
                                     'tipo_id': 1,
                                     'data_inicio': '2024-05-01',
-                                    'data_fim': '2024-05-01',
+                                    'data_fim': '2025-05-01',
+                                },
+                                'contrato_empresa': {
+                                    'data_inicio': '2024-05-01',
+                                    'data_fim': '2025-05-01',
                                 },
                                 'posicao_primaria': 'atacante',
-                                'posicao_secundaria': 'volante',
-                                'posicao_terciaria': None,
+                                'posicao_secundaria': 'null',
+                                'posicao_terciaria': 'null',
                             },
                         }
                     },
@@ -369,16 +372,24 @@ router.add_api_route(
                                 'count': 1,
                                 'type': 'Atleta',
                                 'data': {
-                                    'nome': 'Atleta 1',
-                                    'data_nascimento': '1985-03-11',
-                                    'posicao_primaria': 'atacante',
-                                    'posicao_secundaria': 'meia',
-                                    'posicao_terciaria': None,
-                                    'clube_atual': 'Clube 1a',
-                                    'contrato': {
-                                        'tipo': 'Amador',
-                                        'data_inicio': '2024-03-23',
-                                        'data_termino': '2025-04-23',
+                                    'count': 1,
+                                    'type': 'Atleta',
+                                    'data': {
+                                        'nome': 'Igor de Freitas Cruz',
+                                        'data_nascimento': '2000-03-11',
+                                        'posicao_primaria': 'atacante',
+                                        'posicao_secundaria': 'null',
+                                        'posicao_terciaria': 'zagueiro',
+                                        'clube_atual': 'Outro clube novo',
+                                        'contrato_clube': {
+                                            'tipo': 'profissional',
+                                            'data_inicio': '2020-03-01',
+                                            'data_termino': '2022-03-01',
+                                        },
+                                        'contrato_empresa': {
+                                            'data_inicio': '2021-03-01',
+                                            'data_termino': '2021-12-31',
+                                        },
                                     },
                                 },
                             },

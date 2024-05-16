@@ -21,8 +21,7 @@ class Clube(BaseModel):
     )
 
 
-class Contrato(BaseModel):
-    tipo_id: int
+class ContratoBase(BaseModel):
     data_inicio: str
     data_fim: str
 
@@ -32,11 +31,20 @@ class Contrato(BaseModel):
     _validate_data_fim = field_validator('data_fim')(validate_date_format)
 
 
+class ContratoEmpresa(ContratoBase):
+    ...
+
+
+class ContratoClube(ContratoBase):
+    tipo_id: int
+
+
 class AtletaCreateSchema(BaseModel):
     nome: str
     data_nascimento: str
     clube: Clube
-    contrato: Contrato
+    contrato_clube: ContratoClube
+    contrato_empresa: ContratoEmpresa
     posicao_primaria: str
     posicao_secundaria: str | None
     posicao_terciaria: str | None
@@ -71,7 +79,8 @@ class AtletaCreateResponse(BaseModel):
 class AtletaUpdateSchema(BaseModel):
     nome: str
     data_nascimento: str
-    contrato: Contrato | None = None
+    contrato_empresa: ContratoEmpresa | None = None
+    contrato_clube: ContratoClube | None = None
     posicao_primaria: str
     posicao_secundaria: str | None
     posicao_terciaria: str | None
