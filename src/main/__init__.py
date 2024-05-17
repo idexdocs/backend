@@ -10,6 +10,7 @@ from src.main.rest.clube_create import clube_create
 from src.main.rest.clube_list import clube
 from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
+from src.main.rest.contrato_create import contrato_create
 from src.main.rest.contrato_list import contrato_list
 from src.main.rest.contrato_versao_list import contrato_versao_list
 from src.main.rest.controle_create import controle_create
@@ -39,6 +40,7 @@ from src.schemas.competicao import (
     CompeticaoCreateResponse,
     CompeticaoCreateSchema,
 )
+from src.schemas.contrato import ContratoCreateResponse, ContratoCreateSchema
 from src.schemas.controle import (
     ControleCreateResponse,
     ControleCreateSchema,
@@ -197,13 +199,16 @@ router.add_api_route(
                                     'data_inicio': '2024-05-01',
                                 },
                                 'contrato_clube': {
-                                    'tipo_id': 1,
+                                    'contrato_sub_tipo_id': 1,
                                     'data_inicio': '2024-05-01',
                                     'data_fim': '2025-05-01',
+                                    'observacao': 'null',
                                 },
                                 'contrato_empresa': {
+                                    'contrato_sub_tipo_id': 2,
                                     'data_inicio': '2024-05-01',
                                     'data_fim': '2025-05-01',
+                                    'observacao': 'null',
                                 },
                                 'posicao_primaria': 'atacante',
                                 'posicao_secundaria': 'null',
@@ -1486,6 +1491,35 @@ router.add_api_route(
                     }
                 },
             },
+        },
+    },
+)
+router.add_api_route(
+    '/create/contrato',
+    endpoint=contrato_create,
+    tags=['Contrato'],
+    methods=['POST'],
+    response_model=ContratoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ContratoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de contrato',
+                            'value': {
+                                'atleta_id': 1,
+                                'contrato_sub_tipo_id': 2,
+                                'data_inicio': '2024-01-01',
+                                'data_termino': '2024-02-31',
+                                'observacao': 'null',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
         },
     },
 )

@@ -185,41 +185,14 @@ class AtletaRepo:
                     Posicao.primeira,
                     Posicao.segunda,
                     Posicao.terceira,
-                    Contrato.tipo,
-                    AtletaContratoClube.data_inicio.label(
-                        'data_inicio_contrato_clube'
-                    ),
-                    AtletaContratoClube.data_fim.label(
-                        'data_termino_contrato_clube'
-                    ),
-                    AtletaContratoEmpresa.data_inicio.label(
-                        'data_inicio_contrato_empresa'
-                    ),
-                    AtletaContratoEmpresa.data_fim.label(
-                        'data_temino_contrato_empresa'
-                    ),
                     HistoricoClube.nome.label('clube'),
                     UsuarioAvatar.blob_url,
                 )
                 .select_from(Atleta)
-                .outerjoin(
-                    AtletaContratoClube,
-                    Atleta.id == AtletaContratoClube.atleta_id,
-                )
-                .outerjoin(
-                    Contrato, AtletaContratoClube.contrato_id == Contrato.id
-                )
                 .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
-                .outerjoin(
-                    HistoricoClube, HistoricoClube.atleta_id == atleta_id
-                )
-                .outerjoin(
-                    AtletaContratoEmpresa,
-                    AtletaContratoEmpresa.atleta_id == atleta_id,
-                )
+                .outerjoin(HistoricoClube, HistoricoClube.atleta_id == atleta_id)
                 .outerjoin(UsuarioAvatar, UsuarioAvatar.atleta_id == atleta_id)
-                .where(
-                    Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
+                .where(Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
                 )
             )
 
@@ -237,53 +210,9 @@ class AtletaRepo:
                 # Criando uma instância de atleta
                 new_atleta = Atleta(**atleta_data)
 
-                # Criando atleta para recuperar o ID e usar de FK posteriormente
                 session.add(new_atleta)
                 session.commit()
                 session.refresh(new_atleta)
-
-                # Criando clube
-                new_clube = HistoricoClube(
-                    nome=atleta_data.get('clube').get('nome'),
-                    atleta_id=new_atleta.id,
-                    data_inicio=atleta_data.get('clube').get('data_inicio'),
-                )
-                session.add(new_clube)
-
-                # Criando relacionamento N:N Atleta contrato clube
-                contrato_clube = atleta_data.get('contrato_clube')
-                new_atleta_contrato_clube = AtletaContratoClube(
-                    atleta_id=new_atleta.id,
-                    contrato_id=contrato_clube.get('tipo_id'),
-                    data_inicio=datetime.strptime(
-                        contrato_clube.get('data_inicio'),
-                        '%Y-%m-%d',
-                    ),
-                    data_fim=datetime.strptime(
-                        contrato_clube.get('data_fim'), '%Y-%m-%d'
-                    ),
-                )
-                session.add(new_atleta_contrato_clube)
-
-                # Criando relacionamento 1:1 Atleta contrato empresa
-                contrato_empresa = atleta_data.get('contrato_empresa')
-                new_atleta_contrato_empresa = AtletaContratoEmpresa(
-                    data_inicio=contrato_empresa.get('data_inicio'),
-                    data_fim=contrato_empresa.get('data_fim'),
-                    atleta_id=new_atleta.id,
-                )
-                session.add(new_atleta_contrato_empresa)
-
-                # Criando relacionameno N:N Atleta Posição
-                new_atleta_posicao = Posicao(
-                    atleta_id=new_atleta.id,
-                    primeira=atleta_data.get('posicao_primaria'),
-                    segunda=atleta_data.get('posicao_secundaria'),
-                    terceira=atleta_data.get('posicao_terciaria'),
-                )
-                session.add(new_atleta_posicao)
-
-                session.commit()
 
                 return {'id': new_atleta.id}
             except Exception:

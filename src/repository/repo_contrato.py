@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select
 
 from src.repository.model_objects import (
@@ -114,7 +115,9 @@ class ContratoRepo:
             # executa query com paginação
             paginated_results = session.exec(query).all()
 
-            return total_count, self._create_contrato_versao_objects(paginated_results)
+            return total_count, self._create_contrato_versao_objects(
+                paginated_results
+            )
 
     def create_contrato(self, contrato_data: dict) -> dict:
         with self.session_factory() as session:
@@ -175,3 +178,16 @@ class ContratoRepo:
 
             session.add(new_contrato_versao)
             session.commit()
+
+    def get_contrato_by_tipo_e_atleta(self, atleta_id: int, contrato_id: int):
+        with self.session_factory() as session:
+            query = select(Contrato, ContratoSubTipo.nome).join(ContratoSubTipo).where(
+                Contrato.atleta_id == atleta_id,
+                Contrato.contrato_sub_tipo_id == contrato_id,
+            )
+
+        try:
+            result = session.exec(query).one()
+            return result
+        except NoResultFound:
+            return None

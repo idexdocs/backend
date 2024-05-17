@@ -145,6 +145,7 @@ class Atleta(SQLModel, table=True):
     ativo: bool = True
 
     relacionamento: 'Relacionamento' = Relationship(back_populates='atleta')
+    contrato: list['Contrato'] = Relationship(back_populates='atleta')
 
 
 class Perfil(SQLModel, table=True):
@@ -183,6 +184,30 @@ class ContratoSubTipo(SQLModel, table=True):
         default=None, foreign_key='contratotipo.id'
     )
 
+    contratos: list["Contrato"] = Relationship(back_populates="contrato_sub_tipo")
+
+
+class Contrato(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    data_inicio: date
+    data_termino: date
+    observacao: str | None = None
+    versao: int = 1
+    ativo: bool = True
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+    contrato_sub_tipo_id: int = Field(
+        default=None, foreign_key='contratosubtipo.id'
+    )
+    contrato_sub_tipo: ContratoSubTipo = Relationship(
+        back_populates='contratos'
+    )
+    atleta: Atleta | None = Relationship(back_populates='contrato') 
+
 
 class ContratoVersao(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -196,21 +221,6 @@ class ContratoVersao(SQLModel, table=True):
     data_atualizado: datetime | None = None
 
     contrato_id: int | None = Field(default=None, foreign_key='contrato.id')
-
-class Contrato(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
-    contrato_sub_tipo_id: int = Field(
-        default=None, foreign_key='contratosubtipo.id'
-    )
-    data_inicio: date
-    data_termino: date
-    versao: int
-    ativo: bool
-    data_criacao: datetime = Field(
-        default_factory=datetime_now_sec, nullable=False
-    )
-    data_atualizado: datetime | None = None
 
 
 class PosicaoTypes(enum.Enum):
@@ -258,7 +268,7 @@ class HistoricoClube(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
     data_inicio: date
-    data_fim: date | None
+    data_fim: date | None = None
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
