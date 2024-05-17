@@ -1621,6 +1621,7 @@ router.add_api_route(
                             'type': 'Contratos',
                             'data': [
                                 {
+                                    'contrato_id': 1,
                                     'contrato_tipo': 'Clube',
                                     'contrato_nome': 'Profissional',
                                     'data_inicio': '2024-02-16',
@@ -1629,6 +1630,7 @@ router.add_api_route(
                                     'ativo': True,
                                 },
                                 {
+                                    'contrato_id': 2,
                                     'contrato_tipo': 'Empresa',
                                     'contrato_nome': 'Agenciamento',
                                     'data_inicio': '2024-02-16',

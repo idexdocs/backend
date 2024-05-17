@@ -20,6 +20,7 @@ class ContratoRepo:
     def _create_contrato_objects(self, result: list) -> list[dict]:
         contrato_list = [
             {
+                'contrato_id': id_,
                 'contrato_tipo': tipo,
                 'contrato_nome': nome,
                 'versao': versao,
@@ -27,7 +28,7 @@ class ContratoRepo:
                 'data_termino': data_termino.strftime('%Y-%m-%d'),
                 'ativo': ativo,
             }
-            for tipo, nome, versao, data_inicio, data_termino, ativo in result
+            for id_, tipo, nome, versao, data_inicio, data_termino, ativo in result
         ]
 
         return contrato_list
@@ -50,6 +51,7 @@ class ContratoRepo:
         with self.session_factory() as session:
             query = (
                 select(
+                    Contrato.id,
                     ContratoTipo.tipo,
                     ContratoSubTipo.nome,
                     Contrato.versao,
