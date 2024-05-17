@@ -204,7 +204,7 @@ class AtletaRepo:
                     HistoricoClube.nome.label('clube'),
                     UsuarioAvatar.blob_url,
                 )
-                .join(Posicao, Atleta.id == Posicao.atleta_id)
+                .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
                 .outerjoin(
                     HistoricoClube, HistoricoClube.atleta_id == Atleta.id
                 )
