@@ -1,5 +1,7 @@
+from collections import namedtuple
 from datetime import datetime, timedelta
 
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from sqlmodel import func, select
 
@@ -11,6 +13,35 @@ from .model_objects import (
     Posicao,
     Relacionamento,
     UsuarioAvatar,
+)
+
+AtletaDetails = namedtuple(
+    'AtletaDetails',
+    [
+        'atleta',
+        'data_nascimento',
+        'primeira_posicao',
+        'segunda_posicao',
+        'terceira_posicao',
+        'clube_atual',
+        'avatar_url',
+        'contratos',
+    ],
+)
+
+ContratoDetails = namedtuple(
+    'ContratoDetails',
+    [
+        'id',
+        'data_inicio',
+        'data_termino',
+        'observacao',
+        'versao',
+        'ativo',
+        'data_criacao',
+        'data_atualizado',
+        'contrato_sub_tipo_nome',
+    ],
 )
 
 
@@ -35,63 +66,34 @@ class AtletaRepo:
             for id_, nome, data_nascimento, primeira, clube, data_avaliacao in result
         ]
 
-    def _create_atleta_detail_object(self, result) -> dict:
-        (
-            nome,
-            data_nascimento,
-            primeira,
-            segunda,
-            terceira,
-            tipo,
-            data_inicio_contrato_clube,
-            data_termino_contrato_clube,
-            data_inicio_contrato_empresa,
-            data_temino_contrato_empresa,
-            clube,
-            blob_url,
-        ) = result
-
+    def _create_atleta_detail_object(self, result: AtletaDetails) -> dict:
         return {
-            'nome': nome,
-            'data_nascimento': data_nascimento.strftime('%Y-%m-%d'),
-            'posicao_primaria': primeira.value if primeira else None,
-            'posicao_secundaria': segunda.value if segunda else None,
-            'posicao_terciaria': terceira.value if terceira else None,
-            'clube_atual': clube,
-            'contrato_clube': {
-                'tipo': tipo,
-                'data_inicio': data_inicio_contrato_clube.strftime('%Y-%m-%d')
-                if data_inicio_contrato_clube is not None
-                else None,
-                'data_termino': data_termino_contrato_clube.strftime(
-                    '%Y-%m-%d'
-                )
-                if data_termino_contrato_clube is not None
-                else None,
-                'data_expiracao': (
-                    data_termino_contrato_clube - timedelta(days=180)
-                ).strftime('%Y-%m-%d')
-                if data_termino_contrato_clube
-                else None,
-            },
-            'contrato_empresa': {
-                'data_inicio': data_inicio_contrato_empresa.strftime(
-                    '%Y-%m-%d'
-                )
-                if data_inicio_contrato_empresa is not None
-                else None,
-                'data_termino': data_temino_contrato_empresa.strftime(
-                    '%Y-%m-%d'
-                )
-                if data_temino_contrato_empresa is not None
-                else None,
-                'data_expiracao': (
-                    data_temino_contrato_empresa - timedelta(days=180)
-                ).strftime('%Y-%m-%d')
-                if data_temino_contrato_empresa
-                else None,
-            },
-            'blob_url': blob_url,
+            'nome': result.atleta.nome,
+            'data_nascimento': result.atleta.data_nascimento.strftime(
+                '%Y-%m-%d'
+            ),
+            'posicao_primaria': result.primeira_posicao.value
+            if result.primeira_posicao
+            else None,
+            'posicao_secundaria': result.segunda_posicao.value
+            if result.segunda_posicao
+            else None,
+            'posicao_terciaria': result.terceira_posicao.value
+            if result.terceira_posicao
+            else None,
+            'clube_atual': result.clube_atual,
+            'contratos': [
+                {
+                    'tipo': contrato.contrato_sub_tipo_nome,
+                    'data_inicio': contrato.data_inicio.strftime('%Y-%m-%d'),
+                    'data_termino': contrato.data_termino.strftime('%Y-%m-%d'),
+                    'data_expiracao': (
+                        contrato.data_termino - timedelta(days=180)
+                    ).strftime('%Y-%m-%d'),
+                }
+                for contrato in result.contratos
+            ],
+            'blob_url': result.avatar_url,
         }
 
     def list_atleta(self, filters: dict):
@@ -177,10 +179,24 @@ class AtletaRepo:
             return None
 
     def get_atleta(self, atleta_id: int):
+
         with self.session_factory() as session:
-            query = (
+            atletas_with_contrato = (
+                session.exec(
+                    select(Atleta)
+                    .options(
+                        joinedload(Atleta.contrato).joinedload(
+                            Contrato.contrato_sub_tipo
+                        )
+                    )
+                    .where(Atleta.id == atleta_id)
+                )
+                .unique()
+                .all()
+            )
+
+            additional_info = session.exec(
                 select(
-                    Atleta.nome,
                     Atleta.data_nascimento,
                     Posicao.primeira,
                     Posicao.segunda,
@@ -188,17 +204,47 @@ class AtletaRepo:
                     HistoricoClube.nome.label('clube'),
                     UsuarioAvatar.blob_url,
                 )
-                .select_from(Atleta)
-                .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
-                .outerjoin(HistoricoClube, HistoricoClube.atleta_id == atleta_id)
-                .outerjoin(UsuarioAvatar, UsuarioAvatar.atleta_id == atleta_id)
-                .where(Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
+                .join(Posicao, Atleta.id == Posicao.atleta_id)
+                .outerjoin(
+                    HistoricoClube, HistoricoClube.atleta_id == Atleta.id
                 )
-            )
+                .outerjoin(UsuarioAvatar, UsuarioAvatar.atleta_id == Atleta.id)
+                .where(
+                    Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
+                )
+            ).all()
 
+            # Combine the results together into a list of AtletaDetails
+            results = [
+                AtletaDetails(
+                    atleta=atleta,
+                    data_nascimento=info.data_nascimento,
+                    primeira_posicao=info.primeira,
+                    segunda_posicao=info.segunda,
+                    terceira_posicao=info.terceira,
+                    clube_atual=info.clube,
+                    avatar_url=info.blob_url,
+                    contratos=[
+                        ContratoDetails(
+                            id=contrato.id,
+                            data_inicio=contrato.data_inicio,
+                            data_termino=contrato.data_termino,
+                            observacao=contrato.observacao,
+                            versao=contrato.versao,
+                            ativo=contrato.ativo,
+                            data_criacao=contrato.data_criacao,
+                            data_atualizado=contrato.data_atualizado,
+                            contrato_sub_tipo_nome=contrato.contrato_sub_tipo.nome
+                            if contrato.contrato_sub_tipo
+                            else None,
+                        )
+                        for contrato in atleta.contrato
+                    ],
+                )
+                for atleta, info in zip(atletas_with_contrato, additional_info)
+            ]
         try:
-            result = session.exec(query).one()
-            return self._create_atleta_detail_object(result)
+            return self._create_atleta_detail_object(results[0])
         except NoResultFound:
             return None
         except MultipleResultsFound:
