@@ -12,6 +12,7 @@ from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.contrato_create import contrato_create
 from src.main.rest.contrato_list import contrato_list
+from src.main.rest.contrato_update import contrato_update
 from src.main.rest.contrato_versao_list import contrato_versao_list
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
@@ -40,7 +41,11 @@ from src.schemas.competicao import (
     CompeticaoCreateResponse,
     CompeticaoCreateSchema,
 )
-from src.schemas.contrato import ContratoCreateResponse, ContratoCreateSchema
+from src.schemas.contrato import (
+    ContratoCreateResponse,
+    ContratoCreateSchema,
+    ContratoUpdateSchema,
+)
 from src.schemas.controle import (
     ControleCreateResponse,
     ControleCreateSchema,
@@ -1528,6 +1533,35 @@ router.add_api_route(
                                 'data_termino': '2024-02-31',
                                 'observacao': 'null',
                             },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+router.add_api_route(
+    '/update/contrato',
+    endpoint=contrato_update,
+    tags=['Contrato'],
+    methods=['PUT'],
+    response_model=ContratoCreateResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': ContratoUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para edição de contrato',
+                            'value': {
+                                "atleta_id": 1,
+                                "contrato_sub_tipo_id": 1,
+                                "data_inicio": "2024-01-01",
+                                "data_termino": "2024-01-01",
+                                "observacao": "Alterações contratuais"
+                            }
                         }
                     },
                 }

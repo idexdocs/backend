@@ -199,9 +199,9 @@ class Contrato(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+    atleta_id: int = Field(default=None, foreign_key='atleta.id', primary_key=True)
     contrato_sub_tipo_id: int = Field(
-        default=None, foreign_key='contratosubtipo.id'
+        default=None, foreign_key='contratosubtipo.id', primary_key=True
     )
     contrato_sub_tipo: ContratoSubTipo = Relationship(
         back_populates='contratos'

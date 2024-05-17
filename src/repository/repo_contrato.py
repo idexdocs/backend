@@ -1,13 +1,14 @@
 from datetime import datetime
 
 from sqlalchemy.orm.exc import NoResultFound
-from sqlmodel import func, select
+from sqlmodel import func, select, update
 
 from src.repository.model_objects import (
     Contrato,
     ContratoSubTipo,
     ContratoTipo,
     ContratoVersao,
+    datetime_now_sec,
 )
 
 from .base_repo import create_session
@@ -147,31 +148,34 @@ class ContratoRepo:
                 session.rollback()
                 raise
 
-    def update_contrato(self, atleta_id: int, contrato_data: dict) -> dict:
+    def update_contrato(self, contrato_data: dict) -> dict:
         with self.session_factory() as session:
-            contrato_sub_tipo_id = contrato_data.get('contrato_sub_tipo_id')
+            contrato_id = contrato_data.get('contrato_id')
 
-            contrato: Contrato = session.exec(Contrato).where(
-                Contrato.atleta_id == atleta_id,
-                Contrato.contrato_sub_tipo_id == contrato_sub_tipo_id,
+            contrato_partial = session.exec(
+                select(Contrato.id, Contrato.versao)
+                .where(Contrato.id == contrato_id)
+            ).one()
+
+            # Incrementar versão diretamente, evitando variáveis intermediárias desnecessárias
+            contrato_nova_versao = contrato_partial.versao + 1
+
+            # Preparar dados que serão atualizados e adicionados à sessão
+            session.exec(
+                update(Contrato)
+                .where(Contrato.id == contrato_id)
+                .values(
+                    versao=contrato_nova_versao,
+                    data_inicio=contrato_data.get('data_inicio'),
+                    data_termino=contrato_data.get('data_termino'),
+                    data_atualizado=datetime_now_sec(),
+                    observacao=contrato_data.get('observacao'),
+                    ativo=contrato_data.get('ativo'),
+                )
             )
-
-            # Configurando horário da atualização
-            data_atualizacao = datetime.strftime(
-                datetime.now(), '%Y-%m-%d %H:%M:%S'
-            )
-
-            contrato_versao = contrato.versao
-            contrato_nova_versao = contrato_versao + 1
-
-            contrato.versao = contrato_nova_versao
-            contrato.data_inicio = contrato_data.get('data_inicio')
-            contrato.data_termino = contrato_data.get('data_termino')
-            contrato.data_atualizado = data_atualizacao
-            contrato.ativo = contrato_data.get('ativo')
 
             new_contrato_versao = ContratoVersao(
-                contrato_id=contrato.id,
+                contrato_id=contrato_partial.id,
                 versao=contrato_nova_versao,
                 data_inicio=contrato_data.get('data_inicio'),
                 data_termino=contrato_data.get('data_termino'),

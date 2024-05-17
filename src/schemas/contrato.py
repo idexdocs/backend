@@ -21,3 +21,19 @@ class ContratoCreateSchema(BaseModel):
 
 class ContratoCreateResponse(BaseModel):
     id: int
+
+
+class ContratoUpdateSchema(BaseModel):
+    contrato_id: int = Field(..., ge=1)
+    data_inicio: str
+    data_termino: str
+    ativo: bool | None = True
+    observacao: str | None = None
+
+    @field_validator('data_inicio', 'data_termino')
+    def validate_date(cls, v):
+        try:
+            datetime.strptime(v, '%Y-%m-%d')
+            return v
+        except ValueError:
+            raise ValueError('Formato de data inválido, utilize YYYY-MM-DD')
