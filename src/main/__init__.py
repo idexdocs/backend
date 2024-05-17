@@ -11,6 +11,7 @@ from src.main.rest.clube_list import clube
 from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.contrato_list import contrato_list
+from src.main.rest.contrato_versao_list import contrato_versao_list
 from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.file_download import file_download
@@ -1491,6 +1492,60 @@ router.add_api_route(
 router.add_api_route(
     '/contrato/atleta/{id}',
     endpoint=contrato_list,
+    tags=['Contrato'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'in': 'query',
+                'name': 'page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+            {
+                'in': 'query',
+                'name': 'per_page',
+                'required': False,
+                'schema': {'type': 'integer'},
+            },
+        ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 2,
+                            'total': 2,
+                            'type': 'Contratos',
+                            'data': [
+                                {
+                                    'contrato_tipo': 'Clube',
+                                    'contrato_nome': 'Profissional',
+                                    'data_inicio': '2024-02-16',
+                                    'data_termino': '2024-08-16',
+                                    'observacao': 'null',
+                                    'ativo': True,
+                                },
+                                {
+                                    'contrato_tipo': 'Empresa',
+                                    'contrato_nome': 'Agenciamento',
+                                    'data_inicio': '2024-02-16',
+                                    'data_termino': '2024-08-16',
+                                    'observacao': 'Recisão de contrato',
+                                    'ativo': False,
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+        },
+    },
+)
+router.add_api_route(
+    '/contrato/versao/{id}',
+    endpoint=contrato_versao_list,
     tags=['Contrato'],
     methods=['GET'],
     openapi_extra={

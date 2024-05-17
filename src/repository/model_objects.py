@@ -184,6 +184,19 @@ class ContratoSubTipo(SQLModel, table=True):
     )
 
 
+class ContratoVersao(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    versao: int
+    data_inicio: date
+    data_termino: date
+    observacao: str | None = None
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    contrato_id: int | None = Field(default=None, foreign_key='contrato.id')
+
 class Contrato(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     atleta_id: int = Field(default=None, foreign_key='atleta.id')
@@ -192,11 +205,12 @@ class Contrato(SQLModel, table=True):
     )
     data_inicio: date
     data_termino: date
-    observacao: str | None = None
+    versao: int
     ativo: bool
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False
     )
+    data_atualizado: datetime | None = None
 
 
 class PosicaoTypes(enum.Enum):
