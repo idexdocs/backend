@@ -94,6 +94,7 @@ class AtletaRepo:
                 for contrato in result.contratos
             ],
             'blob_url': result.avatar_url,
+            'ativo': result.atleta.ativo
         }
 
     def list_atleta(self, filters: dict):
