@@ -43,7 +43,7 @@ class PdfCreateUseCase:
         _, lesoes = self.lesao_repository.list_lesao(atleta_id, filters)
         _, controles = self.controle_repository.list_controle(atleta_id, filters)
         _, competicoes = self.competicao_repository.list_competicao(atleta_id, filters)
-        _, observacoes = self.observacao_repository.list_observacao(atleta_id, filters)
+        observacoes = self.observacao_repository.list_observacao(atleta_id, filters)
         _, relacionamentos = self.relacionamento_repository.list_relacionamento(atleta_id, filters)
         _, caracteristicas_fisicas, _ = (self.caracteristica_repository.list_caracteristica(atleta_id, filters))
 

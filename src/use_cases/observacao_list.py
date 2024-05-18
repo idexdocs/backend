@@ -32,13 +32,10 @@ class ObservacaoListUseCase:
             atleta_id, filters
         )
 
-        if len(observacoes) == 0:
-            raise NotFoundError('O Atleta não possui observações cadastradas')
-
         return observacoes
 
     def _format_response(self, result: str) -> dict:
         return {
-            'type': 'Observações',
+            'type': 'Observacao',
             'data': result,
         }

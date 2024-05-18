@@ -1095,29 +1095,14 @@ router.add_api_route(
                 'description': 'Successful Response',
                 'content': {
                     'application/json': {
-                        'example': {
-                            'type': 'Observações',
+                        'example1': {
+                            'type': 'Observacao',
                             'data': {
                                 'id': 5,
                                 'tipo': 'relacionamento',
                                 'descricao': 'Minha primeira observação',
                                 'data_criacao': '2024-05-07',
                             },
-                        }
-                    }
-                },
-            },
-            '404': {
-                'description': 'Not found',
-                'content': {
-                    'text/plain': {
-                        'example': {
-                            'errors': [
-                                {
-                                    'title': 'NotFound',
-                                    'message': 'O Atleta não possui observações cadastrados',
-                                }
-                            ]
                         }
                     }
                 },

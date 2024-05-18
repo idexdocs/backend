@@ -9,6 +9,8 @@ class ObservacaoRepo:
         self.session_factory = create_session
 
     def _create_observacao_get_objects(self, result: list) -> dict:
+        if not result:
+            return None
         return {
             'id': result.id,
             'tipo': result.tipo.value,
