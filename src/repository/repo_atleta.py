@@ -62,8 +62,9 @@ class AtletaRepo:
                 ).strftime('%Y-%m-%d')
                 if data_avaliacao
                 else None,
+                'ativo': ativo,
             }
-            for id_, nome, data_nascimento, primeira, clube, data_avaliacao in result
+            for id_, nome, data_nascimento, primeira, clube, data_avaliacao, ativo in result
         ]
 
     def _create_atleta_detail_object(self, result: AtletaDetails) -> dict:
@@ -118,6 +119,7 @@ class AtletaRepo:
                     Posicao.primeira,
                     HistoricoClube.nome.label('clube'),
                     Relacionamento.data_avaliacao,
+                    Atleta.ativo,                                        
                 )
                 .select_from(Atleta)
                 .outerjoin(Posicao, Posicao.atleta_id == Atleta.id)
