@@ -19,15 +19,15 @@ class ObservacaoListUseCase:
 
         self._check_atleta_exists(atleta_id)
 
-        total_count, result = self._list_observacao(atleta_id, filters)
-        return self._format_response(total_count, result)
+        result = self._get_observacao(atleta_id, filters)
+        return self._format_response(result)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
         if atleta is None:
             raise NotFoundError('Atleta não encontrado')
 
-    def _list_observacao(self, atleta_id: int, filters: dict):
+    def _get_observacao(self, atleta_id: int, filters: dict):
         observacoes = self.observacao_repository.list_observacao(
             atleta_id, filters
         )
@@ -37,10 +37,8 @@ class ObservacaoListUseCase:
 
         return observacoes
 
-    def _format_response(self, total_count: int, result: list[dict]) -> dict:
+    def _format_response(self, result: str) -> dict:
         return {
-            'count': len(result),
-            'total': total_count,
             'type': 'Observações',
             'data': result,
         }

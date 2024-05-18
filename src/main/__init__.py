@@ -1096,28 +1096,13 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 2,
-                            'type': 'Observação',
-                            'data': [
-                                {
-                                    'atleta_id': 3,
-                                    'tipo': 'relacionamento',
-                                    'descricao': 'sua observação',
-                                    'data_observacao': '2024-01-01',
-                                },
-                                {
-                                    'atleta_id': 3,
-                                    'tipo': 'desempenho',
-                                    'descricao': 'sua observação',
-                                    'data_observacao': '2024-03-01',
-                                },
-                                {
-                                    'atleta_id': 3,
-                                    'tipo': 'desempenho',
-                                    'descricao': 'sua observação foi editada no dia seguinte',
-                                    'data_observacao': '2024-03-02',
-                                },
-                            ],
+                            'type': 'Observações',
+                            'data': {
+                                'id': 5,
+                                'tipo': 'relacionamento',
+                                'descricao': 'Minha primeira observação',
+                                'data_criacao': '2024-05-07',
+                            },
                         }
                     }
                 },
@@ -1556,12 +1541,12 @@ router.add_api_route(
                         'example1': {
                             'summary': 'Exemplo de payload para edição de contrato',
                             'value': {
-                                "atleta_id": 1,
-                                "contrato_sub_tipo_id": 1,
-                                "data_inicio": "2024-01-01",
-                                "data_termino": "2024-01-01",
-                                "observacao": "Alterações contratuais"
-                            }
+                                'atleta_id': 1,
+                                'contrato_sub_tipo_id': 1,
+                                'data_inicio': '2024-01-01',
+                                'data_termino': '2024-01-01',
+                                'observacao': 'Alterações contratuais',
+                            },
                         }
                     },
                 }
