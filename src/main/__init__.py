@@ -1566,25 +1566,39 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 2,
-                            'total': 2,
+                            'count': 3,
+                            'total': 3,
                             'type': 'Contratos',
                             'data': [
                                 {
+                                    'contrato_id': 1004,
                                     'contrato_tipo': 'Clube',
                                     'contrato_nome': 'Profissional',
-                                    'data_inicio': '2024-02-16',
-                                    'data_termino': '2024-08-16',
-                                    'observacao': 'null',
+                                    'versao': 6,
+                                    'observacao': 'Alterações contratuais',
+                                    'data_inicio': '2024-01-01',
+                                    'data_termino': '2024-01-01',
                                     'ativo': True,
                                 },
                                 {
+                                    'contrato_id': 1005,
                                     'contrato_tipo': 'Empresa',
                                     'contrato_nome': 'Agenciamento',
-                                    'data_inicio': '2024-02-16',
-                                    'data_termino': '2024-08-16',
-                                    'observacao': 'Recisão de contrato',
-                                    'ativo': False,
+                                    'versao': 1,
+                                    'observacao': 'null',
+                                    'data_inicio': '2024-02-17',
+                                    'data_termino': '2024-08-17',
+                                    'ativo': True,
+                                },
+                                {
+                                    'contrato_id': 1008,
+                                    'contrato_tipo': 'Empresa',
+                                    'contrato_nome': 'Imagem',
+                                    'versao': 1,
+                                    'observacao': 'null',
+                                    'data_inicio': '2024-01-01',
+                                    'data_termino': '2024-12-31',
+                                    'ativo': True,
                                 },
                             ],
                         }
