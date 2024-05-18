@@ -25,11 +25,12 @@ class ContratoRepo:
                 'contrato_tipo': tipo,
                 'contrato_nome': nome,
                 'versao': versao,
+                'observacao': observacao,
                 'data_inicio': data_inicio.strftime('%Y-%m-%d'),
                 'data_termino': data_termino.strftime('%Y-%m-%d'),
                 'ativo': ativo,
             }
-            for id_, tipo, nome, versao, data_inicio, data_termino, ativo in result
+            for id_, tipo, nome, versao, observacao, data_inicio, data_termino, ativo in result
         ]
 
         return contrato_list
@@ -56,6 +57,7 @@ class ContratoRepo:
                     ContratoTipo.tipo,
                     ContratoSubTipo.nome,
                     Contrato.versao,
+                    Contrato.observacao,
                     Contrato.data_inicio,
                     Contrato.data_termino,
                     Contrato.ativo,
