@@ -483,7 +483,7 @@ router.add_api_route(
                                     'influencias_externas': 4,
                                     'pendencia_empresa': False,
                                     'pendencia_clube': True,
-                                    'data_criacao': '2024-05-01',
+                                    'data_avaliacao': '2024-05-01',
                                 },
                                 {
                                     'atleta_id': 1,
@@ -494,7 +494,7 @@ router.add_api_route(
                                     'influencias_externas': 5,
                                     'pendencia_empresa': False,
                                     'pendencia_clube': False,
-                                    'data_criacao': '2024-06-05',
+                                    'data_avaliacao': '2024-06-05',
                                 },
                             ],
                         }

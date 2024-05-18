@@ -19,9 +19,9 @@ class RelacionamentoRepo:
                 'influencias_externas': influencias_externas,
                 'pendencia_empresa': pendencia_empresa,
                 'pendencia_clube': pendencia_clube,
-                'data_criacao': data_criacao.strftime('%Y-%m-%d'),
+                'data_avaliacao': data_avaliacao.strftime('%Y-%m-%d'),
             }
-            for atleta_id, receptividade_contrato, satisfacao_empresa, satisfacao_clube, relacao_familiares, influencias_externas, pendencia_empresa, pendencia_clube, data_criacao in result
+            for atleta_id, receptividade_contrato, satisfacao_empresa, satisfacao_clube, relacao_familiares, influencias_externas, pendencia_empresa, pendencia_clube, data_avaliacao in result
         ]
 
     def list_relacionamento(self, atleta_id: int, filters: dict = None):
@@ -35,7 +35,7 @@ class RelacionamentoRepo:
                 Relacionamento.influencias_externas,
                 Relacionamento.pendencia_clube,
                 Relacionamento.pendencia_empresa,
-                Relacionamento.data_criacao,
+                Relacionamento.data_avaliacao,
             ).filter(Relacionamento.atleta_id == atleta_id)
 
             # conta o número total de items sem paginação
