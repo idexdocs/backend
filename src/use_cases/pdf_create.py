@@ -43,7 +43,8 @@ class PdfCreateUseCase:
         _, lesoes = self.lesao_repository.list_lesao(atleta_id, filters)
         _, controles = self.controle_repository.list_controle(atleta_id, filters)
         _, competicoes = self.competicao_repository.list_competicao(atleta_id, filters)
-        observacoes = self.observacao_repository.list_observacao(atleta_id, filters)
+        observacoes_relacionamento = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'relacionamento'})
+        observacoes_desempenho = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'desempenho'})
         _, relacionamentos = self.relacionamento_repository.list_relacionamento(atleta_id, filters)
         _, caracteristicas_fisicas, _ = (self.caracteristica_repository.list_caracteristica(atleta_id, filters))
 
@@ -56,7 +57,8 @@ class PdfCreateUseCase:
             'lesao': lesoes,
             'controle': controles,
             'competicao': competicoes,
-            'observacao': observacoes,
+            'observacoes_relacionamento': observacoes_relacionamento,
+            'observacoes_desempenho': observacoes_desempenho,
             'relacionamento': relacionamentos,
             'caracteristicas_fisicas': caracteristicas_fisicas,
             'caracteristicas_posicao': caracteristicas_posicao,
