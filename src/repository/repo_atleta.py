@@ -95,7 +95,7 @@ class AtletaRepo:
                 for contrato in result.contratos
             ],
             'blob_url': result.avatar_url,
-            'ativo': result.atleta.ativo
+            'ativo': result.atleta.ativo,
         }
 
     def list_atleta(self, filters: dict):
@@ -119,7 +119,7 @@ class AtletaRepo:
                     Posicao.primeira,
                     HistoricoClube.nome.label('clube'),
                     Relacionamento.data_avaliacao,
-                    Atleta.ativo,                                        
+                    Atleta.ativo,
                 )
                 .select_from(Atleta)
                 .outerjoin(Posicao, Posicao.atleta_id == Atleta.id)
@@ -198,6 +198,9 @@ class AtletaRepo:
                 .all()
             )
 
+            if not atletas_with_contrato:
+                return None
+
             additional_info = session.exec(
                 select(
                     Atleta.data_nascimento,
@@ -247,7 +250,10 @@ class AtletaRepo:
                 for atleta, info in zip(atletas_with_contrato, additional_info)
             ]
         try:
-            return self._create_atleta_detail_object(results[0])
+
+            return self._create_atleta_detail_object(
+                results[0] if results else None
+            )
         except NoResultFound:
             return None
         except MultipleResultsFound:
