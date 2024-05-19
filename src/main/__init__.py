@@ -1548,6 +1548,12 @@ router.add_api_route(
     openapi_extra={
         'parameters': [
             {
+                'in': 'path',
+                'name': 'id',
+                'required': True,
+                'schema': {'type': 'integer'},
+            },
+            {
                 'in': 'query',
                 'name': 'page',
                 'required': False,
@@ -1615,6 +1621,12 @@ router.add_api_route(
     methods=['GET'],
     openapi_extra={
         'parameters': [
+            {
+                'in': 'path',
+                'name': 'id',
+                'required': True,
+                'schema': {'type': 'integer'},
+            },
             {
                 'in': 'query',
                 'name': 'page',
