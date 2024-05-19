@@ -184,7 +184,9 @@ class ContratoSubTipo(SQLModel, table=True):
         default=None, foreign_key='contratotipo.id'
     )
 
-    contratos: list["Contrato"] = Relationship(back_populates="contrato_sub_tipo")
+    contratos: list['Contrato'] = Relationship(
+        back_populates='contrato_sub_tipo'
+    )
 
 
 class Contrato(SQLModel, table=True):
@@ -199,14 +201,14 @@ class Contrato(SQLModel, table=True):
     )
     data_atualizado: datetime | None = None
 
-    atleta_id: int = Field(default=None, foreign_key='atleta.id', primary_key=True)
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
     contrato_sub_tipo_id: int = Field(
-        default=None, foreign_key='contratosubtipo.id', primary_key=True
+        default=None, foreign_key='contratosubtipo.id'
     )
     contrato_sub_tipo: ContratoSubTipo = Relationship(
         back_populates='contratos'
     )
-    atleta: Atleta | None = Relationship(back_populates='contrato') 
+    atleta: Atleta | None = Relationship(back_populates='contrato')
 
 
 class ContratoVersao(SQLModel, table=True):

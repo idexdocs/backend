@@ -96,7 +96,7 @@ class UsuarioRepo:
                 Usuario.email,
                 Usuario.data_criacao,
                 UsuarioTipo.tipo,
-            ).join(UsuarioTipo)
+            ).join(UsuarioTipo).join()
 
             # conta o Usuarionúmero total de items sem paginação
             total_count = session.exec(

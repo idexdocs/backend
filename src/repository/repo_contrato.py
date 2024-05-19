@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select, update
 
@@ -42,9 +40,8 @@ class ContratoRepo:
                 'data_inicio': data_inicio.strftime('%Y-%m-%d'),
                 'data_termino': data_termino.strftime('%Y-%m-%d'),
                 'observacao': observacao,
-                'data_criacao': data_criacao.strftime('%Y-%m-%d'),
             }
-            for versao, data_inicio, data_termino, observacao, data_criacao in result
+            for versao, data_inicio, data_termino, observacao in result
         ]
 
         return contrato_list
@@ -100,7 +97,6 @@ class ContratoRepo:
                 ContratoVersao.data_inicio,
                 ContratoVersao.data_termino,
                 ContratoVersao.observacao,
-                ContratoVersao.data_criacao,
             ).where(ContratoVersao.contrato_id == contrato_id)
 
             # conta o número total de items sem paginação
@@ -127,6 +123,7 @@ class ContratoRepo:
     def create_contrato(self, contrato_data: dict) -> dict:
         with self.session_factory() as session:
             try:
+
                 new_contrato = Contrato(**contrato_data)
 
                 session.add(new_contrato)
@@ -155,8 +152,9 @@ class ContratoRepo:
             contrato_id = contrato_data.get('contrato_id')
 
             contrato_partial = session.exec(
-                select(Contrato.id, Contrato.versao)
-                .where(Contrato.id == contrato_id)
+                select(Contrato.id, Contrato.versao).where(
+                    Contrato.id == contrato_id
+                )
             ).one()
 
             # Incrementar versão diretamente, evitando variáveis intermediárias desnecessárias
@@ -189,9 +187,13 @@ class ContratoRepo:
 
     def get_contrato_by_tipo_e_atleta(self, atleta_id: int, contrato_id: int):
         with self.session_factory() as session:
-            query = select(Contrato, ContratoSubTipo.nome).join(ContratoSubTipo).where(
-                Contrato.atleta_id == atleta_id,
-                Contrato.contrato_sub_tipo_id == contrato_id,
+            query = (
+                select(Contrato, ContratoSubTipo.nome)
+                .join(ContratoSubTipo)
+                .where(
+                    Contrato.atleta_id == atleta_id,
+                    Contrato.contrato_sub_tipo_id == contrato_id,
+                )
             )
 
         try:
