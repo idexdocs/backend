@@ -153,19 +153,39 @@ class UsuarioRepo:
                 select(Usuario).where(Usuario.id == usuario_id)
             ).one()
 
-            for key, value in usuario_data.items():
-                if value is not None:
-                    setattr(usuario, key, value)
-
+            usuario.nome = usuario_data.get('nome')
+            usuario.email = usuario_data.get('email')
+            usuario.usuario_tipo_id = usuario_data.get('usuario_tipo_id')
             usuario.data_atualizado = datetime.strftime(
                 datetime.now(), '%Y-%m-%d %H:%M:%S'
             )
-            session.commit()
-            session.refresh(usuario)
 
-            return usuario.model_dump(
-                exclude=['data_criacao', 'data_atualizado', 'hash_password']
-            )
+            def get_permission_by_name(name: str) -> Permissao | None:
+                return session.exec(
+                    select(Permissao).filter_by(nome=name)
+                ).first()
+
+            for permission_name, should_have_permission in usuario_data.get(
+                'permissoes'
+            ).items():
+                permissao = get_permission_by_name(permission_name)
+
+                usuario_permissao = session.exec(
+                    select(UsuarioPermissao).filter_by(
+                        usuario_id=usuario.id, permissao_id=permissao.id
+                    )
+                ).first()
+
+                if should_have_permission and not usuario_permissao:
+                    new_perm_assoc = UsuarioPermissao(
+                        usuario_id=usuario.id,
+                        permissao_id=permissao.id,
+                    )
+                    session.add(new_perm_assoc)
+                elif not should_have_permission and usuario_permissao:
+                    session.delete(usuario_permissao)
+
+            session.commit()
 
     def update_usurio_password(self, usuario_id: int, new_password: str):
         with self.session_factory() as session:
