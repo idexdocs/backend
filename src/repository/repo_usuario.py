@@ -44,10 +44,28 @@ class UsuarioRepo:
 
     def create_usuario(self, usuario_data: dict) -> dict:
         with self.session_factory() as session:
+            usuario_permissoes = usuario_data.pop('permissoes')
+
             new_usuario = Usuario(**usuario_data)
             session.add(new_usuario)
             session.commit()
             session.refresh(new_usuario)
+
+            def get_permission_by_name(nome: str) -> Permissao | None:
+                return session.exec(
+                    select(Permissao).filter_by(nome=nome)
+                ).first()
+
+            for perm_name, has_permission in usuario_permissoes.items():
+                if has_permission:
+                    permissao = get_permission_by_name(perm_name)
+                    if permissao:
+                        new_perm_assoc = UsuarioPermissao(
+                            usuario_id=new_usuario.id,
+                            permissao_id=permissao.id,
+                        )
+                        session.add(new_perm_assoc)
+            session.commit()
 
             return {'id': new_usuario.id}
 
@@ -160,9 +178,9 @@ class UsuarioRepo:
                 datetime.now(), '%Y-%m-%d %H:%M:%S'
             )
 
-            def get_permission_by_name(name: str) -> Permissao | None:
+            def get_permission_by_name(nome: str) -> Permissao | None:
                 return session.exec(
-                    select(Permissao).filter_by(nome=name)
+                    select(Permissao).filter_by(nome=nome)
                 ).first()
 
             for permission_name, should_have_permission in usuario_data.get(
