@@ -21,6 +21,8 @@ class UsuarioTipo(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     tipo: str = Field(sa_column=Column(Enum(UsuarioTipoTypes)))
 
+    usuarios: list['Usuario'] = Relationship(back_populates='tipo_usuario')
+
 
 class Permissao(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -68,7 +70,7 @@ class Usuario(SQLModel, table=True):
     usuario_tipo_id: int | None = Field(
         default=None, foreign_key='usuariotipo.id'
     )
-
+    tipo_usuario: 'UsuarioTipo' = Relationship(back_populates='usuarios')
     roles: list['UsuarioRole'] = Relationship(back_populates='usuario')
     permissoes: list['UsuarioPermissao'] = Relationship(
         back_populates='usuario'

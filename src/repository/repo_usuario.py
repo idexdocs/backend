@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select
 
 from .base_repo import create_session
-from .model_objects import Usuario, UsuarioTipo
+from .model_objects import Permissao, Usuario, UsuarioPermissao, UsuarioTipo
 
 
 class UsuarioRepo:
@@ -12,15 +13,19 @@ class UsuarioRepo:
         self.session_factory = create_session
 
     def _create_usuario_objects(self, result: list) -> list[dict]:
+
         usuario_list = [
             {
-                'id': id_,
-                'nome': nome,
-                'email': email,
-                'data_criacao': data_criacao.strftime('%Y-%m-%d'),
-                'tipo': tipo.value,
+                'id': usuario.get('id'),
+                'nome': usuario.get('nome'),
+                'email': usuario.get('email'),
+                'data_criacao': usuario.get('data_criacao').strftime(
+                    '%Y-%m-%d'
+                ),
+                'tipo': usuario.get('tipo'),
+                'permissoes': usuario.get('permissoes'),
             }
-            for id_, nome, email, data_criacao, tipo in result
+            for usuario in result
         ]
 
         return usuario_list
@@ -90,20 +95,19 @@ class UsuarioRepo:
 
     def list_usuario(self, filters: dict = {}):
         with self.session_factory() as session:
-            query = select(
-                Usuario.id,
-                Usuario.nome,
-                Usuario.email,
-                Usuario.data_criacao,
-                UsuarioTipo.tipo,
-            ).join(UsuarioTipo).join()
+            query = select(Usuario).options(
+                joinedload(Usuario.permissoes).joinedload(
+                    UsuarioPermissao.permissao
+                ),
+                selectinload(Usuario.tipo_usuario),  # Eager load UsuarioTipo
+            )
 
-            # conta o Usuarionúmero total de items sem paginação
+            # Conta o número total de items sem paginação
             total_count = session.exec(
                 select(func.count()).select_from(query.subquery())
             ).one()
 
-            # aplica paginação
+            # Aplica paginação
             page = int(filters.get('page', 1))
             per_page = int(filters.get('per_page', 10))
             query = (
@@ -112,10 +116,36 @@ class UsuarioRepo:
                 .offset((page - 1) * per_page)
             )
 
-            # executa query com paginação
-            paginated_results = session.exec(query).all()
+            # Executa query com paginação
+            usuarios = session.exec(query).unique().all()
 
-            return total_count, self._create_usuario_objects(paginated_results)
+            # Fetch all permissions only once to avoid repeated queries
+            all_permissions = {
+                permissao.nome: False
+                for permissao in session.exec(select(Permissao)).all()
+            }
+
+            usuarios_data = []
+            for usuario in usuarios:
+                perm_dict = all_permissions.copy()
+
+                for usuario_permissao in usuario.permissoes:
+                    perm_dict[usuario_permissao.permissao.nome] = True
+
+                usuario_info = {
+                    'id': usuario.id,
+                    'nome': usuario.nome,
+                    'email': usuario.email,
+                    'data_criacao': usuario.data_criacao,
+                    'tipo': usuario.tipo_usuario.tipo.value
+                    if usuario.tipo_usuario
+                    else None,
+                    'permissoes': perm_dict,
+                }
+
+                usuarios_data.append(usuario_info)
+
+            return total_count, self._create_usuario_objects(usuarios_data)
 
     def update_usuario(self, usuario_id: int, usuario_data: dict) -> dict:
         with self.session_factory() as session:
@@ -133,8 +163,9 @@ class UsuarioRepo:
             session.commit()
             session.refresh(usuario)
 
-            return usuario.model_dump(exclude=['data_criacao', 'data_atualizado', 'hash_password'])
-        
+            return usuario.model_dump(
+                exclude=['data_criacao', 'data_atualizado', 'hash_password']
+            )
 
     def update_usurio_password(self, usuario_id: int, new_password: str):
         with self.session_factory() as session:
@@ -145,10 +176,10 @@ class UsuarioRepo:
 
                 usuario.hash_password = new_password
                 session.commit()
-                return {'status': True, 'message': 'Senha alterada com sucesso'}
+                return {
+                    'status': True,
+                    'message': 'Senha alterada com sucesso',
+                }
             except Exception:
                 session.rollback()
                 return {'status': False, 'message': 'Operação não realizada'}
-
-
-
