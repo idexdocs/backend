@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import datetime, timedelta
 
+import pytz
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 from sqlmodel import func, select
@@ -320,10 +321,21 @@ class AtletaRepo:
 
     def save_blob_url(self, atleta_id: int, blob_url: str):
         with self.session_factory() as session:
-            new_user_avatar = UsuarioAvatar(
-                blob_url=blob_url, atleta_id=atleta_id
-            )
-            session.add(new_user_avatar)
+            user_avatar = session.exec(
+                select(UsuarioAvatar).filter_by(atleta_id=atleta_id)
+            ).one()
+
+            if user_avatar:
+                user_avatar.blob_url = blob_url
+                user_avatar.data_atualizado = datetime.now(
+                    pytz.timezone('America/Sao_Paulo')
+                )
+            else:
+                user_avatar = UsuarioAvatar(
+                    blob_url=blob_url, atleta_id=atleta_id
+                )
+                session.add(user_avatar)
+
             session.commit()
 
     def get_blob_url(self, atleta_id: int):
