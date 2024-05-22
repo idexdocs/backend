@@ -1434,6 +1434,13 @@ router.add_api_route(
                 'required': True,
                 'description': 'Identificador único do atleta',
                 'schema': {'type': 'integer', 'example': 1},
+            },
+            {
+                'name': 'permissoes',
+                'in': 'query',
+                'required': False,
+                'description': 'Permissão para impressão do pdf',
+                'schema': {'type': 'string', 'example': ["create_desempenho", "create_relacionamento"]},
             }
         ],
         'responses': {

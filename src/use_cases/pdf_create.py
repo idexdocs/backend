@@ -34,23 +34,24 @@ class PdfCreateUseCase:
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = int(http_request.path_params.get('id'))
-
-        filters: dict = {'page': 1, 'per_page': 1000, 'model': 'fisico'}
-
-        atleta = self._get_atleta(atleta_id)
+        filters: dict = dict(http_request.query_params.items())
+        # Adicionando informações no filtro para gerenciar a impressão do PDF
+        filters.update({'page': 1, 'per_page': 1000, 'model': 'fisico'})
         
+        # Recuperando informações do atleta
+        atleta = self._get_atleta(atleta_id)
+        # Recuperando toads informações inerentes ao atleta
         _, clubes = self.clube_repository.list_clube(atleta_id, filters)
         _, lesoes = self.lesao_repository.list_lesao(atleta_id, filters)
         _, controles = self.controle_repository.list_controle(atleta_id, filters)
         _, competicoes = self.competicao_repository.list_competicao(atleta_id, filters)
-        observacoes_relacionamento = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'relacionamento'})
-        observacoes_desempenho = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'desempenho'})
-        _, relacionamentos = self.relacionamento_repository.list_relacionamento(atleta_id, filters)
         _, caracteristicas_fisicas, _ = (self.caracteristica_repository.list_caracteristica(atleta_id, filters))
-
-        filters.update({'model': atleta.get('posicao_primaria')})
-        _, caracteristicas_posicao, _ = (self.caracteristica_repository.list_caracteristica(atleta_id, filters))
-
+        observacoes_desempenho = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'desempenho'})
+        observacoes_relacionamento = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'relacionamento'})
+        
+        # Gerenciando permissões para disponibilizar informações sensíveis
+        permissoes = filters.get('permissoes')
+        # Dicionário com dados iniciais
         data = {
             'atleta': atleta,
             'clube': clubes,
@@ -59,10 +60,18 @@ class PdfCreateUseCase:
             'competicao': competicoes,
             'observacoes_relacionamento': observacoes_relacionamento,
             'observacoes_desempenho': observacoes_desempenho,
-            'relacionamento': relacionamentos,
             'caracteristicas_fisicas': caracteristicas_fisicas,
-            'caracteristicas_posicao': caracteristicas_posicao,
         }
+
+        if 'create_desempenho' in permissoes:
+            # Recuperando informações específicas da posição do atleta
+            filters.update({'model': atleta.get('posicao_primaria')})
+            _, caracteristicas_posicao, _ = self.caracteristica_repository.list_caracteristica(atleta_id, filters)
+            data.update({'caracteristicas_posicao': caracteristicas_posicao})
+
+        if 'create_relacionamento' in permissoes:    
+            _, relacionamentos = self.relacionamento_repository.list_relacionamento(atleta_id, filters)
+            data.update({'relacionamento': relacionamentos})
 
         return data
     
