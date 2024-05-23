@@ -837,24 +837,49 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 2,
+                            'count': 5,
+                            'total': 5,
                             'type': 'Controle',
-                            'data': [
-                                {
-                                    'atleta_id': 3,
-                                    'nome': 'Chuteira',
-                                    'quantidade': 2,
-                                    'preco': 49.0,
-                                    'data_controle': '2024-01-01',
-                                },
-                                {
-                                    'atleta_id': 4,
-                                    'nome': 'Luva',
-                                    'quantidade': 2,
-                                    'preco': 30.0,
-                                    'data_controle': '2024-01-01',
-                                },
-                            ],
+                            'data': {
+                                'controles': [
+                                    {
+                                        'atleta_id': 1,
+                                        'nome': 'Uniforme',
+                                        'quantidade': 2,
+                                        'preco': 50.0,
+                                        'data_controle': '2024-01-01',
+                                    },
+                                    {
+                                        'atleta_id': 2,
+                                        'nome': 'Uniforme',
+                                        'quantidade': 2,
+                                        'preco': 50.0,
+                                        'data_controle': '2024-01-01',
+                                    },
+                                    {
+                                        'atleta_id': 3,
+                                        'nome': 'Uniforme',
+                                        'quantidade': 2,
+                                        'preco': 50.0,
+                                        'data_controle': '2024-01-01',
+                                    },
+                                    {
+                                        'atleta_id': 4,
+                                        'nome': 'Uniforme',
+                                        'quantidade': 2,
+                                        'preco': 50.1,
+                                        'data_controle': '2024-01-01',
+                                    },
+                                    {
+                                        'atleta_id': 5,
+                                        'nome': 'Uniforme',
+                                        'quantidade': 2,
+                                        'preco': 50.75,
+                                        'data_controle': '2024-01-01',
+                                    },
+                                ],
+                                'total': 250.85,
+                            },
                         }
                     }
                 },
@@ -1440,8 +1465,11 @@ router.add_api_route(
                 'in': 'query',
                 'required': False,
                 'description': 'Permissão para impressão do pdf',
-                'schema': {'type': 'string', 'example': ["create_desempenho", "create_relacionamento"]},
-            }
+                'schema': {
+                    'type': 'string',
+                    'example': ['create_desempenho', 'create_relacionamento'],
+                },
+            },
         ],
         'responses': {
             '200': {

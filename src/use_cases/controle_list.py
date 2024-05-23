@@ -36,9 +36,12 @@ class ControleListUseCase:
         return controles
 
     def _format_response(self, total_count: int, result: list[dict]) -> dict:
+
+        total_sum = sum(item['preco'] for item in result)
+
         return {
             'count': len(result),
             'total': total_count,
             'type': 'Controle',
-            'data': result,
+            'data': {'controles': result, 'total': total_sum},
         }
