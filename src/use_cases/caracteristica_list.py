@@ -21,11 +21,11 @@ class CaracteristicaListUseCase:
 
         self._check_atleta_exists(atleta_id)
 
-        total_count, result, model_name = self._list_caracteristica(
+        result, model_name = self._list_caracteristica(
             atleta_id, filters, filters.get('model')
         )
 
-        return self._format_response(total_count, result, model_name)
+        return self._format_response(result, model_name)
 
     def _check_atleta_exists(self, atleta_id: int):
         atleta = self.atleta_repository.get_atleta_by_id(atleta_id)
@@ -36,7 +36,6 @@ class CaracteristicaListUseCase:
         self, atleta_id: int, filters: dict, model_name: str
     ):
         (
-            total_count,
             caracteristicas,
             model_name,
         ) = self.caracteristica_repository.list_caracteristica(
@@ -50,10 +49,9 @@ class CaracteristicaListUseCase:
             else caracteristicas
         )
 
-        return total_count, agregado, model_name
+        return agregado, model_name
 
     def _agrega_total_e_media(self, caracteristicas: list):
-
         result = defaultdict(list)
         suffixes = ['_fis', '_tec', '_psi']
         mapper = {'_fis': 'fisico', '_tec': 'tecnico', '_psi': 'psicologico'}
@@ -83,14 +81,27 @@ class CaracteristicaListUseCase:
 
                 result[mapper[suffix]].append(extracted)
 
-        return dict(result)
+        # Initialize a dictionary to hold means for each date
+        date_means = defaultdict(list)
 
-    def _format_response(
-        self, total_count: int, result: list[dict], model_name: str
-    ) -> dict:
+        # Collect means per date for all categories
+        for category in result.values():
+            for item in category:
+                date_means[item['data_avaliacao']].append(item['mean'])
+
+        # Calculate the average of averages (assuming there are no dates with zero values)
+        total_mean = {
+            date: sum(means) / len(means) for date, means in date_means.items()
+        }
+
+        # Add the calculated total_mean to the result
+        complete_result = dict(result)
+        complete_result['total_mean'] = total_mean
+
+        return complete_result
+
+    def _format_response(self, result: list[dict], model_name: str) -> dict:
         return {
-            'count': len(result),
-            'total': total_count,
             'type': model_name,
             'data': result,
         }

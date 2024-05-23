@@ -1178,20 +1178,81 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 1,
-                            'type': 'CaracteristicaFisica',
-                            'data': [
-                                {
-                                    'id': 1,
-                                    'estatura': 177.0,
-                                    'envergadura': 183.0,
-                                    'peso': 92.0,
-                                    'percentual_gordura': 17.0,
-                                    'data_criacao': '2024-05-03',
-                                    'data_atualizado': None,
-                                    'atleta_id': 1,
-                                }
-                            ],
+                            'type': 'CaracteristicaAtacante',
+                            'data': {
+                                'fisico': [
+                                    {
+                                        'estatura_fis': 3,
+                                        'velocidade_fis': 3,
+                                        'um_contra_um_ofensivo_fis': 3,
+                                        'desmarques_fis': 3,
+                                        'controle_bola_fis': 3,
+                                        'cruzamentos_fis': 3,
+                                        'finalizacao_fis': 3,
+                                        'data_avaliacao': '2024-01-01',
+                                        'sum': 21,
+                                        'mean': 3.0,
+                                    },
+                                    {
+                                        'estatura_fis': 3,
+                                        'velocidade_fis': 3,
+                                        'um_contra_um_ofensivo_fis': 3,
+                                        'desmarques_fis': 3,
+                                        'controle_bola_fis': 3,
+                                        'cruzamentos_fis': 3,
+                                        'finalizacao_fis': 3,
+                                        'data_avaliacao': '2024-02-01',
+                                        'sum': 21,
+                                        'mean': 3.0,
+                                    },
+                                ],
+                                'tecnico': [
+                                    {
+                                        'visao_espacial_tec': 3,
+                                        'dominio_orientado_tec': 3,
+                                        'dribles_em_diagonal_tec': 3,
+                                        'leitura_jogo_tec': 3,
+                                        'reacao_pos_perda_tec': 3,
+                                        'data_avaliacao': '2024-01-01',
+                                        'sum': 15,
+                                        'mean': 3.0,
+                                    },
+                                    {
+                                        'visao_espacial_tec': 3,
+                                        'dominio_orientado_tec': 3,
+                                        'dribles_em_diagonal_tec': 3,
+                                        'leitura_jogo_tec': 3,
+                                        'reacao_pos_perda_tec': 3,
+                                        'data_avaliacao': '2024-02-01',
+                                        'sum': 15,
+                                        'mean': 3.0,
+                                    },
+                                ],
+                                'psicologico': [
+                                    {
+                                        'criatividade_psi': 3,
+                                        'capacidade_decisao_psi': 3,
+                                        'inteligencia_tatica_psi': 3,
+                                        'competitividade_psi': 3,
+                                        'data_avaliacao': '2024-01-01',
+                                        'sum': 12,
+                                        'mean': 3.0,
+                                    },
+                                    {
+                                        'criatividade_psi': 3,
+                                        'capacidade_decisao_psi': 3,
+                                        'inteligencia_tatica_psi': 3,
+                                        'competitividade_psi': 3,
+                                        'data_avaliacao': '2024-02-01',
+                                        'sum': 12,
+                                        'mean': 3.0,
+                                    },
+                                ],
+                                'total_mean': {
+                                    '2024-01-01': 3.0,
+                                    '2024-02-01': 3.0,
+                                },
+                            },
                         }
                     }
                 },
