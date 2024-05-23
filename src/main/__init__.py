@@ -633,19 +633,15 @@ router.add_api_route(
                 'content': {
                     'application/json': {
                         'example': {
-                            'count': 2,
-                            'type': 'Clubes',
+                            'count': 1,
+                            'total': 1,
+                            'type': 'Lesão',
                             'data': [
                                 {
-                                    'nome': 'Clube A',
-                                    'data_inicio': '2023-01-01',
-                                    'data_fim': '2023-01-01',
-                                },
-                                {
-                                    'nome': 'Clube B',
-                                    'data_inicio': '2023-01-01',
-                                    'data_fim': None,
-                                },
+                                    'data_lesao': '2021-05-11',
+                                    'descricao': 'Estiramento do coxa direita',
+                                    'data_retorno': '2024-05-11',
+                                }
                             ],
                         }
                     }

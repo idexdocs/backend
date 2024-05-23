@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 class LesaoCreateSchema(BaseModel):
     atleta_id: int = Field(..., gt=0)
     data_lesao: str
+    data_retorno: str
     descricao: str
 
     @field_validator('data_lesao')

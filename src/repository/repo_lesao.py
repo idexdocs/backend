@@ -14,8 +14,9 @@ class LesaoRepo:
             {
                 'data_lesao': data_lesao.strftime('%Y-%m-%d'),
                 'descricao': descricao,
+                'data_retorno': data_retorno.strftime('%Y-%m-%d'),
             }
-            for data_lesao, descricao in result
+            for data_lesao, descricao, data_retorno in result
         ]
 
         return lesao_list
@@ -23,7 +24,9 @@ class LesaoRepo:
     def list_lesao(self, atleta_id: int, filters: dict = None):
         with self.session_factory() as session:
             query = select(
-                HistoricoLesao.data_lesao, HistoricoLesao.descricao
+                HistoricoLesao.data_lesao,
+                HistoricoLesao.descricao,
+                HistoricoLesao.data_retorno,
             ).where(HistoricoLesao.atleta_id == atleta_id)
 
             # conta o número total de items sem paginação
