@@ -8,29 +8,32 @@ from src.repository.repo_controle import ControleRepo
 from src.repository.repo_lesao import LesaoRepo
 from src.repository.repo_observacao import ObservacaoRepo
 from src.repository.repo_relacionamento import RelacionamentoRepo
+from src.use_cases.caracteristica_list import CaracteristicaListUseCase
 
 
 class PdfCreateUseCase:
     def __init__(
         self,
         *,
-        atleta_repository: AtletaRepo,
-        caracteristica_repository: CaracteristicasRepo,
-        relacionamento_repository: RelacionamentoRepo,
         clube_repository: ClubeRepo,
-        competicao_repository: CompeticaoRepo,
+        atleta_repository: AtletaRepo,
         lesao_repository: LesaoRepo,
         controle_repository: ControleRepo,
+        competicao_repository: CompeticaoRepo,
         observacao_repository: ObservacaoRepo,
+        caracteristica_repository: CaracteristicasRepo,
+        caracteristica_use_case: CaracteristicaListUseCase,
+        relacionamento_repository: RelacionamentoRepo,
     ) -> None:
-        self.atleta_repository = atleta_repository
-        self.caracteristica_repository = caracteristica_repository
-        self.relacionamento_repository = relacionamento_repository
         self.clube_repository = clube_repository
-        self.competicao_repository = competicao_repository
         self.lesao_repository = lesao_repository
+        self.atleta_repository = atleta_repository
         self.controle_repository = controle_repository
         self.observacao_repository = observacao_repository
+        self.competicao_repository = competicao_repository
+        self.caracteristica_use_case = caracteristica_use_case
+        self.relacionamento_repository = relacionamento_repository
+        self.caracteristica_repository = caracteristica_repository
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = int(http_request.path_params.get('id'))
@@ -66,8 +69,10 @@ class PdfCreateUseCase:
         if 'create_desempenho' in permissoes:
             # Recuperando informações específicas da posição do atleta
             filters.update({'model': atleta.get('posicao_primaria')})
-            caracteristicas_posicao, _ = self.caracteristica_repository.list_caracteristica(atleta_id, filters)
-            data.update({'caracteristicas_posicao': caracteristicas_posicao})
+            http_request.query_params = filters
+            caracteristicas_posicao = self.caracteristica_use_case.execute(http_request)
+            del caracteristicas_posicao['type']
+            data.update({'caracteristicas_posicao': caracteristicas_posicao['data']})
 
         if 'create_relacionamento' in permissoes:    
             _, relacionamentos = self.relacionamento_repository.list_relacionamento(atleta_id, filters)
