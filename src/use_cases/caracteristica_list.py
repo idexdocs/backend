@@ -77,7 +77,7 @@ class CaracteristicaListUseCase:
                     if key.endswith(suffix) or key in excluded_keys
                 }
                 extracted['sum'] = total
-                extracted['mean'] = mean
+                extracted['mean'] = round(mean, 2)
 
                 result[mapper[suffix]].append(extracted)
 
@@ -91,7 +91,8 @@ class CaracteristicaListUseCase:
 
         # Calculate the average of averages (assuming there are no dates with zero values)
         total_mean = {
-            date: sum(means) / len(means) for date, means in date_means.items()
+            date: round(sum(means) / len(means), 2)
+            for date, means in date_means.items()
         }
 
         # Add the calculated total_mean to the result
