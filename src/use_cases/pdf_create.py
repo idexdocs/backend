@@ -45,12 +45,10 @@ class PdfCreateUseCase:
         _, lesoes = self.lesao_repository.list_lesao(atleta_id, filters)
         _, controles = self.controle_repository.list_controle(atleta_id, filters)
         _, competicoes = self.competicao_repository.list_competicao(atleta_id, filters)
-        _, caracteristicas_fisicas, _ = (self.caracteristica_repository.list_caracteristica(atleta_id, filters))
+        caracteristicas_fisicas, _ = self.caracteristica_repository.list_caracteristica(atleta_id, filters)
         observacoes_desempenho = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'desempenho'})
         observacoes_relacionamento = self.observacao_repository.list_observacao(atleta_id, filters={'tipo': 'relacionamento'})
-        
-        # Gerenciando permissões para disponibilizar informações sensíveis
-        permissoes = filters.get('permissoes')
+
         # Dicionário com dados iniciais
         data = {
             'atleta': atleta,
@@ -63,10 +61,12 @@ class PdfCreateUseCase:
             'caracteristicas_fisicas': caracteristicas_fisicas,
         }
 
+        # Gerenciando permissões para disponibilizar informações sensíveis
+        permissoes = filters.get('permissoes', [])
         if 'create_desempenho' in permissoes:
             # Recuperando informações específicas da posição do atleta
             filters.update({'model': atleta.get('posicao_primaria')})
-            _, caracteristicas_posicao, _ = self.caracteristica_repository.list_caracteristica(atleta_id, filters)
+            caracteristicas_posicao, _ = self.caracteristica_repository.list_caracteristica(atleta_id, filters)
             data.update({'caracteristicas_posicao': caracteristicas_posicao})
 
         if 'create_relacionamento' in permissoes:    
