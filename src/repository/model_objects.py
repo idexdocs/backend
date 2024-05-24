@@ -177,6 +177,7 @@ class ContratoTipo(SQLModel, table=True):
         default_factory=datetime_now_sec, nullable=False
     )
     data_atualizado: datetime | None = None
+    contrato_sub_tipos: list['ContratoSubTipo'] = Relationship(back_populates="contrato_tipo")
 
 
 class ContratoSubTipo(SQLModel, table=True):
@@ -189,6 +190,7 @@ class ContratoSubTipo(SQLModel, table=True):
     contratos: list['Contrato'] = Relationship(
         back_populates='contrato_sub_tipo'
     )
+    contrato_tipo: ContratoTipo = Relationship(back_populates="contrato_sub_tipos")
 
 
 class Contrato(SQLModel, table=True):

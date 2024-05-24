@@ -1,3 +1,4 @@
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select, update
 
@@ -119,6 +120,33 @@ class ContratoRepo:
             return total_count, self._create_contrato_versao_objects(
                 paginated_results
             )
+
+    def list_contrato_tipo(self) -> dict:
+        with self.session_factory() as session:
+            query = select(ContratoTipo).options(
+                joinedload(ContratoTipo.contrato_sub_tipos)
+            )
+            result = session.exec(query).unique().all()
+
+            contrato_tipos_list = []
+            for contrato_tipo in result:
+                contrato_dict = {
+                    'id': contrato_tipo.id,
+                    'tipo': contrato_tipo.tipo,
+                    'contrato_sub_tipos': [
+                        {
+                            'id': contrato_sub_tipo.id,
+                            'nome': contrato_sub_tipo.nome,
+                        }
+                        for contrato_sub_tipo in contrato_tipo.contrato_sub_tipos
+                    ],
+                }
+                contrato_tipos_list.append(contrato_dict)
+
+            # The final dictionary containing the list of ContratoTipos
+            contratos_data = {'contrato_tipos': contrato_tipos_list}
+
+            return contratos_data
 
     def create_contrato(self, contrato_data: dict) -> dict:
         with self.session_factory() as session:

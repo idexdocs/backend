@@ -37,3 +37,18 @@ class ContratoUpdateSchema(BaseModel):
             return v
         except ValueError:
             raise ValueError('Formato de data inválido, utilize YYYY-MM-DD')
+
+
+class ContratoSubTipo(BaseModel):
+    id: int
+    nome: str
+
+
+class ContratoTipo(BaseModel):
+    id: int
+    tipo: str
+    contrato_sub_tipos: list[ContratoSubTipo]
+
+
+class ContratoTipoResponse(BaseModel):
+    contrato_tipos: ContratoTipo

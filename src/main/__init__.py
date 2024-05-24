@@ -12,6 +12,7 @@ from src.main.rest.competicao_create import competicao_create
 from src.main.rest.competicao_list import competicao
 from src.main.rest.contrato_create import contrato_create
 from src.main.rest.contrato_list import contrato_list
+from src.main.rest.contrato_tipo_list import contrato_tipo_list
 from src.main.rest.contrato_update import contrato_update
 from src.main.rest.contrato_versao_list import contrato_versao_list
 from src.main.rest.controle_create import controle_create
@@ -44,6 +45,7 @@ from src.schemas.competicao import (
 from src.schemas.contrato import (
     ContratoCreateResponse,
     ContratoCreateSchema,
+    ContratoTipoResponse,
     ContratoUpdateSchema,
 )
 from src.schemas.controle import (
@@ -1832,6 +1834,54 @@ router.add_api_route(
                                 'data_inicio': '2024-01-01',
                                 'data_termino': '2024-01-01',
                                 'observacao': 'Alterações contratuais',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
+    },
+)
+router.add_api_route(
+    '/contrato',
+    endpoint=contrato_tipo_list,
+    tags=['Contrato'],
+    methods=['GET'],
+    response_model=ContratoTipoResponse,
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'examples': {
+                        'example1': {
+                            'type': 'ContratoTipo',
+                            'data': {
+                                'contrato_tipos': [
+                                    {
+                                        'id': 1,
+                                        'tipo': 'Empresa',
+                                        'contrato_sub_tipos': [
+                                            {'id': 1, 'nome': 'Imagem'},
+                                            {'id': 2, 'nome': 'Agenciamento'},
+                                            {'id': 6, 'nome': 'Garantias'},
+                                            {
+                                                'id': 7,
+                                                'nome': 'Material esportivo',
+                                            },
+                                            {'id': 8, 'nome': 'Publicidade'},
+                                        ],
+                                    },
+                                    {
+                                        'id': 2,
+                                        'tipo': 'Clube',
+                                        'contrato_sub_tipos': [
+                                            {'id': 3, 'nome': 'Profissional'},
+                                            {'id': 4, 'nome': 'Amador'},
+                                            {'id': 5, 'nome': 'Formação'},
+                                        ],
+                                    },
+                                ]
                             },
                         }
                     },
