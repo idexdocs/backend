@@ -125,17 +125,6 @@ class RolePermissao(SQLModel, table=True):
     permissao: Permissao = Relationship(back_populates='role_permissions')
 
 
-class UsuarioAvatar(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    blob_url: str
-    data_criacao: datetime = Field(
-        default_factory=datetime_now_sec, nullable=False
-    )
-    data_atualizado: datetime | None = None
-
-    atleta_id: int = Field(default=None, foreign_key='atleta.id')
-
-
 class Atleta(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
@@ -148,6 +137,29 @@ class Atleta(SQLModel, table=True):
 
     relacionamento: 'Relacionamento' = Relationship(back_populates='atleta')
     contrato: list['Contrato'] = Relationship(back_populates='atleta')
+
+
+class AtletaAvatar(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    blob_url: str
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+
+
+class AtletaImagens(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    blob_url: str
+    descricao: str | None = None
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
 
 
 class Perfil(SQLModel, table=True):
@@ -177,7 +189,9 @@ class ContratoTipo(SQLModel, table=True):
         default_factory=datetime_now_sec, nullable=False
     )
     data_atualizado: datetime | None = None
-    contrato_sub_tipos: list['ContratoSubTipo'] = Relationship(back_populates="contrato_tipo")
+    contrato_sub_tipos: list['ContratoSubTipo'] = Relationship(
+        back_populates='contrato_tipo'
+    )
 
 
 class ContratoSubTipo(SQLModel, table=True):
@@ -190,7 +204,9 @@ class ContratoSubTipo(SQLModel, table=True):
     contratos: list['Contrato'] = Relationship(
         back_populates='contrato_sub_tipo'
     )
-    contrato_tipo: ContratoTipo = Relationship(back_populates="contrato_sub_tipos")
+    contrato_tipo: ContratoTipo = Relationship(
+        back_populates='contrato_sub_tipos'
+    )
 
 
 class Contrato(SQLModel, table=True):

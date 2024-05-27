@@ -17,13 +17,11 @@ class AzureBlobStorage:
                 AzureBlobStorage.account_url, credential=default_credential
             )
 
-        self.container_name = 'atleta-perfil'
-
-    def upload_image(self, image_data: bytes, filename: str):
+    def upload_image(self, container: str, image_data: bytes, filename: str):
         try:
             # Get a blob client to perform the upload
             blob_client = self._blob_service_client.get_blob_client(
-                container=self.container_name, blob=filename
+                container=container, blob=filename
             )
             blob_client.upload_blob(image_data, overwrite=True)
         except Exception as e:

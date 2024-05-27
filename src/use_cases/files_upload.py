@@ -1,12 +1,17 @@
+import uuid
+from datetime import datetime
+
+import pytz
 from fastapi import UploadFile
 
 from src.error.types.http_not_found import NotFoundError
 from src.main.adapters.azure_blob_storage import AzureBlobStorage
 from src.presentation.http_types.http_request import HttpRequest
+from src.repository.repo_arquivos import ArquivoRepo
 from src.repository.repo_atleta import AtletaRepo
 
 
-class FileUploadUseCase:
+class FilesUploadUseCase:
     MIME_TYPE_EXT_MAP: dict[str, str] = {
         'image/jpeg': '.jpeg',
         'image/png': '.png',
@@ -14,17 +19,23 @@ class FileUploadUseCase:
     }
 
     def __init__(
-        self, atleta_repository: AtletaRepo, storage_service: AzureBlobStorage
+        self,
+        atleta_repository: AtletaRepo,
+        storage_service: AzureBlobStorage,
+        arquivo_repository: ArquivoRepo,
     ):
         self.storage_service = storage_service
         self.atleta_repository = atleta_repository
+        self.arquivo_repository = arquivo_repository
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = http_request.path_params.get('id')
-        image_file: UploadFile = http_request.files.get('image')
+        uploaded_images: list[UploadFile] = http_request.files.get('image')
 
         self._check_atleta_exists(atleta_id)
-        self._upload_image(image_file, atleta_id)
+
+        for image_file in uploaded_images:
+            self._upload_image(image_file, atleta_id)
 
         return self._format_response()
 
@@ -34,20 +45,22 @@ class FileUploadUseCase:
             raise NotFoundError('Atleta não encontrado')
 
     def _upload_image(self, image_file: UploadFile, atleta_id: int):
-        filename = f'atleta_{atleta_id}'
-
         mime_type = image_file.content_type
         extension = self.MIME_TYPE_EXT_MAP.get(mime_type)
 
         if not extension:
             raise RuntimeError(f'Tipo de arquivo não suportado: {mime_type}')
 
-        filename_with_extension = f'{filename}{extension}'
+        unique_identifier = uuid.uuid4()
+        timestamp = datetime.now(pytz.timezone('America/Sao_Paulo'))
+        filename_with_extension = (
+            f'{atleta_id}/{timestamp}_{unique_identifier}{extension}'
+        )
 
         try:
             file_data = image_file.file.read()
             self.storage_service.upload_image(
-                'atleta-avatar', file_data, filename_with_extension
+                'atleta-imagens', file_data, filename_with_extension
             )
             self._save_blob_url_in_database(atleta_id, filename_with_extension)
         except Exception as e:
@@ -55,12 +68,17 @@ class FileUploadUseCase:
 
     def _save_blob_url_in_database(self, atleta_id: int, file_name: str):
         account_url = self.storage_service.account_url
-        blob_url = account_url + '/' + file_name
-        self.atleta_repository.save_blob_url(atleta_id, blob_url)
+        blob_url = f'{account_url}/{file_name}'
+        imagem_data = {
+            'atleta_id': atleta_id,
+            'blob_url': blob_url,
+            'descricao': None,
+        }
+        self.arquivo_repository.save_imagens_url(imagem_data)
 
     def _format_response(self) -> dict:
         return {
-            'type': 'FileUpload',
+            'type': 'FilesUpload',
             'status': True,
-            'message': 'Arquivo salvo com sucesso',
+            'message': 'Arquivo(s) salvo(s) com sucesso',
         }
