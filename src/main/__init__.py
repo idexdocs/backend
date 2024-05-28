@@ -19,6 +19,7 @@ from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.file_download import file_download
 from src.main.rest.file_upload import file_upload
+from src.main.rest.files_download import multiple_files_download
 from src.main.rest.files_upload import multiple_files_upload
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
@@ -1496,6 +1497,44 @@ router.add_api_route(
     '/avatar/atleta/{id}',
     endpoint=file_download,
     tags=['Avatar'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'status': True,
+                            'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta_1.jpeg',
+                        }
+                    }
+                },
+            },
+            '400': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {'status': False, 'blob_url': 'null'},
+                    }
+                },
+            },
+        },
+    },
+)
+router.add_api_route(
+    '/multiple-files-upload/atleta/{id}',
+    endpoint=multiple_files_download,
+    tags=['File'],
     methods=['GET'],
     openapi_extra={
         'parameters': [
