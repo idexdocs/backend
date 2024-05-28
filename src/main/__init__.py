@@ -1486,9 +1486,9 @@ router.add_api_route(
                         'example1': {
                             'summary': 'Exemplo de payload para edição de imagem do atleta',
                             'value': {
-                                "imagem_id": 30,
-                                "descricao": "Nova descricao para a foto"
-                            }
+                                'imagem_id': 30,
+                                'descricao': 'Nova descricao para a foto',
+                            },
                         }
                     },
                 }
@@ -1520,22 +1520,34 @@ router.add_api_route(
     tags=['File'],
     methods=['POST'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'requestBody': {
             'content': {
                 'multipart/form-data': {
                     'schema': {
                         'type': 'object',
                         'properties': {
-                            'file': {
-                                'type': 'string',
-                                'format': 'binary',
-                                'description': 'Upload an image file. Supported formats: .png, .jpeg',
+                            'files': {
+                                'type': 'array',
+                                'items': {
+                                    'type': 'string',
+                                    'format': 'binary',
+                                },
+                                'description': 'Array of image files. Supported formats: .png, .jpeg',
                             }
                         },
                     }
                 }
             }
-        }
+        },
     },
 )
 router.add_api_route(

@@ -29,7 +29,7 @@ class MultipleFilesUploadUseCase:
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = http_request.path_params.get('id')
-        uploaded_images: list[UploadFile] = http_request.files.getlist('image')
+        uploaded_images: list[UploadFile] = http_request.files.getlist('files')
 
         self._check_atleta_exists(atleta_id)
 
