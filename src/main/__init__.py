@@ -21,6 +21,7 @@ from src.main.rest.file_download import file_download
 from src.main.rest.file_upload import file_upload
 from src.main.rest.files_delete import file_delete
 from src.main.rest.files_download import multiple_files_download
+from src.main.rest.files_update import imagem_update
 from src.main.rest.files_upload import multiple_files_upload
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
@@ -56,6 +57,7 @@ from src.schemas.controle import (
     ControleCreateSchema,
     ControleListResponse,
 )
+from src.schemas.file_upload import FileUpdateSchema
 from src.schemas.lesao import LesaoCreateResponse, LesaoCreateSchema
 from src.schemas.observacao import (
     ObservacaoCreateResponse,
@@ -1468,6 +1470,31 @@ router.add_api_route(
                 }
             }
         }
+    },
+)
+router.add_api_route(
+    '/imagem/update',
+    endpoint=imagem_update,
+    tags=['File'],
+    methods=['PUT'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': FileUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para edição de imagem do atleta',
+                            'value': {
+                                "imagem_id": 30,
+                                "descricao": "Nova descricao para a foto"
+                            }
+                        }
+                    },
+                }
+            },
+            'required': True,
+        },
     },
 )
 router.add_api_route(
