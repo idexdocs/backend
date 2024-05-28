@@ -19,6 +19,7 @@ from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.file_download import file_download
 from src.main.rest.file_upload import file_upload
+from src.main.rest.files_upload import multiple_files_upload
 from src.main.rest.lesao_create import lesao_create
 from src.main.rest.lesao_list import lesao
 from src.main.rest.observacao_create import observacao_create
@@ -1446,6 +1447,30 @@ router.add_api_route(
 router.add_api_route(
     '/file-upload/atleta/{id}',
     endpoint=file_upload,
+    tags=['File'],
+    methods=['POST'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'multipart/form-data': {
+                    'schema': {
+                        'type': 'object',
+                        'properties': {
+                            'file': {
+                                'type': 'string',
+                                'format': 'binary',
+                                'description': 'Upload an image file. Supported formats: .png, .jpeg',
+                            }
+                        },
+                    }
+                }
+            }
+        }
+    },
+)
+router.add_api_route(
+    '/multiple-files-upload/atleta/{id}',
+    endpoint=multiple_files_upload,
     tags=['File'],
     methods=['POST'],
     openapi_extra={

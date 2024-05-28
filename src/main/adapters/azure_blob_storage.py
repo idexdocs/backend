@@ -18,15 +18,20 @@ class AzureBlobStorage:
             )
 
     def upload_image(self, container: str, image_data: bytes, filename: str):
+        container_client = self._blob_service_client.get_container_client(
+            container
+        )
+        if not container_client.exists():
+            raise RuntimeError(f"Container '{container}' não existe.")
+
         try:
             # Get a blob client to perform the upload
             blob_client = self._blob_service_client.get_blob_client(
                 container=container, blob=filename
             )
             blob_client.upload_blob(image_data, overwrite=True)
-        except Exception as e:
-            # Handle exceptions
-            print(f'An error occurred while uploading {filename}: {e}')
+        except Exception:
+            raise
 
     def get_image_url(self, blob_name: str) -> bytes:
         try:

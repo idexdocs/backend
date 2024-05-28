@@ -7,7 +7,7 @@ from .model_objects import AtletaImagens
 
 class ArquivoRepo:
     def __init__(self) -> None:
-        self.sessio_factory = create_session
+        self.session_factory = create_session
 
     def save_imagens_url(self, imagem_data: dict):
         with self.session_factory() as session:

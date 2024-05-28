@@ -11,9 +11,10 @@ from src.repository.repo_arquivos import ArquivoRepo
 from src.repository.repo_atleta import AtletaRepo
 
 
-class FilesUploadUseCase:
+class MultipleFilesUploadUseCase:
     MIME_TYPE_EXT_MAP: dict[str, str] = {
         'image/jpeg': '.jpeg',
+        'image/jpg': '.jpg',
         'image/png': '.png',
         # Add more MIME types and their corresponding extensions as needed
     }
@@ -30,7 +31,7 @@ class FilesUploadUseCase:
 
     def execute(self, http_request: HttpRequest):
         atleta_id: int = http_request.path_params.get('id')
-        uploaded_images: list[UploadFile] = http_request.files.get('image')
+        uploaded_images: list[UploadFile] = http_request.files.getlist('image')
 
         self._check_atleta_exists(atleta_id)
 
@@ -52,27 +53,32 @@ class FilesUploadUseCase:
             raise RuntimeError(f'Tipo de arquivo não suportado: {mime_type}')
 
         unique_identifier = uuid.uuid4()
-        timestamp = datetime.now(pytz.timezone('America/Sao_Paulo'))
+        # timestamp = datetime.now(pytz.timezone('America/Sao_Paulo'))
         filename_with_extension = (
-            f'{atleta_id}/{timestamp}_{unique_identifier}{extension}'
+            f'atleta_{atleta_id}/{unique_identifier}{extension}'
         )
+        file_description = image_file.filename.split('.')[0]
 
         try:
             file_data = image_file.file.read()
             self.storage_service.upload_image(
                 'atleta-imagens', file_data, filename_with_extension
             )
-            self._save_blob_url_in_database(atleta_id, filename_with_extension)
+            self._save_blob_url_in_database(
+                atleta_id, filename_with_extension, file_description
+            )
         except Exception as e:
             raise RuntimeError(f'Erro ao salvar a imagem: {e}')
 
-    def _save_blob_url_in_database(self, atleta_id: int, file_name: str):
+    def _save_blob_url_in_database(
+        self, atleta_id: int, file_name: str, file_description: str
+    ):
         account_url = self.storage_service.account_url
         blob_url = f'{account_url}/{file_name}'
         imagem_data = {
             'atleta_id': atleta_id,
             'blob_url': blob_url,
-            'descricao': None,
+            'descricao': file_description,
         }
         self.arquivo_repository.save_imagens_url(imagem_data)
 

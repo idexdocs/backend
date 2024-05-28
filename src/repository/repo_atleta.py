@@ -9,11 +9,11 @@ from sqlmodel import func, select
 from .base_repo import create_session
 from .model_objects import (
     Atleta,
+    AtletaAvatar,
     Contrato,
     HistoricoClube,
     Posicao,
     Relacionamento,
-    UsuarioAvatar,
 )
 
 AtletaDetails = namedtuple(
@@ -209,13 +209,13 @@ class AtletaRepo:
                     Posicao.segunda,
                     Posicao.terceira,
                     HistoricoClube.nome.label('clube'),
-                    UsuarioAvatar.blob_url,
+                    AtletaAvatar.blob_url,
                 )
                 .outerjoin(Posicao, Atleta.id == Posicao.atleta_id)
                 .outerjoin(
                     HistoricoClube, HistoricoClube.atleta_id == Atleta.id
                 )
-                .outerjoin(UsuarioAvatar, UsuarioAvatar.atleta_id == Atleta.id)
+                .outerjoin(AtletaAvatar, AtletaAvatar.atleta_id == Atleta.id)
                 .where(
                     Atleta.id == atleta_id, HistoricoClube.data_fim.is_(None)
                 )
@@ -322,7 +322,7 @@ class AtletaRepo:
     def save_blob_url(self, atleta_id: int, blob_url: str):
         with self.session_factory() as session:
             user_avatar = session.exec(
-                select(UsuarioAvatar).filter_by(atleta_id=atleta_id)
+                select(AtletaAvatar).filter_by(atleta_id=atleta_id)
             ).one()
 
             if user_avatar:
@@ -331,7 +331,7 @@ class AtletaRepo:
                     pytz.timezone('America/Sao_Paulo')
                 )
             else:
-                user_avatar = UsuarioAvatar(
+                user_avatar = AtletaAvatar(
                     blob_url=blob_url, atleta_id=atleta_id
                 )
                 session.add(user_avatar)
@@ -340,8 +340,8 @@ class AtletaRepo:
 
     def get_blob_url(self, atleta_id: int):
         with self.session_factory() as session:
-            query = select(UsuarioAvatar).where(
-                UsuarioAvatar.atleta_id == atleta_id
+            query = select(AtletaAvatar).where(
+                AtletaAvatar.atleta_id == atleta_id
             )
 
         try:
