@@ -1,7 +1,5 @@
 import uuid
-from datetime import datetime
 
-import pytz
 from fastapi import UploadFile
 
 from src.error.types.http_not_found import NotFoundError

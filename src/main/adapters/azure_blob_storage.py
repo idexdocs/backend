@@ -46,3 +46,14 @@ class AzureBlobStorage:
         except ResourceNotFoundError:
             print(f'O blob nome {blob_name} não existe')
             return None
+
+    def delete_imagem(self, container: str, blob_name: str):
+        try:
+            blob_client = self._blob_service_client.get_blob_client(
+                container, blob_name
+            )
+
+            blob_client.delete_blob()
+        except Exception:
+            raise
+

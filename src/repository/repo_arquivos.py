@@ -1,3 +1,7 @@
+from datetime import datetime
+
+import pytz
+from sqlalchemy.orm.exc import NoResultFound
 from sqlmodel import func, select
 
 from .base_repo import create_session
@@ -24,6 +28,16 @@ class ArquivoRepo:
             session.add(atleta_imagem)
             session.commit()
 
+    def get_imagem_by_id(self, imagem_id: int):
+        with self.session_factory() as session:
+            query = select(AtletaImagens).where(AtletaImagens.id == imagem_id)
+
+        try:
+            result = session.exec(query).one()
+            return result
+        except NoResultFound:
+            return None
+
     def get_imagens_urls(self, atleta_id: int, filters: dict = {}):
         with self.session_factory() as session:
             query = select(AtletaImagens).where(
@@ -47,4 +61,30 @@ class ArquivoRepo:
             # executa query com paginação
             paginated_results = session.exec(query).all()
 
-            return total_count, self._create_imagens_list_objects(paginated_results)
+            return total_count, self._create_imagens_list_objects(
+                paginated_results
+            )
+
+    def update_imagem(self, imagem_id: int, imagem_data: dict):
+        with self.session_factory() as session:
+            imagem: AtletaImagens = session.exec(
+                select(AtletaImagens).where(AtletaImagens.id == imagem_id)
+            ).one()
+
+            imagem.descricao = imagem_data.get('descricao')
+            imagem.data_atualizado = datetime.now(
+                pytz.timezone('America/Sao_Paulo')
+            )
+
+            session.commit()
+
+    def delete_imagem(self, imagem_id: int):
+        with self.session_factory() as session:
+            imagem: AtletaImagens = session.exec(
+                select(AtletaImagens).where(AtletaImagens.id == imagem_id)
+            ).one()
+
+            session.delete(imagem)
+            session.commit()
+
+            return {'id': imagem.id}

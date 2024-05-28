@@ -19,6 +19,7 @@ from src.main.rest.controle_create import controle_create
 from src.main.rest.controle_list import controle
 from src.main.rest.file_download import file_download
 from src.main.rest.file_upload import file_upload
+from src.main.rest.files_delete import file_delete
 from src.main.rest.files_download import multiple_files_download
 from src.main.rest.files_upload import multiple_files_upload
 from src.main.rest.lesao_create import lesao_create
@@ -1467,6 +1468,23 @@ router.add_api_route(
                 }
             }
         }
+    },
+)
+router.add_api_route(
+    '/imagem/delete/{id}',
+    endpoint=file_delete,
+    tags=['File'],
+    methods=['DELETE'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
     },
 )
 router.add_api_route(
