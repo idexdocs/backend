@@ -323,7 +323,7 @@ class AtletaRepo:
         with self.session_factory() as session:
             user_avatar = session.exec(
                 select(AtletaAvatar).filter_by(atleta_id=atleta_id)
-            ).one()
+            ).first()
 
             if user_avatar:
                 user_avatar.blob_url = blob_url
