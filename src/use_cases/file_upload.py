@@ -24,7 +24,7 @@ class FileUploadUseCase:
         image_file: UploadFile = http_request.files.get('image')
 
         self._check_atleta_exists(atleta_id)
-        self._upload_image(image_file, atleta_id)
+        self._upload_image('atleta-avatar', image_file, atleta_id)
 
         return self._format_response()
 
@@ -33,23 +33,26 @@ class FileUploadUseCase:
         if atleta is None:
             raise NotFoundError('Atleta não encontrado')
 
-    def _upload_image(self, image_file: UploadFile, atleta_id: int):
-        filename = f'atleta_{atleta_id}'
-
+    def _upload_image(
+        self, container_name: str, image_file: UploadFile, atleta_id: int
+    ):
         mime_type = image_file.content_type
         extension = self.MIME_TYPE_EXT_MAP.get(mime_type)
 
         if not extension:
             raise RuntimeError(f'Tipo de arquivo não suportado: {mime_type}')
 
-        filename_with_extension = f'{filename}{extension}'
+        filename_with_extension = f'atleta_{atleta_id}{extension}'
 
         try:
             file_data = image_file.file.read()
             self.storage_service.upload_image(
-                'atleta-avatar', file_data, filename_with_extension
+                container_name, file_data, filename_with_extension
             )
-            self._save_blob_url_in_database(atleta_id, filename_with_extension)
+
+            blob_url = f'{container_name}/{filename_with_extension}'
+
+            self._save_blob_url_in_database(atleta_id, blob_url)
         except Exception as e:
             raise RuntimeError(f'Erro ao salvar a imagem: {e}')
 
