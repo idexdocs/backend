@@ -34,7 +34,7 @@ class MultipleFilesUploadUseCase:
         self._check_atleta_exists(atleta_id)
 
         for image_file in uploaded_images:
-            self._upload_image(image_file, atleta_id)
+            self._upload_image('atleta-imagens', image_file, atleta_id)
 
         return self._format_response()
 
@@ -43,7 +43,9 @@ class MultipleFilesUploadUseCase:
         if atleta is None:
             raise NotFoundError('Atleta não encontrado')
 
-    def _upload_image(self, image_file: UploadFile, atleta_id: int):
+    def _upload_image(
+        self, container_name: str, image_file: UploadFile, atleta_id: int
+    ):
         mime_type = image_file.content_type
         extension = self.MIME_TYPE_EXT_MAP.get(mime_type)
 
@@ -60,10 +62,13 @@ class MultipleFilesUploadUseCase:
         try:
             file_data = image_file.file.read()
             self.storage_service.upload_image(
-                'atleta-imagens', file_data, filename_with_extension
+                container_name, file_data, filename_with_extension
             )
+
+            blob_url = f'{container_name}/{filename_with_extension}'
+
             self._save_blob_url_in_database(
-                atleta_id, filename_with_extension, file_description
+                atleta_id, blob_url, file_description
             )
         except Exception as e:
             raise RuntimeError(f'Erro ao salvar a imagem: {e}')
