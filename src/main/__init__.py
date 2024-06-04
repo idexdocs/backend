@@ -35,6 +35,7 @@ from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
 from src.main.rest.usuario_update import usuario_update
 from src.main.rest.usuario_update_password import usuario_update_password
+from src.main.rest.video_upload import video_upload
 from src.schemas.atleta import (
     AtletaCreateResponse,
     AtletaCreateSchema,
@@ -1589,7 +1590,7 @@ router.add_api_route(
     },
 )
 router.add_api_route(
-    '/multiple-files-upload/atleta/{id}',
+    '/multiple-files-download/atleta/{id}',
     endpoint=multiple_files_download,
     tags=['File'],
     methods=['GET'],
@@ -1624,6 +1625,30 @@ router.add_api_route(
                 },
             },
         },
+    },
+)
+router.add_api_route(
+    '/video-upload/atleta/{id}',
+    endpoint=video_upload,
+    tags=['Video'],
+    methods=['POST'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'multipart/form-data': {
+                    'schema': {
+                        'type': 'object',
+                        'properties': {
+                            'file': {
+                                'type': 'string',
+                                'format': 'binary',
+                                'description': 'Upload an video file or url. Supported video formats: .mp4, .mov',
+                            }
+                        },
+                    }
+                }
+            }
+        }
     },
 )
 router.add_api_route(

@@ -162,6 +162,24 @@ class AtletaImagens(SQLModel, table=True):
     atleta_id: int = Field(default=None, foreign_key='atleta.id')
 
 
+class AtletaVideoTypes(enum.Enum):
+    video = 'video'
+    youtube = 'youtube'
+
+
+class AtletaVideos(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    blob_url: str
+    tipo: str = Field(sa_column=Column(Enum(AtletaVideoTypes)))
+    descricao: str | None = None
+    data_criacao: datetime = Field(
+        default_factory=datetime_now_sec, nullable=False
+    )
+    data_atualizado: datetime | None = None
+
+    atleta_id: int = Field(default=None, foreign_key='atleta.id')
+
+
 class Perfil(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
