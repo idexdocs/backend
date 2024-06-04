@@ -17,6 +17,7 @@ class VideoRepo:
             {
                 'id': video.id,
                 'blob_url': video.blob_url,
+                'tipo': video.tipo.value,
                 'descricao': video.descricao,
             }
             for video in result
@@ -61,7 +62,7 @@ class VideoRepo:
             # executa query com paginação
             paginated_results = session.exec(query).all()
 
-            return total_count, self._create_imagens_list_objects(
+            return total_count, self._create_videos_list_objects(
                 paginated_results
             )
 

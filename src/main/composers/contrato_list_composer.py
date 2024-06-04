@@ -1,4 +1,4 @@
-from src.presentation.controllers.contrato_list_composer import (
+from src.presentation.controllers.contrato_list_controler import (
     ContratoListController,
 )
 from src.repository.repo_contrato import ContratoRepo

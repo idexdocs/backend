@@ -35,6 +35,7 @@ from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
 from src.main.rest.usuario_update import usuario_update
 from src.main.rest.usuario_update_password import usuario_update_password
+from src.main.rest.video_list import video_list
 from src.main.rest.video_upload import video_upload
 from src.schemas.atleta import (
     AtletaCreateResponse,
@@ -1649,6 +1650,59 @@ router.add_api_route(
                 }
             }
         }
+    },
+)
+router.add_api_route(
+    '/video-list/atleta/{id}',
+    endpoint=video_list,
+    tags=['Video'],
+    methods=['GET'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'count': 4,
+                            'total': 4,
+                            'type': 'AtletaVideos',
+                            'data': [
+                                {
+                                    'id': 1,
+                                    'blob_url': 'https://idexdocsblob.blob.core.windows.net/atleta-videos/atleta_1/7d78d8c7-7c98-48ce-9c91-c985a9d91901.mp4',
+                                    'tipo': 'video',
+                                    'descricao': 'moto',
+                                },
+                                {
+                                    'id': 2,
+                                    'blob_url': 'https://www.youtube.com/embed/d9nfk2WI17c',
+                                    'tipo': 'youtube',
+                                    'descricao': 'null',
+                                },
+                            ],
+                        }
+                    }
+                },
+            },
+            '400': {
+                'description': 'Successful Response',
+                'content': {
+                    'application/json': {
+                        'example': {'status': False, 'blob_url': 'null'},
+                    }
+                },
+            },
+        },
     },
 )
 router.add_api_route(
