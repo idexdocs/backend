@@ -7,6 +7,9 @@ from src.repository.repo_arquivos import ArquivoRepo
 
 
 class DeleteFilesUseCase:
+
+    CONTAINER_NAME = 'atleta-imagens'
+
     def __init__(
         self,
         storage_service: AzureBlobStorage,
@@ -18,28 +21,27 @@ class DeleteFilesUseCase:
     def execute(self, http_request: HttpRequest):
         imagem_id: int = http_request.path_params.get('id')
 
-        return self._delete_image(imagem_id)
-
-    def _delete_image(self, imagem_id: int):
-
-        blob_url = self._get_imagem_blob_url(imagem_id)
-        blob_name = self._extrair_path_name_do_blob_url(blob_url)
-        self.storage_service.delete_imagem('atleta-imagens', blob_name)
+        blob = self._get_imagem_blob(imagem_id)
+        self._delete_blob_assets(self.CONTAINER_NAME, blob)
         return self.arquivo_repository.delete_imagem(imagem_id)
 
-    def _get_imagem_blob_url(self, imagem_id: int):
+    def _get_imagem_blob(self, imagem_id: int):
         blob = self.arquivo_repository.get_imagem_by_id(imagem_id)
-
         if blob is None:
             raise NotFoundError('Imagem não encontrada')
-        return blob.blob_url
+        return blob
 
-    def _extrair_path_name_do_blob_url(self, blob_url: str) -> str:
-        # Parse the URL
-        parsed_url = urlparse(blob_url)
+    def _delete_blob_assets(self, container, blob):
+        blob_name = self._extrair_blob_path_name(container, blob.blob_url)
+        self.storage_service.delete_imagem(container, blob_name)
 
-        # Extract the path component
-        path = parsed_url.path
+    def _extrair_blob_path_name(self, container: str, blob_url: str) -> str:
+        delimiter = container
+        # Split the URL based on the delimiter
+        parts = blob_url.split(delimiter)
 
-        # Remove the leading slash if it exists and return
-        return path[1:]
+        # Retrieve everything to the right of the delimiter
+        result = parts[1] if len(parts) > 1 else ''
+
+        # Remove leading slash
+        return result[1:]
