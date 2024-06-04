@@ -35,6 +35,7 @@ from src.main.rest.usuario_create import usuario_create
 from src.main.rest.usuario_list import usuario_list
 from src.main.rest.usuario_update import usuario_update
 from src.main.rest.usuario_update_password import usuario_update_password
+from src.main.rest.video_delete import video_delete
 from src.main.rest.video_list import video_list
 from src.main.rest.video_upload import video_upload
 from src.schemas.atleta import (
@@ -1510,7 +1511,7 @@ router.add_api_route(
                 'name': 'id',
                 'in': 'path',
                 'required': True,
-                'description': 'Identificador único do atleta',
+                'description': 'Identificador único da imagem',
                 'schema': {'type': 'integer', 'example': 1},
             }
         ],
@@ -1703,6 +1704,23 @@ router.add_api_route(
                 },
             },
         },
+    },
+)
+router.add_api_route(
+    '/video/delete/{id}',
+    endpoint=video_delete,
+    tags=['Video'],
+    methods=['DELETE'],
+    openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do vídeo',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
     },
 )
 router.add_api_route(
