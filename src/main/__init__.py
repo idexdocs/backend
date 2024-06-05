@@ -78,6 +78,7 @@ from src.schemas.usuario import (
     UsuarioUpdateResponse,
     UsuarioUpdateSchema,
 )
+from src.schemas.video import VideoCreateSchema
 
 router = APIRouter()
 
@@ -1647,8 +1648,19 @@ router.add_api_route(
                                 'description': 'Upload an video file or url. Supported video formats: .mp4, .mov',
                             }
                         },
-                    }
-                }
+                    },
+                },
+                'application/json': {
+                    'schema': VideoCreateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para criação de vídeo',
+                            'value': {
+                                'video_url': 'url do vídeo do youtube',
+                            },
+                        }
+                    },
+                },
             }
         }
     },
