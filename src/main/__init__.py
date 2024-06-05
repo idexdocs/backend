@@ -37,6 +37,7 @@ from src.main.rest.usuario_update import usuario_update
 from src.main.rest.usuario_update_password import usuario_update_password
 from src.main.rest.video_delete import video_delete
 from src.main.rest.video_list import video_list
+from src.main.rest.video_update import video_update
 from src.main.rest.video_upload import video_upload
 from src.schemas.atleta import (
     AtletaCreateResponse,
@@ -78,7 +79,7 @@ from src.schemas.usuario import (
     UsuarioUpdateResponse,
     UsuarioUpdateSchema,
 )
-from src.schemas.video import VideoCreateSchema
+from src.schemas.video import VideoCreateSchema, VideoUpdateSchema
 
 router = APIRouter()
 
@@ -1636,6 +1637,15 @@ router.add_api_route(
     tags=['Video'],
     methods=['POST'],
     openapi_extra={
+        'parameters': [
+            {
+                'name': 'id',
+                'in': 'path',
+                'required': True,
+                'description': 'Identificador único do atleta',
+                'schema': {'type': 'integer', 'example': 1},
+            }
+        ],
         'requestBody': {
             'content': {
                 'multipart/form-data': {
@@ -1715,6 +1725,31 @@ router.add_api_route(
                     }
                 },
             },
+        },
+    },
+)
+router.add_api_route(
+    '/video/update',
+    endpoint=video_update,
+    tags=['Video'],
+    methods=['PUT'],
+    openapi_extra={
+        'requestBody': {
+            'content': {
+                'application/json': {
+                    'schema': VideoUpdateSchema.model_json_schema(),
+                    'examples': {
+                        'example1': {
+                            'summary': 'Exemplo de payload para edição de vídeo do atleta',
+                            'value': {
+                                'video_id': 1,
+                                'descricao': 'Nova descricao para o vídeo',
+                            },
+                        }
+                    },
+                }
+            },
+            'required': True,
         },
     },
 )

@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 from src.error.types.http_not_found import NotFoundError
 from src.main.adapters.azure_blob_storage import AzureBlobStorage
 from src.presentation.http_types.http_request import HttpRequest
