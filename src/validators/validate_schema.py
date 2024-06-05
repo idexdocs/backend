@@ -14,22 +14,24 @@ CARACTERISTICAS_SCHEMA = {
 }
 
 
-async def validate_schema(request: Request, schema: BaseModel = None):
-    if request.method in  ['POST', 'PUT'] and schema is not None:
+async def validate_schema(request: Request, default_schema: BaseModel = None):
+    is_post_or_put = request.method in ['POST', 'PUT']
+    # Check if it's a relevant method and there is no form data.
+    if is_post_or_put and not await request.form():
         request_body = await request.json()
-        schema.model_validate(request_body)
 
-    if (
-        request.method == 'POST'
-        and '/create/caracteristica' == request.url.path
-    ):
-        request_body = await request.json()
-        caracteristica_tipo = request_body.get('caracteristica')
+        # Validate schema for POST or PUT requests.
+        if default_schema:
+            default_schema.model_validate(request_body)
 
-        if caracteristica_tipo not in CARACTERISTICAS_SCHEMA:
-            raise ValueError(
-                f'Característica não é válida: {caracteristica_tipo}'
-            )
+        # Specific validation for creating a caracteristica.
+        if request.method == 'POST' and '/create/caracteristica' == request.url.path:
+            caracteristica_tipo = request_body.get('caracteristica')
 
-        schema = CARACTERISTICAS_SCHEMA.get(caracteristica_tipo)
-        schema.model_validate(request_body)
+            if caracteristica_tipo not in CARACTERISTICAS_SCHEMA:
+                raise ValueError(f'Característica não é válida: {caracteristica_tipo}')
+
+            # Get the specific schema and validate.
+            specific_schema = CARACTERISTICAS_SCHEMA[caracteristica_tipo]
+            specific_schema.model_validate(request_body)
+
