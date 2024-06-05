@@ -2,7 +2,7 @@ import enum
 from datetime import date, datetime
 
 import pytz
-from sqlmodel import Column, Enum, Field, Relationship, SQLModel
+from sqlmodel import Column, Enum, Field, Relationship, SQLModel, String
 
 
 def datetime_now_sec():
@@ -60,7 +60,7 @@ class Role(SQLModel, table=True):
 class Usuario(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nome: str
-    email: str = Field(index=False, unique=True)
+    email: str = Field(sa_column=Column(String(255)))
     hash_password: str
     data_criacao: datetime = Field(
         default_factory=datetime_now_sec, nullable=False

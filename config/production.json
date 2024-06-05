@@ -17,6 +17,6 @@
     },
     {
         "name": "APPLICATION_DB",
-        "value": "idex_docs_db_dev"
+        "value": "idex_docs_db_prod"
     }
 ]
